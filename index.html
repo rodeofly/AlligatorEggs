@@ -1,0 +1,343 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+        <link rel="stylesheet" href="css/normalize.min.css">
+        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
+        <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+        <!-- Pull the engine from the Quintus CDN or load it locally -->
+        <!-- (use quintus-all.min.js for production) -->
+        <script src='http://cdn.html5quintus.com/v0.2.0/quintus-all.js'></script>
+    </head>
+    <body>
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <div class="header-container">
+            <header class="wrapper clearfix">
+                <h1 class="title">Un jeu de logique : Les oeufs alligator</h1>
+                <nav>
+                    <ul>
+                        <li><a href="#">nav ul li a</a></li>
+                        <li><a href="#">nav ul li a</a></li>
+                        <li><a href="#">nav ul li a</a></li>
+                    </ul>
+                </nav>
+            </header>
+        </div>
+
+      
+      
+       <div id="buttons-panel">
+        <div id="choose-color" data-color="purple">
+          <div class="color selected-color" style="background-color:purple;" data-color="purple"></div>
+          <div class="color" style="background-color:blue;" data-color="blue"></div>
+          <div class="color" style="background-color:LightBlue;" data-color="LightBlue"></div>
+
+          <div class="color" style="background-color:red;" data-color="red"></div>
+          <div class="color" style="background-color:orange;" data-color="orange"></div>
+          <div class="color" style="background-color:brown;" data-color="brown"></div>
+
+          <div class="color" style="background-color:green;" data-color="green"></div>
+          <div class="color" style="background-color:LightGreen;" data-color="LightGreen"></div>
+
+          <div class="color" style="background-color:yellow;" data-color="yellow"></div>
+          <div class="color" style="background-color:pink;" data-color="pink"></div>
+          <div class="color" style="background-color:grey;" data-color="grey"></div>
+
+
+
+        </div>
+      
+      
+       
+            <div class="item croco"></div>
+            <div class="item egg"></div>
+            <button id="go">Go</button>
+            <button id="clear">Clear</button>
+            <button id="ex-1">Ex 1</button>
+            <button id="ex-2">Ex 2</button>
+            <button id="ex-3">Ex 3</button>
+            <button id="ex-4">Ex 4</button>
+        </div>
+      
+      
+        <div class="game-container">
+        <div id="root" class=""> <div id="1000" style="background-color:LightGreen;width:500px;height:203px;" class="lambda dropped" data-variable="LightGreen">
+    <div id="1003" style="background-color:red;" class="lambda dropped" data-variable="red">
+    <div id="1006" style="background-color:LightGreen;" class="variable dropped" data-variable="LightGreen">
+   
+</div> <div id="1007" style="background-color:red;" class="variable dropped" data-variable="red">
+   <div class="application_drop ui-droppable"></div>
+</div>
+   <div class="application_drop ui-droppable"></div>
+</div>
+   
+</div> <div id="1001" style="background-color:LightBlue;" class="lambda dropped" data-variable="LightBlue">
+    <div id="1004" style="background-color:blue;" class="lambda dropped" data-variable="blue">
+    <div id="1008" style="background-color:LightBlue;" class="variable dropped" data-variable="LightBlue">
+   
+</div> <div id="1009" style="background-color:blue;" class="variable dropped" data-variable="blue">
+   <div class="application_drop ui-droppable"></div>
+</div>
+   <div class="application_drop ui-droppable"></div>
+</div>
+   
+</div> <div id="1002" style="background-color:yellow;" class="lambda dropped" data-variable="yellow">
+    <div id="1005" style="background-color:yellow;" class="variable dropped" data-variable="yellow">
+   <div class="application_drop ui-droppable"></div>
+</div>
+   <div class="application_drop ui-droppable"></div>
+</div></div>
+         
+        </div>
+        <div class="main-container">
+            <div class="main wrapper clearfix">
+                <article>
+                    <header>
+                        <h1>λ-Calcul en CoffeeScript</h1>  
+                        <pre class="code">
+                         <textarea type="text" style="width:100%;">
+Id = (x) -> x
+TRUE  = (x) -> (y) -> x # λx.λy.x
+FALSE = (x) -> (y) -> y # λx.λy.y
+JSbool = (f) -> f(true)(false)
+AND = (p) -> (q) -> p(q)(p)               # λp.λq.p q p
+OR  = (p) -> (q) -> p(p)(q)               # λp.λq.p p q
+NOT = (p) -> (a) -> (b) -> p(b)(a)        # λp.λa.λb.p b a  
+
+$0 = ZERO  = (f) -> (x) -> x            # λf.λx.x
+$1 = ONE   = (f) -> (x) -> f x          # λf.λx.f x
+$2 = TWO   = (f) -> (x) -> f f x        # λf.λx.f (f x)
+$3 = THREE = (f) -> (x) -> f f f x      # λf.λx.f (f (f x))
+$4 = FOUR  = (f) -> (x) -> f f f f x    # λf.λx.f (f (f (f x)))
+$5 = FIVE  = (f) -> (x) -> f f f f f x  # λf.λx.f (f (f (f (f x))))
+
+ISZERO = (n) -> n( (x) -> FALSE )(TRUE) # λn.n (λx.FALSE) TRUE
+IF = (p) -> (a) -> (b) -> p(a)(b) # λp.λa.λb.p a b
+
+int   = (n) -> n((x) -> ++x)(0)
+toInt = (n) -> (n ((x) -> x + 1)) 0
+           
+#Predecesseur & Successeur SUCC 
+# λn.λf.λx.n (λg.λh.h (g f)) (λu.x) (λu.u)
+PRED = (n) -> (f) -> (x) -> n((g) -> (h) -> h g f)((u) -> x)((u) -> u)
+SUCC = (n) -> (f) -> (x) -> f (n(f)(x)) # λn.λf.λx.f (n f x)
+
+#addition PLUS
+PLUS = (m) -> (n) -> (f) -> (x) -> m(f)(n(f)(x)) # λm.λn.λf.λx.m f (n f x)
+PLUS = (m) -> (n) -> m(SUCC)(n) # λm.λn.m SUCC n
+
+#soustraction SUB
+SUB = (m) -> (n) -> n(PRED)(m) # λm.λn.n PRED m
+
+#multiplication MULT
+MULT = (m) -> (n) -> (f) -> m n f # λm.λn.λf.m (n f)
+
+#power POW
+POW  = (b) -> (e) -> e b  # λb.λe.e b     
+
+#Récursivité
+I = (x) -> x # λx.x
+
+#La Factorielle 
+# λr.λn.(1, if n = 0; else n × (r (n−1)))
+YP = (f) -> (g) -> (x) -> (f g g) x
+Y = (f) ->  (YP f) (YP f)
+FACT = Y (r) -> (n) -> (((ISZERO n) (x) -> ONE) (x) -> (MULT n) (r (PRED n))) I
+REPEAT = Y (r) -> (n) -> (c) -> (((ISZERO n) (x) -> NIL) (x) -> (PAIR c) ((r PRED n) c)) I
+alert int FACT FOUR
+                         </textarea><button class="run-previous-code">Church !</button>
+                        </pre>
+                    </header>
+                    <section>
+                        <h2>Fonctions Haskell-iennes</h2>
+                         <ul>
+                          <li>Une <b>lambda abstraction</b> s'écrit λx.x  &hArr;  f(x) = x &hArr;  (x) -> x</li>
+                          <li>L'<b>application</b> (λx.x)(2) &hArr; f(x) = x & x=2 &hArr; ((x) -> x)(2)</li>
+                           <li>le λ-calculus encode données, logique des prédicats & recursivité</li>
+                          <li>λ-calcul compute saklé computable !</li>
+                        </ul>          
+                        <pre id="1" class="code">
+                              f = (x) -> x
+                                                
+                              alert ((x) -> x)(2)
+                              alert f
+                              alert f(2)
+                              alert "Sa ti giny, sati geign pas !"
+                        </pre><button class="run-previous-code">Sa ti giny, sati geign pas !</button>
+                          
+                    </section>
+                    <section>
+                        <h2>Logique des prédicats</h2>
+                          <h3>Church à les bools : true & false</h3>
+                          <pre id="1" class="code">
+                            TRUE  = (x) -> (y) -> x # λx.λy.x
+                            FALSE = (x) -> (y) -> y # λx.λy.y
+                            
+                            booleanJavaScript = (f) -> f(true)(false)
+                           
+                            alert booleanJavaScript(TRUE)
+                            alert booleanJavaScript(FALSE)
+                            alert "sa mèm !"
+                          </pre><button class="run-previous-code">Témas le zafer !</button>
+                
+                          <h3>(AND / OR) & (NOT / IFTHENELSE) </h3>
+                            <ul>
+                              <li>AND(TRUE)(TRUE) &hArr; lambda abstraction  &hArr; function  &hArr; η-conversion  &hArr; TRUE</li>
+                          </ul>
+                          <pre class="code">
+                            AND = (p) -> (q) -> p(q)(p)               # λp.λq.p q p
+                            OR  = (p) -> (q) -> p(p)(q)               # λp.λq.p p q
+                            NOT = (p) -> (a) -> (b) -> p(b)(a)        # λp.λa.λb.p b a
+                            
+                            alert "oté fépètè !"
+                            alert b AND(TRUE)(TRUE)   # --> true
+                            alert b AND(TRUE)(FALSE)  # --> false
+                            alert AND(FALSE)(TRUE)  # --> false
+                            alert AND(FALSE)(FALSE) # --> false
+                        </pre><button class="run-previous-code">tcheksa mon dalon !</button>
+                    </section>    
+                    <section>
+                    
+                      <h2>Church à les Numéros</h2>
+                        <ul>
+                          <li>Numero Zéro à Church &hArr; 0 &hArr; Fonction IDentité  &hArr;  (x) -> x</li>
+                        </ul>
+                        <pre class="code">
+                         
+                          $0 = ZERO  = (f) -> (x) -> x            # λf.λx.x
+                          $1 = ONE   = (f) -> (x) -> f x          # λf.λx.f x
+                          $2 = TWO   = (f) -> (x) -> f f x        # λf.λx.f (f x)
+                          $3 = THREE = (f) -> (x) -> f f f x      # λf.λx.f (f (f x))
+                          $4 = FOUR  = (f) -> (x) -> f f f f x    # λf.λx.f (f (f (f x)))
+                          $5 = FIVE  = (f) -> (x) -> f f f f f x  # λf.λx.f (f (f (f (f x))))
+
+                          ISZERO = (n) -> n( (x) -> FALSE )(TRUE) # λn.n (λx.FALSE) TRUE
+                          IFTHENELSE = (p) -> (a) -> (b) -> p(a)(b) # λp.λa.λb.p a b
+
+                          alert "Nawar mounwar saklé vrè !"
+                          alert IFTHENELSE(TRUE)(THREE)(FOUR)  # --> THREE
+                          alert IFTHENELSE(FALSE)(THREE)(FOUR) # --> FOUR
+                          alert IFTHENELSE(ISZERO(ZERO))(THREE)(FOUR) # --> THREE
+                          alert IFTHENELSE(ISZERO(ONE))(THREE)(FOUR)  # --> FOUR
+                        </pre><button class="run-previous-code">Nawar mounwar saklé vrè !</button>
+
+                      <h2>Churchons les Numéros Javascript</h2>
+                        <ul>
+                          <li>int &hArr; integerJavaScript  &hArr; Church Numeral</li>
+                        </ul>
+                      
+                        <pre class="code">
+                          int   = (n) -> n((x) -> ++x)(0)
+
+                          #Predecesseur & Successeur SUCC 
+                          # λn.λf.λx.n (λg.λh.h (g f)) (λu.x) (λu.u)
+                          PRED = (n) -> (f) -> (x) -> n((g) -> (h) -> h g f)((u) -> x)((u) -> u)
+                          SUCC = (n) -> (f) -> (x) -> f (n(f)(x)) # λn.λf.λx.f (n f x)
+
+                          #addition PLUS
+                          PLUS = (m) -> (n) -> (f) -> (x) -> m(f)(n(f)(x)) # λm.λn.λf.λx.m f (n f x)
+                          PLUS = (m) -> (n) -> m(SUCC)(n) # λm.λn.m SUCC n
+
+                          #soustraction SUB
+                          SUB = (m) -> (n) -> n(PRED)(m) # λm.λn.n PRED m
+
+                          #multiplication MULT
+                          MULT = (m) -> (n) -> (f) -> m n f # λm.λn.λf.m (n f)
+
+                          #power POW
+                          POW  = (b) -> (e) -> e b  # λb.λe.e b     
+
+                          alert   PLUS(ONE)(TWO) # --> THREE
+                          alert int PLUS(ONE)(TWO)  # --> 3
+                          alert int SUCC(ONE)       # --> 2
+                          alert int MULT(TWO)(FIVE) # --> 10
+                          alert int POW(TWO)(FIVE)  # --> 32
+                          alert int PRED(TWO)       # --> 1
+                          alert int SUB(THREE)(TWO) # --> 1
+                          alert int SUB(TWO)(THREE) # --> 0
+                          alert "Perkutè kwé ?!"
+                        </pre><button class="run-previous-code">Perkutè kwé ?!</button>
+                        
+                    </section>
+                          
+                    <section>
+                      <h2>Combinateurs</h2>
+                        <ul>
+                          <li>combinateurs &hArr; lambda expressions sans constante</li>
+                          <li>En λ-calcul les abstractions sont anonymous !</li>
+                          <li>Pas de nom de fonction dans le corps de la fonction
+                          <li>Heureusement : le combinateurwaï Y</li>
+                        </ul>
+                        <pre class="code">
+                          #Le plus simple : le combinateur Identité
+                          I = (x) -> x # λx.x
+
+                          #Récursivité
+                          U = (f) -> f(f)
+                          Y = (g) -> ((x) -> g (x x))((x) -> g (x x)) # λg.(λx.g (x x)) (λx.g (x x))
+  
+                          #La Factorielle 
+                          # λr.λn.(1, if n = 0; else n × (r (n−1)))
+                          YP = (f) -> (g) -> (x) -> (f g g) x
+                          Y = (f) ->  (YP f) (YP f)
+
+                          FACT = Y (r) -> (n) -> (((ISZERO n) (x) -> ONE) (x) -> (MULT n) (r (PRED n))) I
+
+                          alert int FACT FOUR
+
+                        </pre><button class="run-previous-code">Perkutè kwé ?!</button>
+                        
+
+                    </section>
+               
+                    <footer>
+                        <h3>Florian Tobé 2015</h3>
+                    </footer> 
+              
+                </article>
+
+                <aside>
+                     
+                    <h3>Liens</h3>
+                      <ul>
+                        <li><a href="<li><a href="http://en.wikipedia.org/wiki/Lambda_calculus">Wikipedia : λ-calcul</a>
+                        <li><a href="https://github.com/emorikawa/lambda-cofffee/blob/master/%CE%BB.litcoffee">original</a></li>
+                        <li><a href="http://worrydream.com/AlligatorEggs/">description du jeu des alligators</a>
+                        <li><a href="http://metatoys.org/alligator/">Le jeu en ligne des alligators</a></li>
+                      </ul>
+                </aside>
+
+            </div> <!-- #main -->
+        </div> <!-- #main-container -->
+        
+        <div id="main"></div>
+      
+        <div class="footer-container">
+            <footer class="wrapper">
+                <h3>Florian Tobé 2015</h3>
+            
+            </footer>
+        </div>
+      
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
+
+        <script src="js/main.js"></script>
+        <script src="js/coffee-script.js"></script>
+   
+    </body>
+</html>
