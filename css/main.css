@@ -182,14 +182,21 @@ pre.code{
   z-index:9999;
 }
 .croco { 
-  background: url(./img/alligator1.png) top center no-repeat;
+  background: url(./img/alligator-blanc-item.png) top center no-repeat;
+  background-size : 100%;
+  width : 125px;
+  height : 50px;
+
+}
+.vieux-croco { 
+  background: url(./img/vieil-alligator-white.png) top center no-repeat;
   background-size : 100%;
   width : 125px;
   height : 50px;
 
 }
 .egg {
-  background: url(./img/egg.png) top left no-repeat; 
+  background: url(./img/egg-white.png) top left no-repeat; 
   background-size : 100%;
   width : 74px;
   height : 50px;
@@ -208,12 +215,11 @@ pre.code{
 
 
 .lambda {
-  background: url(./img/alligator.png) top center no-repeat;
+ 
   min-width : 500px;
 
 }
 .variable {
-  background: url(./img/egg.png) top left no-repeat; 
   background-size : 100%;
   width : 148px;
   height: 100px;
@@ -242,8 +248,8 @@ pre.code{
 .application_drop {
   top:0%;
   right:0%;
-  width : 50%;
-  height: 50%;
+  width : 100px;
+  height: 100px;
 }
 .variable.dropped > .application_drop {
   width : 100%;
@@ -259,6 +265,19 @@ pre.code{
   justify-content: space-around;
   align-items: flex-start;
 }
+
+/* ADD THIS TO CSS */
+div#preloaded-images, div.exemple {
+   position: absolute;
+   overflow: hidden;
+   left: -9999px; 
+   top: -9999px;
+   height: 1px;
+   width: 1px;
+}
+
+
+
 /* ==========================================================================
    Media Queries
    ========================================================================== */

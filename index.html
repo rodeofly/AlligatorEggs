@@ -41,69 +41,24 @@
 
       
       
-       <div id="buttons-panel">
-        <div id="choose-color" data-color="purple">
-          <div class="color selected-color" style="background-color:purple;" data-color="purple"></div>
-          <div class="color" style="background-color:blue;" data-color="blue"></div>
-          <div class="color" style="background-color:LightBlue;" data-color="LightBlue"></div>
+        <div id="buttons-panel">
+            <div id="choose-color" data-color="purple">       
+                <!-- ADD THIS TO XHTML -->
+                <div id="preloaded-images"></div>
+            </div>
 
-          <div class="color" style="background-color:red;" data-color="red"></div>
-          <div class="color" style="background-color:orange;" data-color="orange"></div>
-          <div class="color" style="background-color:brown;" data-color="brown"></div>
-
-          <div class="color" style="background-color:green;" data-color="green"></div>
-          <div class="color" style="background-color:LightGreen;" data-color="LightGreen"></div>
-
-          <div class="color" style="background-color:yellow;" data-color="yellow"></div>
-          <div class="color" style="background-color:pink;" data-color="pink"></div>
-          <div class="color" style="background-color:grey;" data-color="grey"></div>
-
-
-
-        </div>
-      
-      
-       
             <div class="item croco"></div>
+            <div class="item vieux-croco"></div>
             <div class="item egg"></div>
             <button id="go">Go</button>
-            <button id="clear">Clear</button>
-            <button id="ex-1">Ex 1</button>
-            <button id="ex-2">Ex 2</button>
-            <button id="ex-3">Ex 3</button>
-            <button id="ex-4">Ex 4</button>
+            <button id="clear">Clear</button>         
+
         </div>
-      
-      
+        
         <div class="game-container">
-        <div id="root" class=""> <div id="1000" style="background-color:LightGreen;width:500px;height:203px;" class="lambda dropped" data-variable="LightGreen">
-    <div id="1003" style="background-color:red;" class="lambda dropped" data-variable="red">
-    <div id="1006" style="background-color:LightGreen;" class="variable dropped" data-variable="LightGreen">
-   
-</div> <div id="1007" style="background-color:red;" class="variable dropped" data-variable="red">
-   <div class="application_drop ui-droppable"></div>
-</div>
-   <div class="application_drop ui-droppable"></div>
-</div>
-   
-</div> <div id="1001" style="background-color:LightBlue;" class="lambda dropped" data-variable="LightBlue">
-    <div id="1004" style="background-color:blue;" class="lambda dropped" data-variable="blue">
-    <div id="1008" style="background-color:LightBlue;" class="variable dropped" data-variable="LightBlue">
-   
-</div> <div id="1009" style="background-color:blue;" class="variable dropped" data-variable="blue">
-   <div class="application_drop ui-droppable"></div>
-</div>
-   <div class="application_drop ui-droppable"></div>
-</div>
-   
-</div> <div id="1002" style="background-color:yellow;" class="lambda dropped" data-variable="yellow">
-    <div id="1005" style="background-color:yellow;" class="variable dropped" data-variable="yellow">
-   <div class="application_drop ui-droppable"></div>
-</div>
-   <div class="application_drop ui-droppable"></div>
-</div></div>
-         
+            <div id="root"></div>
         </div>
+      
         <div class="main-container">
             <div class="main wrapper clearfix">
                 <article>
@@ -244,7 +199,7 @@ alert int FACT FOUR
                         <pre class="code">
                           int   = (n) -> n((x) -> ++x)(0)
 
-                          #Predecesseur & Successeur SUCC 
+                          #Predecesseur &amp; Successeur SUCC 
                           # λn.λf.λx.n (λg.λh.h (g f)) (λu.x) (λu.u)
                           PRED = (n) -> (f) -> (x) -> n((g) -> (h) -> h g f)((u) -> x)((u) -> u)
                           SUCC = (n) -> (f) -> (x) -> f (n(f)(x)) # λn.λf.λx.f (n f x)
@@ -315,7 +270,7 @@ alert int FACT FOUR
                      
                     <h3>Liens</h3>
                       <ul>
-                        <li><a href="<li><a href="http://en.wikipedia.org/wiki/Lambda_calculus">Wikipedia : λ-calcul</a>
+                        <li><a href="http://en.wikipedia.org/wiki/Lambda_calculus">Wikipedia : λ-calcul</a>
                         <li><a href="https://github.com/emorikawa/lambda-cofffee/blob/master/%CE%BB.litcoffee">original</a></li>
                         <li><a href="http://worrydream.com/AlligatorEggs/">description du jeu des alligators</a>
                         <li><a href="http://metatoys.org/alligator/">Le jeu en ligne des alligators</a></li>
@@ -338,6 +293,323 @@ alert int FACT FOUR
 
         <script src="js/main.js"></script>
         <script src="js/coffee-script.js"></script>
+      <div id="exemple-9" class="exemple">
+      <div id="1048" style="background: url(css/img/alligator-blue.png) top center no-repeat;" class="lambda dropped" data-variable="blue">
+   <div id="1049" style="background: url(css/img/alligator-pink.png) top center no-repeat;" class="lambda dropped" data-variable="pink">
+<div id="1068" style="background: url(css/img/alligator-LightGreen.png) top center no-repeat;" class="lambda dropped" data-variable="LightGreen">
+<div id="1069" style="background: url(css/img/alligator-purple.png) top center no-repeat;" class="lambda dropped" data-variable="purple">
+<div id="1070" style="background: url(css/img/egg-blue.png) top center no-repeat;" class="variable dropped" data-variable="blue">
+
+</div><div id="1071" style="background: url(css/img/egg-LightGreen.png) top center no-repeat;" class="variable dropped" data-variable="LightGreen">
+
+</div><div id="1072" style="background: url(css/img/alligator-white.png) top center no-repeat;" class="lambda dropped" data-variable="white">
+<div id="1073" style="background: url(css/img/egg-pink.png) top center no-repeat;" class="variable dropped" data-variable="pink">
+
+</div><div id="1074" style="background: url(css/img/egg-LightGreen.png) top center no-repeat;" class="variable dropped" data-variable="LightGreen">
+
+</div><div id="1075" style="background: url(css/img/egg-purple.png) top center no-repeat;" class="variable dropped" data-variable="purple">
+<div class="application_drop ui-droppable"></div>
+</div>
+<div class="application_drop ui-droppable"></div>
+</div>
+<div class="application_drop ui-droppable"></div>
+</div>
+<div class="application_drop ui-droppable"></div>
+</div>
+<div class="application_drop ui-droppable"></div>
+</div>
    
+</div><div id="1050" style="background: url(css/img/alligator-LightGreen.png) top center no-repeat;" class="lambda dropped" data-variable="LightGreen">
+<div id="1051" style="background: url(css/img/alligator-purple.png) top center no-repeat;" class="lambda dropped" data-variable="purple">
+<div id="1052" style="background: url(css/img/egg-LightGreen.png) top center no-repeat;" class="variable dropped" data-variable="LightGreen">
+
+</div><div id="1053" style="background: url(css/img/alligator-white.png) top center no-repeat;" class="lambda dropped" data-variable="white">
+<div id="1054" style="background: url(css/img/egg-LightGreen.png) top center no-repeat;" class="variable dropped" data-variable="LightGreen">
+
+</div><div id="1055" style="background: url(css/img/alligator-white.png) top center no-repeat;" class="lambda dropped" data-variable="white">
+<div id="1056" style="background: url(css/img/egg-LightGreen.png) top center no-repeat;" class="variable dropped" data-variable="LightGreen">
+
+</div><div id="1057" style="background: url(css/img/egg-purple.png) top center no-repeat;" class="variable dropped" data-variable="purple">
+<div class="application_drop ui-droppable"></div>
+</div>
+<div class="application_drop ui-droppable"></div>
+</div>
+<div class="application_drop ui-droppable"></div>
+</div>
+<div class="application_drop ui-droppable"></div>
+</div>
+
+</div><div id="1058" style="background: url(css/img/alligator-LightGreen.png) top center no-repeat;" class="lambda dropped" data-variable="LightGreen">
+<div id="1059" style="background: url(css/img/alligator-purple.png) top center no-repeat;" class="lambda dropped" data-variable="purple">
+<div id="1060" style="background: url(css/img/egg-LightGreen.png) top center no-repeat;" class="variable dropped" data-variable="LightGreen">
+
+</div><div id="1061" style="background: url(css/img/alligator-white.png) top center no-repeat;" class="lambda dropped" data-variable="white">
+<div id="1062" style="background: url(css/img/egg-LightGreen.png) top center no-repeat;" class="variable dropped" data-variable="LightGreen">
+
+</div><div id="1063" style="background: url(css/img/alligator-white.png) top center no-repeat;" class="lambda dropped" data-variable="white">
+<div id="1064" style="background: url(css/img/egg-LightGreen.png) top center no-repeat;" class="variable dropped" data-variable="LightGreen">
+
+</div><div id="1065" style="background: url(css/img/alligator-white.png) top center no-repeat;" class="lambda dropped" data-variable="white">
+<div id="1066" style="background: url(css/img/egg-LightGreen.png) top center no-repeat;" class="variable dropped" data-variable="LightGreen">
+
+</div><div id="1067" style="background: url(css/img/egg-purple.png) top center no-repeat;" class="variable dropped" data-variable="purple">
+<div class="application_drop ui-droppable"></div>
+</div>
+<div class="application_drop ui-droppable"></div>
+</div>
+<div class="application_drop ui-droppable"></div>
+</div>
+<div class="application_drop ui-droppable"></div>
+</div>
+<div class="application_drop ui-droppable"></div>
+</div>
+<div class="application_drop ui-droppable"></div>
+</div>
+      </div>
+      <div id="exemple-8" class="exemple">
+        <div id="1001" style="background: url(css/img/alligator-blue.png) top center no-repeat;" class="lambda dropped" data-variable="blue">
+   <div id="1002" style="background: url(css/img/alligator-pink.png) top center no-repeat;" class="lambda dropped" data-variable="pink">
+<div id="1003" style="background: url(css/img/alligator-LightGreen.png) top center no-repeat;" class="lambda dropped" data-variable="LightGreen">
+<div id="1004" style="background: url(css/img/alligator-purple.png) top center no-repeat;" class="lambda dropped" data-variable="purple">
+<div id="1005" style="background: url(css/img/egg-blue.png) top center no-repeat;" class="variable dropped" data-variable="blue">
+
+</div><div id="1006" style="background: url(css/img/egg-LightGreen.png) top center no-repeat;" class="variable dropped" data-variable="LightGreen">
+
+</div><div id="1007" style="background: url(css/img/alligator-white.png) top center no-repeat;" class="lambda dropped" data-variable="white">
+<div id="1008" style="background: url(css/img/egg-pink.png) top center no-repeat;" class="variable dropped" data-variable="pink">
+
+</div><div id="1009" style="background: url(css/img/egg-LightGreen.png) top center no-repeat;" class="variable dropped" data-variable="LightGreen">
+
+</div><div id="1010" style="background: url(css/img/egg-purple.png) top center no-repeat;" class="variable dropped" data-variable="purple">
+<div class="application_drop ui-droppable"></div>
+</div>
+<div class="application_drop ui-droppable"></div>
+</div>
+<div class="application_drop ui-droppable"></div>
+</div>
+<div class="application_drop ui-droppable"></div>
+</div>
+<div class="application_drop ui-droppable"></div>
+</div>
+   
+</div><div id="1011" style="background: url(css/img/alligator-LightGreen.png) top center no-repeat;" class="lambda dropped" data-variable="LightGreen">
+<div id="1013" style="background: url(css/img/alligator-purple.png) top center no-repeat;" class="lambda dropped" data-variable="purple">
+<div id="1015" style="background: url(css/img/egg-LightGreen.png) top center no-repeat;" class="variable dropped" data-variable="LightGreen">
+
+</div><div id="1017" style="background: url(css/img/egg-purple.png) top center no-repeat;" class="variable dropped" data-variable="purple">
+<div class="application_drop ui-droppable"></div>
+</div>
+<div class="application_drop ui-droppable"></div>
+</div>
+
+</div><div id="1012" style="background: url(css/img/alligator-LightGreen.png) top center no-repeat;" class="lambda dropped" data-variable="LightGreen">
+<div id="1014" style="background: url(css/img/alligator-purple.png) top center no-repeat;" class="lambda dropped" data-variable="purple">
+<div id="1016" style="background: url(css/img/egg-LightGreen.png) top center no-repeat;" class="variable dropped" data-variable="LightGreen">
+
+</div><div id="1018" style="background: url(css/img/egg-purple.png) top center no-repeat;" class="variable dropped" data-variable="purple">
+<div class="application_drop ui-droppable"></div>
+</div>
+<div class="application_drop ui-droppable"></div>
+</div>
+<div class="application_drop ui-droppable"></div>
+</div>
+      </div>
+      <div id="exemple-7" class="exemple">
+ <div id="1000" style="background: url(css/img/alligator-blue.png) top center no-repeat;" class="lambda dropped" data-variable="blue">
+   <div id="1001" style="background: url(css/img/alligator-LightGreen.png) top center no-repeat;" class="lambda dropped" data-variable="LightGreen">
+<div id="1002" style="background: url(css/img/alligator-purple.png) top center no-repeat;" class="lambda dropped" data-variable="purple">
+<div id="1003" style="background: url(css/img/egg-LightGreen.png) top center no-repeat;" class="variable dropped" data-variable="LightGreen">
+
+</div><div id="1004" style="background: url(css/img/alligator-white.png) top center no-repeat;" class="lambda dropped" data-variable="white">
+<div id="1005" style="background: url(css/img/egg-blue.png) top center no-repeat;" class="variable dropped" data-variable="blue">
+
+</div><div id="1006" style="background: url(css/img/egg-LightGreen.png) top center no-repeat;" class="variable dropped" data-variable="LightGreen">
+
+</div><div id="1007" style="background: url(css/img/egg-purple.png) top center no-repeat;" class="variable dropped" data-variable="purple">
+<div class="application_drop ui-droppable"></div>
+</div>
+<div class="application_drop ui-droppable"></div>
+</div>
+<div class="application_drop ui-droppable"></div>
+</div>
+<div class="application_drop ui-droppable"></div>
+</div>
+   
+</div><div id="1008" style="background: url(css/img/alligator-LightGreen.png) top center no-repeat;" class="lambda dropped" data-variable="LightGreen">
+<div id="1009" style="background: url(css/img/alligator-purple.png) top center no-repeat;" class="lambda dropped" data-variable="purple">
+<div id="1010" style="background: url(css/img/egg-purple.png) top center no-repeat;" class="variable dropped" data-variable="purple">
+<div class="application_drop ui-droppable"></div>
+</div>
+<div class="application_drop ui-droppable"></div>
+</div>
+<div class="application_drop ui-droppable"></div>
+</div></div>
+         <div id="exemple-6" class="exemple">
+       <div id="1000" style="background: url(css/img/alligator-purple.png) top center no-repeat;" class="lambda dropped" data-variable="purple">
+   <div id="1001" style="background: url(css/img/alligator-LightGreen.png) top center no-repeat;" class="lambda dropped" data-variable="LightGreen">
+<div id="1003" style="background: url(css/img/egg-purple.png) top center no-repeat;" class="variable dropped" data-variable="purple">
+
+</div><div id="1005" style="background: url(css/img/alligator-white.png) top center no-repeat;" class="lambda dropped" data-variable="white">
+<div id="1007" style="background: url(css/img/egg-LightGreen.png) top center no-repeat;" class="variable dropped" data-variable="LightGreen">
+
+</div><div id="1008" style="background: url(css/img/egg-LightGreen.png) top center no-repeat;" class="variable dropped" data-variable="LightGreen">
+<div class="application_drop ui-droppable"></div>
+</div>
+<div class="application_drop ui-droppable"></div>
+</div>
+
+</div><div id="1002" style="background: url(css/img/alligator-LightGreen.png) top center no-repeat;" class="lambda dropped" data-variable="LightGreen">
+<div id="1004" style="background: url(css/img/egg-purple.png) top center no-repeat;" class="variable dropped" data-variable="purple">
+
+</div><div id="1006" style="background: url(css/img/alligator-white.png) top center no-repeat;" class="lambda dropped" data-variable="white">
+<div id="1009" style="background: url(css/img/egg-LightGreen.png) top center no-repeat;" class="variable dropped" data-variable="LightGreen">
+
+</div><div id="1010" style="background: url(css/img/egg-LightGreen.png) top center no-repeat;" class="variable dropped" data-variable="LightGreen">
+<div class="application_drop ui-droppable"></div>
+</div>
+<div class="application_drop ui-droppable"></div>
+</div>
+<div class="application_drop ui-droppable"></div>
+</div>
+   <div class="application_drop ui-droppable"></div>
+</div>
+      </div>
+        <div id="exemple-5" class="exemple">
+        <div id="root" class=""> <div id="1000" style="background: url(css/img/alligator-white.png) top center no-repeat;" class="lambda dropped" data-variable="white">
+   <div id="1001" style="background: url(css/img/alligator-LightGreen.png) top center no-repeat;" class="lambda dropped" data-variable="LightGreen">
+<div id="1002" style="background: url(css/img/egg-LightGreen.png) top center no-repeat;" class="variable dropped" data-variable="LightGreen">
+<div class="application_drop ui-droppable"></div>
+</div>
+
+</div><div id="1003" style="background: url(css/img/alligator-red.png) top center no-repeat;" class="lambda dropped" data-variable="red">
+<div id="1004" style="background: url(css/img/egg-red.png) top center no-repeat;" class="variable dropped" data-variable="red">
+<div class="application_drop ui-droppable"></div>
+</div>
+<div class="application_drop ui-droppable"></div>
+</div>
+   
+</div><div id="1005" style="background: url(css/img/alligator-yellow.png) top center no-repeat;" class="lambda dropped" data-variable="yellow">
+<div id="1006" style="background: url(css/img/egg-yellow.png) top center no-repeat;" class="variable dropped" data-variable="yellow">
+<div class="application_drop ui-droppable"></div>
+</div>
+<div class="application_drop ui-droppable"></div>
+</div></div>
+      </div>   
+   <div id="exemple-4" class="exemple">
+    <div id="1011" style="background: url(css/img/alligator-yellow.png) top center no-repeat;" class="lambda dropped" data-variable="yellow">
+    <div id="1012" style="background: url(css/img/egg-yellow.png) top center no-repeat;" class="variable dropped" data-variable="yellow">
+   
+</div> <div id="1013" style="background: url(css/img/alligator-LightGreen.png) top center no-repeat;" class="lambda dropped" data-variable="LightGreen">
+    <div id="1015" style="background: url(css/img/alligator-red.png) top center no-repeat;" class="lambda dropped" data-variable="red">
+    <div id="1017" style="background: url(css/img/egg-red.png) top center no-repeat;" class="variable dropped" data-variable="red">
+   <div class="application_drop ui-droppable"></div>
+</div>
+   <div class="application_drop ui-droppable"></div>
+</div>
+   
+</div> <div id="1014" style="background: url(css/img/alligator-LightGreen.png) top center no-repeat;" class="lambda dropped" data-variable="LightGreen">
+    <div id="1016" style="background: url(css/img/alligator-red.png) top center no-repeat;" class="lambda dropped" data-variable="red">
+    <div id="1018" style="background: url(css/img/egg-LightGreen.png) top center no-repeat;" class="variable dropped" data-variable="LightGreen">
+   <div class="application_drop ui-droppable"></div>
+</div>
+   <div class="application_drop ui-droppable"></div>
+</div>
+   <div class="application_drop ui-droppable"></div>
+</div>
+   
+</div> <div id="1019" style="background: url(css/img/alligator-LightGreen.png) top center no-repeat;" class="lambda dropped" data-variable="LightGreen">
+    <div id="1020" style="background: url(css/img/alligator-red.png) top center no-repeat;" class="lambda dropped" data-variable="red">
+    <div id="1021" style="background: url(css/img/egg-red.png) top center no-repeat;" class="variable dropped" data-variable="red">
+   <div class="application_drop ui-droppable"></div>
+</div>
+   <div class="application_drop ui-droppable"></div>
+</div>
+   <div class="application_drop ui-droppable"></div>
+</div>
+      </div>
+      
+      <div id="exemple-3" class="exemple">
+
+    <div id="1000" style="background: url(css/img/alligator-yellow.png) top center no-repeat;" class="lambda dropped" data-variable="yellow">
+    <div id="1001" style="background: url(css/img/egg-yellow.png) top center no-repeat;" class="variable dropped" data-variable="yellow">
+   
+</div> <div id="1002" style="background: url(css/img/alligator-LightGreen.png) top center no-repeat;" class="lambda dropped" data-variable="LightGreen">
+    <div id="1004" style="background: url(css/img/alligator-red.png) top center no-repeat;" class="lambda dropped" data-variable="red">
+    <div id="1006" style="background: url(css/img/egg-red.png) top center no-repeat;" class="variable dropped" data-variable="red">
+   <div class="application_drop ui-droppable"></div>
+</div>
+   <div class="application_drop ui-droppable"></div>
+</div>
+   
+</div> <div id="1003" style="background: url(css/img/alligator-LightGreen.png) top center no-repeat;" class="lambda dropped" data-variable="LightGreen">
+    <div id="1005" style="background: url(css/img/alligator-red.png) top center no-repeat;" class="lambda dropped" data-variable="red">
+    <div id="1007" style="background: url(css/img/egg-LightGreen.png) top center no-repeat;" class="variable dropped" data-variable="LightGreen">
+   <div class="application_drop ui-droppable"></div>
+</div>
+   <div class="application_drop ui-droppable"></div>
+</div>
+   <div class="application_drop ui-droppable"></div>
+</div>
+   
+</div> <div id="1008" style="background: url(css/img/alligator-LightGreen.png) top center no-repeat;" class="lambda dropped" data-variable="LightGreen">
+    <div id="1009" style="background: url(css/img/alligator-red.png) top center no-repeat;" class="lambda dropped" data-variable="red">
+    <div id="1010" style="background: url(css/img/egg-LightGreen.png) top center no-repeat;" class="variable dropped" data-variable="LightGreen">
+   <div class="application_drop ui-droppable"></div>
+</div>
+   <div class="application_drop ui-droppable"></div>
+</div>
+   <div class="application_drop ui-droppable"></div>
+</div>
+      </div>
+      
+      <div id="exemple-2" class="exemple">
+    <div id="1001" style="background: url(css/img/alligator-purple.png) top center no-repeat;" class="lambda dropped" data-variable="purple">
+    <div id="1002" style="background: url(css/img/alligator-orange.png) top center no-repeat;" class="lambda dropped" data-variable="orange">
+    <div id="1009" style="background: url(css/img/egg-purple.png) top center no-repeat;" class="variable dropped" data-variable="purple">
+   
+</div> <div id="1010" style="background: url(css/img/egg-purple.png) top center no-repeat;" class="variable dropped" data-variable="purple">
+   
+</div> <div id="1011" style="background: url(css/img/egg-orange.png) top center no-repeat;" class="variable dropped" data-variable="orange">
+   <div class="application_drop ui-droppable"></div>
+</div>
+   <div class="application_drop ui-droppable"></div>
+</div>
+   
+</div> <div id="1003" style="background: url(css/img/alligator-LightGreen.png) top center no-repeat;" class="lambda dropped" data-variable="LightGreen">
+    <div id="1004" style="background: url(css/img/alligator-red.png) top center no-repeat;" class="lambda dropped" data-variable="red">
+    <div id="1007" style="background: url(css/img/egg-LightGreen.png) top center no-repeat;" class="variable dropped" data-variable="LightGreen">
+   
+</div> <div id="1008" style="background: url(css/img/egg-red.png) top center no-repeat;" class="variable dropped" data-variable="red">
+   <div class="application_drop ui-droppable"></div>
+</div>
+   <div class="application_drop ui-droppable"></div>
+</div>
+   
+</div> <div id="1005" style="background: url(css/img/alligator-yellow.png) top center no-repeat;" class="lambda dropped" data-variable="yellow">
+    <div id="1006" style="background: url(css/img/egg-yellow.png) top center no-repeat;" class="variable dropped" data-variable="yellow">
+   <div class="application_drop ui-droppable"></div>
+</div>
+   <div class="application_drop ui-droppable"></div>
+</div>      </div>
+      
+      <div id="exemple-1" class="exemple">
+
+    <div id="1000" style="background: url(css/img/alligator-LightGreen.png) top center no-repeat;" class="lambda dropped" data-variable="LightGreen">
+    <div id="1001" style="background: url(css/img/alligator-red.png) top center no-repeat;" class="lambda dropped" data-variable="red">
+    <div id="1002" style="background: url(css/img/egg-LightGreen.png) top center no-repeat;" class="variable dropped" data-variable="LightGreen">
+   
+</div> <div id="1003" style="background: url(css/img/egg-red.png) top center no-repeat;" class="variable dropped" data-variable="red">
+   <div class="application_drop ui-droppable"></div>
+</div>
+   <div class="application_drop ui-droppable"></div>
+</div>
+   
+</div> <div id="1004" style="background: url(css/img/alligator-yellow.png) top center no-repeat;" class="lambda dropped" data-variable="yellow">
+    <div id="1005" style="background: url(css/img/egg-yellow.png) top center no-repeat;" class="variable dropped" data-variable="yellow">
+   <div class="application_drop ui-droppable"></div>
+</div>
+   <div class="application_drop ui-droppable"></div>
+</div>      </div>
+
     </body>
 </html>
