@@ -2,6 +2,11 @@ Array::unique = ->
   output = {}
   output[@[key]] = @[key] for key in [0...@length]
   value for key, value of output
+delay = (ms, func) -> setTimeout func, ms
+interval = (ms, func) -> setInterval func, ms
+sleep = (ms) ->
+  start = new Date().getTime()
+  continue while new Date().getTime() - start < ms
 nb_exemple = 9
 [debug, id] = [true, 1000]
 color_tab = ['purple','blue','LightBlue','red','orange','brown','green','LightGreen','yellow','pink','grey']
@@ -12,8 +17,13 @@ $ ->
   #Préchargement des images
   for color in color_tab
     $( "#choose-color" ).append "<div class='color' style='background-color:#{color};' data-color='#{color}'></div>"
-    $( "#preloaded-images" ).append "<img src='css/img/vieil-alligator-#{color}.png' width='1' height='1' /><img src='css/img/alligator-#{color}.png' width='1' height='1' /><img src='css/img/egg-#{color}.png' width='1' height='1' />"
-  
+    html = 
+    """
+      <img src='css/img/vieil-alligator-#{color}.png'/>
+      <img src='css/img/alligator-#{color}.png' />
+      <img src='css/img/egg-#{color}.png' />
+    """
+    $( "#preloaded-images" ).append html
   #Choix d'une couleur dans la palette
   $( ".color" ).on "click", ->
     $( "#choose-color" ).data("color", $(this).data("color"))
@@ -146,42 +156,41 @@ $ ->
           alert "C'est vu ?"
           break       
     
-    application_content = pointer.siblings().first()
-    color_rule_check(pointer, application_content)
-    application_clone =  application_content.clone()
-    delay = (ms, func) -> setTimeout func, ms
-    interval = (ms, func) -> setInterval func, ms
+    application = pointer.siblings().first()
+    color_rule_check(pointer, application)
+    applicationClone =  application.clone()
+
+    
     bust_a_move = (timer, croco) ->
-      j=1
+      j=0
       images = ["alligator","vieil-alligator"]
       bustit = interval 250, -> 
-        j = j + 1
-        console.log croco.data("variable")
-        croco.css
-          'zIndex' : '1000'
-          "background-image": "url(css/img/#{images[j%2]}-#{variable}.png)"
-          "background-position" : "top center no-repeat"
+        j += 1
+        croco.css "background-image": "url(css/img/#{images[j%2]}-#{variable}.png)"
       delay timer, -> 
         clearInterval bustit
         croco.css
-          "zIndex" : "initial"
-          "background-image": "url(css/img/alligator-#{variable}.png)"
-          "background-position" : "top center no-repeat"
+          "background-image":"url(css/img/alligator-dead.png)"
+          "background-color": "#{croco.data('variable')}"
     bust_a_move 4000, pointer
-    application_content.css('visibility','hidden').clone().prependTo(pointer).css({border:"dashed black 10px",visibility:"visible",position:"absolute",top:"0px",left:"100%"}).animate {"min-width":"0px",padding:"0px", height: '50px', width: "50px", top:"50px", left:"70%"} , 4000, ->
+    application.css('visibility','hidden').clone().prependTo(pointer).css({"z-index" : "-1",border:"dashed black 10px",visibility:"visible",position:"absolute",top:"0px",left:"100%"}).animate {"min-width":"0px",padding:"0px", height: '50px', width: "50px", top:"50px", left:"70%"} , 4000, ->
         #On fait disparaitre l'application
         $(this).remove()
-        application_content.remove()
-   
-        #On va faire reapparaitre l'application à chaque oeuf
-        pointer.find( ".variable[data-variable=#{variable}]"  ).each ->
-          $( this ).after application_clone.clone()
-          $( this ).remove()
-        definition_content = pointer.contents()
-        pointer.after definition_content
-        pointer.remove() 
+        application.remove()
+        alert "Oh no ! Trop bouffé !"
 
-  
+        #On va faire reapparaitre l'application à chaque oeuf
+        eggs = pointer.find( ".variable[data-variable=#{variable}]"  )
+        n = eggs.length;
+        eggs.each (index, element) ->        
+          $(this).fadeOut
+            duration : 2000
+            complete : ->
+              $(this).after applicationClone.clone()
+              $(this).remove()
+        pointer.replaceWith pointer.contents()
+              
+        
   $( ".run-previous-code" ).on "click", ->
     js = CoffeeScript.compile($( this ).prev( ":first" ).text())
     eval(js)
