@@ -246,19 +246,24 @@
         var eggs, n;
         $(this).remove();
         application.remove();
-        alert("Oh no ! Trop bouffé !");
         eggs = pointer.find(".variable[data-variable=" + variable + "]");
         n = eggs.length;
-        eggs.each(function(index, element) {
-          return $(this).fadeOut({
-            duration: 2000,
-            complete: function() {
+        if (n > 0) {
+          return eggs.each(function(index, element) {
+            return $(this).animate({
+              opacity: 0
+            }, 2000, function() {
               $(this).after(applicationClone.clone());
-              return $(this).remove();
-            }
+              $(this).remove();
+              if (index === n - 1) {
+                return pointer.replaceWith(pointer.contents());
+              }
+            });
           });
-        });
-        return pointer.replaceWith(pointer.contents());
+        } else {
+          alert("Aucun oeuf !");
+          return pointer.replaceWith(pointer.contents());
+        }
       });
     });
     $(".run-previous-code").on("click", function() {

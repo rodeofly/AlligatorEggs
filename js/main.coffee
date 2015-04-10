@@ -177,19 +177,20 @@ $ ->
         #On fait disparaitre l'application
         $(this).remove()
         application.remove()
-        alert "Oh no ! Trop bouffé !"
 
         #On va faire reapparaitre l'application à chaque oeuf
         eggs = pointer.find( ".variable[data-variable=#{variable}]"  )
         n = eggs.length;
-        eggs.each (index, element) ->        
-          $(this).fadeOut
-            duration : 2000
-            complete : ->
-              $(this).after applicationClone.clone()
-              $(this).remove()
-        pointer.replaceWith pointer.contents()
-              
+        if n>0
+          eggs.each (index, element) ->        
+            $(this).animate { opacity: 0} , 2000, ->
+                $(this).after applicationClone.clone()
+                $(this).remove()
+                if index is n-1
+                  pointer.replaceWith pointer.contents()
+        else 
+            alert "Aucun oeuf !"
+            pointer.replaceWith pointer.contents()
         
   $( ".run-previous-code" ).on "click", ->
     js = CoffeeScript.compile($( this ).prev( ":first" ).text())
