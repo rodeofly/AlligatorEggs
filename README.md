@@ -1,1 +1,2 @@
 # alligatorEggs-puzzleGame
+This game represents the untyped lambda calculus. A hungry alligator is a lambda abstraction, an old alligator is parentheses, and eggs are variables. The eating rule corresponds to beta-reduction. The color rule corresponds to (over-cautious) alpha-conversion. The old age rule says that if a pair of parentheses contains a single term, the parentheses can be removed.
