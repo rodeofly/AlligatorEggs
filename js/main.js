@@ -48,13 +48,7 @@
   lambda_exemples = ["(λx.x) (λy.y)", "(λx.λy.x) (λy.y)", "((λy.y) (λz.z))(λx.x)", "(λx.λy. x) a b", "(λx.λy. y) a b", "(λa. a (λm.(λn. n ))(λp.(λq. p )))(λx.λy. y) a b", "(λx.x x) (λx.x x)", "λy.(λx.y (x x)) (λx.y (x x))", "(λa.λs.λz.s (a s z)) (λs.λz.z) ", "(λa.λb.λs.λz.(a s (b s z))) (λs.λz.(s z)) (λs.λz.(s z))", "(λa.λb.λs.λz.(a s (b s z))) (λs.λz.(s (s (s z)))) (λs.λz.(s (s (s (s z)))))"];
 
   $(function() {
-    var color, expression, html, i, key, make_it_droppable, make_root_droppable, parentheses, value, _i, _j, _len, _ref1;
-    $("#lambda-panel").dialog({
-      width: "auto"
-    });
-    $("#prompt-mode").on("click", function() {
-      return $("#lambda-panel").dialog("open");
-    });
+    var color, expression, html, i, key, make_dropped_droppable, make_root_droppable, parentheses, value, _i, _j, _len, _ref1, _ref2;
     html = "";
     for (key in var_tab) {
       value = var_tab[key];
@@ -71,6 +65,12 @@
       html += "<button id='ex-" + i + "' class='panel-button' data-type='exemple' data-numero='" + i + "'>Ex " + i + "</button>";
     }
     $("#lambda-panel").append(html);
+    $("#lambda-panel").dialog({
+      width: "auto"
+    });
+    $("#prompt-mode").on("click", function() {
+      return $("#lambda-panel").dialog("open");
+    });
     for (_j = 0, _len = color_tab.length; _j < _len; _j++) {
       color = color_tab[_j];
       $("#choose-color").append("<div class='color' style='background-color:" + color + ";' data-color='" + color + "'></div>");
@@ -80,27 +80,19 @@
     $(".color").on("click", function() {
       $("#choose-color").data("color", $(this).data("color"));
       $(".color").removeClass("selected-color");
-      $(this).addClass("selected-color");
-      if (debug) {
-        return console.log("You choose " + $("#choose-color").data("color"));
-      }
+      return $(this).addClass("selected-color");
     });
     $(".item").draggable({
-      helper: "clone",
-      appendTo: "#buttons-panel"
+      helper: "clone"
     });
-    make_it_droppable = function() {
+    make_dropped_droppable = function() {
       return $(".application_drop, .definition_drop").droppable({
         hoverClass: "ui-state-hover",
         accept: ".croco, .vieux-croco, .egg",
         drop: function(event, ui) {
           var lambda, variable;
           $(this).parent(":first").removeClass("parentHighlight");
-          if (ui.draggable.hasClass("vieux-croco")) {
-            variable = 'white';
-          } else {
-            variable = $("#choose-color").data("color");
-          }
+          variable = ui.draggable.hasClass("vieux-croco") ? 'white' : $("#choose-color").data("color");
           if (ui.draggable.hasClass("croco") || ui.draggable.hasClass("vieux-croco")) {
             lambda = "<div id='" + (id++) + "' style='background: url(css/img/alligator-" + variable + ".png) top center no-repeat;' class='lambda dropped' data-variable='" + variable + "' >\n<div class='definition_drop'></div>\n<div class='application_drop'></div>\n</div>";
           } else {
@@ -112,36 +104,25 @@
             $(this).parent().after(lambda);
           }
           $(this).remove();
-          if (debug) {
-            console.log("a " + $(lambda).data("variable") + " has been dropped !");
-          }
-          return make_it_droppable();
+          return make_dropped_droppable();
         }
       });
     };
-    make_root_droppable = function() {
+    (make_root_droppable = function() {
+      $("#root").empty();
       return $("#root").droppable({
         hoverClass: "ui-state-hover",
         accept: ".croco, .vieux-croco",
         drop: function(event, ui) {
           var lambda, variable;
-          if (ui.draggable.hasClass("croco")) {
-            variable = $("#choose-color").data("color");
-          } else {
-            variable = 'white';
-          }
+          variable = ui.draggable.hasClass("croco") ? $("#choose-color").data("color") : 'white';
           lambda = " <div id='" + (id++) + "' style='background: url(css/img/alligator-" + variable + ".png) top center no-repeat;' class='lambda dropped' data-variable='" + variable + "' >\n   <div class='definition_drop'></div>\n   <div class='application_drop'></div>\n</div>";
           $(this).append(lambda).droppable("destroy");
-          if (debug) {
-            console.log("a " + $(lambda).data("variable") + " has been dropped !");
-          }
-          return make_it_droppable();
+          return make_dropped_droppable();
         }
       });
-    };
-    make_root_droppable();
+    })();
     $("#clear").on("click", function() {
-      $("#root").empty();
       return make_root_droppable();
     });
     $("#go").on("click", function() {
@@ -164,8 +145,7 @@
               "background-image": "url(css/img/alligator-dead.png)"
             });
             alert("Oh il ne sert plus à rien le pauvre !");
-            pointer.after(pointer.children());
-            pointer.remove();
+            pointer.replaceWith(pointer.contents());
             pointer = $("#root > .lambda:first");
           } else {
             pointer = pointer.find(".lambda").first();
@@ -190,7 +170,7 @@
           color = func_colors[_k];
           app_items = app.find("[data-variable='" + color + "']").andSelf().filter("[data-variable='" + color + "']");
           if (app_items.length) {
-            alert("Règle de la couleur !");
+            alert("Règle de la couleur !(Color rule)");
             app_colors = get_colors(app);
             used_colors = (func_colors.concat(app_colors.concat(ahead_color))).unique();
             difference = (function() {
@@ -237,9 +217,11 @@
       application = pointer.next();
       color_rule_check(pointer, application);
       applicationClone = application.clone();
-      bust_a_move = function(timer, croco) {
-        var bustit, images, j;
-        j = 0;
+      bust_a_move = function(timer, croco, j) {
+        var bustit, images;
+        if (j == null) {
+          j = 0;
+        }
         images = ["alligator", "vieil-alligator"];
         bustit = interval(250, function() {
           j += 1;
@@ -289,17 +271,15 @@
             });
           });
         } else {
-          alert("Aucun oeuf !");
+          alert("Aucun oeuf !(no egg)");
           return pointer.replaceWith(pointer.contents());
         }
       });
     });
-    expression = "";
-    parentheses = 0;
+    _ref2 = ["", 0], expression = _ref2[0], parentheses = _ref2[1];
     $(".panel-button").on("click", function() {
-      var e, n, type, variable, _results;
-      type = $(this).data("type");
-      switch (type) {
+      var e, variable, _ref3, _results;
+      switch ($(this).data("type")) {
         case "lambda":
           variable = $(this).data("variable");
           expression += "<div id='" + (id++) + "' style='background: url(css/img/alligator-" + var_tab[variable] + ".png) top center no-repeat;' class='lambda dropped' data-variable='" + var_tab[variable] + "'>";
@@ -320,13 +300,11 @@
         case "go":
           return $("#root").empty().append(expression);
         case "clear":
-          parentheses = 0;
-          expression = "";
+          _ref3 = ["", 0], expression = _ref3[0], parentheses = _ref3[1];
           $("#root").empty();
           return $("#prompt").val("");
         case "exemple":
-          n = $(this).data("numero");
-          $("#prompt").val(lambda_exemples[n]);
+          $("#prompt").val(lambda_exemples[$(this).data("numero")]);
           e = jQuery.Event("keypress");
           e.which = 13;
           return $('#prompt').trigger(e);
@@ -341,14 +319,11 @@
       }
     });
     $('#prompt').keypress(function(e) {
-      var div_open, exp, extra_lambda, j, jump_on_next, variable, _k, _ref2;
+      var div_open, exp, extra_lambda, j, jump_on_next, variable, _k, _ref3, _ref4, _ref5;
       key = e.which;
       if (key === 13) {
-        extra_lambda = 0;
-        div_open = 0;
-        html = "";
-        exp = $("#prompt").val();
-        for (i = _k = 0, _ref2 = exp.length - 1; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
+        _ref3 = [0, 0, "", $("#prompt").val()], extra_lambda = _ref3[0], div_open = _ref3[1], html = _ref3[2], exp = _ref3[3];
+        for (i = _k = 0, _ref4 = exp.length - 1; 0 <= _ref4 ? _k <= _ref4 : _k >= _ref4; i = 0 <= _ref4 ? ++_k : --_k) {
           if (jump_on_next) {
             jump_on_next = false;
             continue;
@@ -358,9 +333,8 @@
             case " ":
               continue;
             case "λ":
-              jump_on_next = true;
+              _ref5 = [true, i], jump_on_next = _ref5[0], j = _ref5[1];
               div_open += 1;
-              j = i;
               while (exp[j + 3] === "λ") {
                 extra_lambda += 1;
                 j += 3;

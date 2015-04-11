@@ -163,7 +163,7 @@ pre.code{
   white-space: pre-line;
   color : blue;
 }
-#buttons-panel {
+#top-panel {
   display : inline-flex;
   height : 2vw;  
 }
@@ -184,7 +184,6 @@ button {
   height : 2vw;
   display : inline-block;
   font-weight : bolder;
-  font-size : 1vw;
   font-weight : bolder;
   font-size : 0.75vw;
 }
@@ -217,13 +216,10 @@ button {
   display : inline-block;
 }
 
-
-
 .lambda {
- 
   min-width : 500px;
-
 }
+
 .variable {
   background-size : 100%;
   width : 148px;

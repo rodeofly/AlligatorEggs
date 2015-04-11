@@ -11,10 +11,8 @@ color_tab = ['purple','blue','LightBlue','red','orange','brown','green','LightGr
 var_tab = {'x':'purple','y':'blue','z':'LightBlue','m':'red','n':'orange','p':'brown','q':'green','a':'LightGreen','b':'yellow','c':'pink','s':'grey'}
 lambda_exemples = ["(λx.x) (λy.y)","(λx.λy.x) (λy.y)","((λy.y) (λz.z))(λx.x)","(λx.λy. x) a b","(λx.λy. y) a b","(λa. a (λm.(λn. n ))(λp.(λq. p )))(λx.λy. y) a b","(λx.x x) (λx.x x)","λy.(λx.y (x x)) (λx.y (x x))","(λa.λs.λz.s (a s z)) (λs.λz.z) ","(λa.λb.λs.λz.(a s (b s z))) (λs.λz.(s z)) (λs.λz.(s z))","(λa.λb.λs.λz.(a s (b s z))) (λs.λz.(s (s (s z)))) (λs.λz.(s (s (s (s z)))))"]
 $ ->
-  $( "#lambda-panel").dialog
-    width : "auto"
-  $( "#prompt-mode" ).on "click", -> $( "#lambda-panel").dialog("open")
-  
+  #Preparation html
+  #Construction du panel
   html = ""
   html+= "<button class='panel-button' data-type='lambda' data-variable='#{key}'>λ#{key}</button>" for key,value of var_tab
   html+= "<br>"
@@ -23,6 +21,10 @@ $ ->
   html= "<br>"
   html += "<button id='ex-#{i}' class='panel-button' data-type='exemple' data-numero='#{i}'>Ex #{i}</button>" for i in [0..lambda_exemples.length-1]
   $( "#lambda-panel" ).append html
+  $( "#lambda-panel").dialog
+    width : "auto"
+  #Et pour faire apparaitre le panel
+  $( "#prompt-mode" ).on "click", -> $( "#lambda-panel").dialog("open")  
   #Préchargement des images
   for color in color_tab
     $( "#choose-color" ).append "<div class='color' style='background-color:#{color};' data-color='#{color}'></div>"
@@ -39,24 +41,18 @@ $ ->
     $( "#choose-color" ).data("color", $(this).data("color"))
     $( ".color" ).removeClass("selected-color" )
     $( this ).addClass( "selected-color" )
-    console.log "You choose " +  $("#choose-color").data("color") if debug
 
   #On rend l'alligator et l'oeuf blanc draggable, il prendront la couleur preselectionnée 
-  $( ".item" ).draggable
-    helper : "clone"
-    appendTo : "#buttons-panel"
+  $( ".item" ).draggable  helper : "clone"
   
   #Achaque fois qu'on droppe un item, il y a une(variable) ou deux(lambda) zones draggables
-  make_it_droppable = () ->
+  make_dropped_droppable = () ->
     $( ".application_drop, .definition_drop" ).droppable
       hoverClass: "ui-state-hover"
       accept : ".croco, .vieux-croco, .egg"
       drop : ( event, ui ) ->
         $( this ).parent(":first").removeClass("parentHighlight")
-        if ui.draggable.hasClass("vieux-croco")
-          variable = 'white'
-        else 
-          variable =  $("#choose-color").data("color")
+        variable = if ui.draggable.hasClass("vieux-croco") then 'white' else $("#choose-color").data("color")
         if ui.draggable.hasClass("croco") or ui.draggable.hasClass("vieux-croco")
           lambda = 
           """
@@ -77,18 +73,15 @@ $ ->
         else
           $(this).parent().after lambda
         $(this).remove()
-        console.log "a " + $( lambda ).data("variable") + " has been dropped !" if debug
-        make_it_droppable()
+        make_dropped_droppable()
 
-  make_root_droppable = ->  
+  do make_root_droppable = ->
+    $("#root" ).empty()
     $( "#root" ).droppable
       hoverClass: "ui-state-hover"
       accept : ".croco, .vieux-croco"
       drop : ( event, ui ) ->
-          if ui.draggable.hasClass( "croco" )
-            variable =  $("#choose-color").data("color")
-          else
-            variable = 'white'
+          variable = if ui.draggable.hasClass( "croco" ) then $("#choose-color").data("color") else 'white'
           lambda = 
           """
             <div id='#{id++}' style='background: url(css/img/alligator-#{variable}.png) top center no-repeat;' class='lambda dropped' data-variable='#{variable}' >
@@ -99,19 +92,14 @@ $ ->
           $( this )
             .append(lambda)
             .droppable("destroy")
-          console.log "a " + $( lambda ).data("variable") + " has been dropped !" if debug
-          make_it_droppable()
-  make_root_droppable()
+          make_dropped_droppable()
       
-  $( "#clear" ).on "click", ->  
-    $("#root" ).empty()
-    make_root_droppable()
-    
-  $( "#go" ).on "click", ->
-    $( ".application_drop, .definition_drop" ).remove()  
-    
-    # Top-left RULE
+  $( "#clear" ).on "click", ->  make_root_droppable()
+  $( "#go" ).on "click", -> 
+    $( ".application_drop, .definition_drop" ).remove()   
+    #Listes de couleurs reservées et donc interdites pour application
     ahead_color = ['white']
+    # Top-left RULE
     pointer = $("#root > .lambda:first") 
     while (not pointer.next().length or pointer.data("variable") is 'white')
       current_color = pointer.data("variable")
@@ -125,19 +113,19 @@ $ ->
         if pointer.children().length is 1
           pointer.css "background-image":"url(css/img/alligator-dead.png)"
           alert "Oh il ne sert plus à rien le pauvre !"
-          pointer.after pointer.children()
-          pointer.remove()
+          pointer.replaceWith pointer.contents()
           pointer = $("#root > .lambda:first") 
         else
           pointer = pointer.find(".lambda").first()
+    
+    #Paré pour la regle de la couleur, on a la couleur de base et l'ensemble de coueleurs reservées !
     ahead_color = ahead_color.unique()
     variable = pointer.data("variable")
     
     color_rule_check = (func, app) ->
       get_colors = (tree) ->
         palette = []
-        tree.find( "[data-variable]" ).andSelf().filter("[data-variable]").each ->
-          palette.push $( this ).data("variable")
+        tree.find( "[data-variable]" ).andSelf().filter("[data-variable]").each -> palette.push $( this ).data("variable")
         palette.unique()
       #On va lister les couleurs utilisées dans la definition de la fonction
       func_colors = get_colors func
@@ -146,7 +134,7 @@ $ ->
         app_items = app.find( "[data-variable='#{color}']").andSelf().filter("[data-variable='#{color}']")
         # Aie ! On en a trouvé
         if app_items.length
-          alert "Règle de la couleur !"
+          alert "Règle de la couleur !(Color rule)"
           #Alors on va lister toutes les couleurs de l'application
           app_colors = get_colors app
           #On fabrique donc un ensemble de couleurs qu'on ne peut pas utiliser
@@ -166,29 +154,24 @@ $ ->
                 $( this ).css {"background-position" : "top center no-repeat;"}
           alert "C'est vu ?"
           break       
-    
+    # On recupere l'application, eventuellement on change de couleur et on la clone parce qu'elle va degager
     application = pointer.next()
     color_rule_check(pointer, application)
     applicationClone =  application.clone()
-
-    
-    bust_a_move = (timer, croco) ->
-      j=0
+    #Animation du croco qui bouffe
+    bust_a_move = (timer, croco,j=0) ->
       images = ["alligator","vieil-alligator"]
       bustit = interval 250, -> 
         j += 1
         croco.css "background-image": "url(css/img/#{images[j%2]}-#{variable}.png)"
       delay timer, -> 
         clearInterval bustit
-        croco.css
-          "background-image":"url(css/img/alligator-dead.png)"
-          "background-color": "#{croco.data('variable')}"
+        croco.css {"background-image":"url(css/img/alligator-dead.png)","background-color": "#{croco.data('variable')}"}
     bust_a_move 4000, pointer
     application.css('visibility','hidden').clone().prependTo(pointer).css({"z-index" : "-1",border:"dashed black 10px",visibility:"visible",position:"absolute",top:"0px",left:"100%"}).animate {"min-width":"0px",padding:"0px", height: '50px', width: "50px", top:"50px", left:"70%"} , 4000, ->
         #On fait disparaitre l'application
         $(this).remove()
         application.remove()
-
         #On va faire reapparaitre l'application à chaque oeuf
         eggs = pointer.find( ".variable[data-variable=#{variable}]"  )
         n = eggs.length;
@@ -197,20 +180,15 @@ $ ->
             $(this).animate { opacity: 0} , 2000, ->
                 $(this).after applicationClone.clone()
                 $(this).remove()
-                if index is n-1
-                  pointer.replaceWith pointer.contents()
+                pointer.replaceWith pointer.contents() if index is n-1              
         else 
-            alert "Aucun oeuf !"
+            alert "Aucun oeuf !(no egg)"
             pointer.replaceWith pointer.contents()
-  
- 
-
-  expression = ""
-  parentheses = 0
-  
+            
+  #Gestion du panel
+  [expression, parentheses] = ["",0]
   $( ".panel-button" ).on "click", ->
-    type = $( this ).data("type")
-    switch type
+    switch $( this ).data("type")
       when "lambda"
         variable = $( this ).data("variable")
         expression += "<div id='#{id++}' style='background: url(css/img/alligator-#{var_tab[variable]}.png) top center no-repeat;' class='lambda dropped' data-variable='#{var_tab[variable]}'>"
@@ -231,30 +209,24 @@ $ ->
       when "go"
         $("#root").empty().append expression
       when "clear"
-        parentheses = 0
-        expression = ""
+        [expression, parentheses] = ["",0]
         $("#root").empty()
         $( "#prompt" ).val("")
       when "exemple"
-        n = $(this).data("numero")
-        $("#prompt").val lambda_exemples[n]
+        $("#prompt").val lambda_exemples[$(this).data("numero")]
         e = jQuery.Event("keypress")
-        e.which = 13; 
+        e.which = 13
         $('#prompt').trigger(e)
-
       when "auto"
          while parentheses
           expression += "</div>"
           $( "#prompt").val($( "#prompt").val() + ")")
           parentheses -= 1
-   
+  #Parser une expression
   $('#prompt').keypress (e) ->
     key = e.which;
-    if(key == 13)
-      extra_lambda = 0
-      div_open = 0
-      html=""
-      exp = $( "#prompt").val()
+    if key is 13
+      [extra_lambda, div_open, html, exp] = [0, 0, "", $( "#prompt").val()]
       for i in [0..exp.length-1]
         if jump_on_next
           jump_on_next=false
@@ -263,9 +235,8 @@ $ ->
           when "."," "
             continue
           when "λ"
-            jump_on_next = true        
+            [jump_on_next, j] = [true, i]        
             div_open +=1
-            j = i
             while exp[j+3] is "λ"
               extra_lambda += 1
               j += 3
@@ -287,10 +258,8 @@ $ ->
                 extra_lambda -= 1
                 html += "</div>"
       $("#root" ).empty().append html
-      return false;  
-        
-    
+      return false   
+  #Pour l'article 
   $( ".run-previous-code" ).on "click", ->
     js = CoffeeScript.compile($( this ).prev( ":first" ).text())
     eval(js)
-
