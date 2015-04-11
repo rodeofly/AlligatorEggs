@@ -42,16 +42,24 @@
       
       
         <div id="buttons-panel">
-            <div id="choose-color" data-color="purple"></div>
-
+            <button id="prompt-mode">λ</button>
+            <input id="prompt" type="text" value="" />
             <div class="item croco"></div>
             <div class="item vieux-croco"></div>
-            <div class="item egg"></div>
-            <button id="go">Go</button>
-            <button id="clear">Raz</button>         
-
+            <div class="item egg"></div>     
+            <div id="choose-color" data-color="purple"></div>
         </div>
         
+        <div id="lambda-panel">
+          <button class="panel-button" id="go">Step</button>
+          <button class="panel-button" data-type="open" >(</button>
+          <button class="panel-button" data-type="close">)</button>
+          <button class="panel-button" data-type="go"   >Draw</button>
+          <button class="panel-button" data-type="clear">clear</button>
+          <button class="panel-button" data-type="auto" >auto</button><br>
+          
+        </div>
+      
         <div class="game-container">
             <div id="root"></div>
         </div>

@@ -10,10 +10,21 @@ sleep = (ms) ->
 nb_exemple = 9
 [debug, id] = [true, 1000]
 color_tab = ['purple','blue','LightBlue','red','orange','brown','green','LightGreen','yellow','pink','grey']
+var_tab = {'x':'purple','y':'blue','z':'LightBlue','m':'red','n':'orange','p':'brown','q':'green','a':'LightGreen','b':'yellow','c':'pink','d':'grey'}
 
 $ ->
-  for i in [1..nb_exemple]
-    $( "#buttons-panel").append "<button id='ex-#{i}' class='load-example' data-div='exemple-#{i}'>Ex #{i}</button>"
+  $( "#lambda-panel").dialog
+    width : "auto"
+  $( "#prompt-mode" ).on "click", -> $( "#lambda-panel").dialog("open")
+  
+  html = ""
+  html+= "<button class='panel-button' data-type='lambda' data-variable='#{key}'>λ#{key}</button>" for key,value of var_tab
+  html+= "<br>"
+  html+= "<button class='panel-button' data-type='variable' data-variable='#{key}'>#{key}</button>" for key,value of var_tab
+  $( "#lambda-panel" ).append html
+  html= "<br>"
+  html += "<button id='ex-#{i}' class='panel-button' data-type='exemple' data-div='exemple-#{i}'>Ex #{i}</button>" for i in [1..nb_exemple]
+  $( "#lambda-panel" ).append html
   #Préchargement des images
   for color in color_tab
     $( "#choose-color" ).append "<div class='color' style='background-color:#{color};' data-color='#{color}'></div>"
@@ -24,6 +35,7 @@ $ ->
       <img src='css/img/egg-#{color}.png' />
     """
     $( "#preloaded-images" ).append html
+    
   #Choix d'une couleur dans la palette
   $( ".color" ).on "click", ->
     $( "#choose-color" ).data("color", $(this).data("color"))
@@ -103,7 +115,7 @@ $ ->
     # Top-left RULE
     ahead_color = ['white']
     pointer = $("#root > .lambda:first") 
-    while (not pointer.siblings().length or pointer.data("variable") is 'white')
+    while (not pointer.next().length or pointer.data("variable") is 'white')
       current_color = pointer.data("variable")
       ahead_color.push current_color
       if pointer.data("variable") isnt "white"
@@ -113,7 +125,8 @@ $ ->
           break
       else
         if pointer.children().length is 1
-          alert "creve pourriture communiste !"
+          pointer.css "background-image":"url(css/img/alligator-dead.png)"
+          alert "Oh il ne sert plus à rien le pauvre !"
           pointer.after pointer.children()
           pointer.remove()
           pointer = $("#root > .lambda:first") 
@@ -156,7 +169,7 @@ $ ->
           alert "C'est vu ?"
           break       
     
-    application = pointer.siblings().first()
+    application = pointer.next()
     color_rule_check(pointer, application)
     applicationClone =  application.clone()
 
@@ -191,14 +204,51 @@ $ ->
         else 
             alert "Aucun oeuf !"
             pointer.replaceWith pointer.contents()
+  
+ 
+
+  expression = ""
+  parentheses = 0
+  
+  $( ".panel-button" ).on "click", ->
+    type = $( this ).data("type")
+    switch type
+      when "lambda"
+        variable = $( this ).data("variable")
+        expression += "<div id='#{id++}' style='background: url(css/img/alligator-#{var_tab[variable]}.png) top center no-repeat;' class='lambda dropped' data-variable='#{var_tab[variable]}'>"
+        $( "#prompt").val($( "#prompt").val() + "(λ#{variable}.")
+        parentheses += 1
+      when "variable"
+        variable = $( this ).data("variable")
+        expression += "<div id='#{id++}' style='background: url(css/img/egg-#{var_tab[variable]}.png) top center no-repeat;' class='variable dropped' data-variable='#{var_tab[variable]}'></div>"
+        $( "#prompt").val($( "#prompt").val() + " #{variable} ")
+      when "open"
+        expression += "<div id='#{id++}' style='background: url(css/img/alligator-white.png) top center no-repeat;' class='lambda dropped' data-variable='white'>"
+        $( "#prompt").val($( "#prompt").val() + "(")
+        parentheses += 1
+      when "close"
+        expression += "</div>"
+        $( "#prompt").val($( "#prompt").val() + ")")
+        parentheses -= 1
+      when "go"
+        $("#root").empty().append expression
+      when "clear"
+        parentheses = 0
+        expression = ""
+        $("#root").empty()
+        $( "#prompt" ).val("")
+      when "exemple"
+        div = $(this).attr("data-div")
+        $("#root" ).empty().append $( "##{div}" ).html()
+      when "auto"
+         while parentheses
+          expression += "</div>"
+          $( "#prompt").val($( "#prompt").val() + ")")
+          parentheses -= 1
+          
         
+    
   $( ".run-previous-code" ).on "click", ->
     js = CoffeeScript.compile($( this ).prev( ":first" ).text())
     eval(js)
 
-    
-  $( ".load-example" ).on "click", ->  
-    div = $(this).attr("data-div")
-    $("#root" ).empty().append $( "##{div}" ).html()
-     
-  

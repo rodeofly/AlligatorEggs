@@ -171,9 +171,10 @@ pre.code{
   width : 2vw;
   height : 2vw;
   display : inline-block;
-  font-weight : bolder;
-  font-size : 0.75vw;
-
+}
+#prompt {
+  font-size : 1vw;
+  width : 25vw;
 }
 .selected-color {
   border : solid black 5px;
@@ -182,6 +183,8 @@ button {
   width : 3vw;
   height : 2vw;
   display : inline-block;
+  font-weight : bolder;
+  font-size : 1vw;
   font-weight : bolder;
   font-size : 1vw;
 }
