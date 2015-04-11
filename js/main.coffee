@@ -4,14 +4,12 @@ Array::unique = ->
   value for key, value of output
 delay = (ms, func) -> setTimeout func, ms
 interval = (ms, func) -> setInterval func, ms
-sleep = (ms) ->
-  start = new Date().getTime()
-  continue while new Date().getTime() - start < ms
+
 nb_exemple = 9
 [debug, id] = [true, 1000]
 color_tab = ['purple','blue','LightBlue','red','orange','brown','green','LightGreen','yellow','pink','grey']
-var_tab = {'x':'purple','y':'blue','z':'LightBlue','m':'red','n':'orange','p':'brown','q':'green','a':'LightGreen','b':'yellow','c':'pink','d':'grey'}
-
+var_tab = {'x':'purple','y':'blue','z':'LightBlue','m':'red','n':'orange','p':'brown','q':'green','a':'LightGreen','b':'yellow','c':'pink','s':'grey'}
+lambda_exemples = ["(λx.x) (λy.y)","(λx.λy.x) (λy.y)","((λy.y) (λz.z))(λx.x)","(λx.λy. x) a b","(λx.λy. y) a b","(λa. a (λm.(λn. n ))(λp.(λq. p )))(λx.λy. y) a b","(λx.x x) (λx.x x)","λy.(λx.y (x x)) (λx.y (x x))","(λa.λs.λz.s (a s z)) (λs.λz.z) ","(λa.λb.λs.λz.(a s (b s z))) (λs.λz.(s z)) (λs.λz.(s z))","(λa.λb.λs.λz.(a s (b s z))) (λs.λz.(s (s (s z)))) (λs.λz.(s (s (s (s z)))))"]
 $ ->
   $( "#lambda-panel").dialog
     width : "auto"
@@ -23,7 +21,7 @@ $ ->
   html+= "<button class='panel-button' data-type='variable' data-variable='#{key}'>#{key}</button>" for key,value of var_tab
   $( "#lambda-panel" ).append html
   html= "<br>"
-  html += "<button id='ex-#{i}' class='panel-button' data-type='exemple' data-div='exemple-#{i}'>Ex #{i}</button>" for i in [1..nb_exemple]
+  html += "<button id='ex-#{i}' class='panel-button' data-type='exemple' data-numero='#{i}'>Ex #{i}</button>" for i in [0..lambda_exemples.length-1]
   $( "#lambda-panel" ).append html
   #Préchargement des images
   for color in color_tab
@@ -238,14 +236,58 @@ $ ->
         $("#root").empty()
         $( "#prompt" ).val("")
       when "exemple"
-        div = $(this).attr("data-div")
-        $("#root" ).empty().append $( "##{div}" ).html()
+        n = $(this).data("numero")
+        $("#prompt").val lambda_exemples[n]
+        e = jQuery.Event("keypress")
+        e.which = 13; 
+        $('#prompt').trigger(e)
+
       when "auto"
          while parentheses
           expression += "</div>"
           $( "#prompt").val($( "#prompt").val() + ")")
           parentheses -= 1
-          
+   
+  $('#prompt').keypress (e) ->
+    key = e.which;
+    if(key == 13)
+      extra_lambda = 0
+      div_open = 0
+      html=""
+      exp = $( "#prompt").val()
+      for i in [0..exp.length-1]
+        if jump_on_next
+          jump_on_next=false
+          continue         
+        switch exp[i]
+          when "."," "
+            continue
+          when "λ"
+            jump_on_next = true        
+            div_open +=1
+            j = i
+            while exp[j+3] is "λ"
+              extra_lambda += 1
+              j += 3
+            variable = exp[i+1]
+            html += "<div id='#{id++}' style='background: url(css/img/alligator-#{var_tab[exp[i+1]]}.png) top center no-repeat;' class='lambda dropped' data-variable='#{var_tab[exp[i+1]]}'>"
+          when 'x','y','z','m','n','p','q','a','b','c','s'
+            html += "<div id='#{id++}' style='background: url(css/img/egg-#{var_tab[exp[i]]}.png) top center no-repeat;' class='variable dropped' data-variable='#{var_tab[exp[i]]}'></div>"
+          when "("
+            parentheses += 1
+            if exp[i+1] is "λ"
+              continue
+            else
+              html += "<div id='#{id++}' style='background: url(css/img/alligator-white.png) top center no-repeat;' class='lambda dropped' data-variable='white'>"
+          when ")"
+            parentheses -= 1
+            html += "</div>"
+            if parentheses is 0
+              while extra_lambda
+                extra_lambda -= 1
+                html += "</div>"
+      $("#root" ).empty().append html
+      return false;  
         
     
   $( ".run-previous-code" ).on "click", ->
