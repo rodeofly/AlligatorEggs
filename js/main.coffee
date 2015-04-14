@@ -4,13 +4,33 @@ Array::unique = ->
   value for key, value of output
 delay = (ms, func) -> setTimeout func, ms
 interval = (ms, func) -> setInterval func, ms
-
 nb_exemple = 9
 [debug, id] = [true, 1000]
-color_tab = ['purple','blue','LightBlue','red','orange','brown','green','LightGreen','yellow','pink','grey']
-var_tab = {'x':'purple','y':'blue','z':'LightBlue','m':'red','n':'orange','p':'brown','q':'green','a':'LightGreen','b':'yellow','c':'pink','s':'grey'}
+CSS_COLOR_NAMES = ["Blue","BlueViolet","Brown","BurlyWood","CadetBlue","Chartreuse","Chocolate","Coral","CornflowerBlue","Cornsilk","Crimson","Cyan","DarkBlue","DarkCyan","DarkGoldenRod","DarkGray","DarkGreen","DarkKhaki","DarkMagenta","DarkOliveGreen","Darkorange","DarkOrchid","DarkRed","DarkSalmon","DarkSeaGreen","DarkSlateBlue","DarkSlateGray","DarkSlateGrey","DarkTurquoise","DarkViolet","DeepPink","DeepSkyBlue","DimGray","DimGrey","DodgerBlue","FireBrick","FloralWhite","ForestGreen","Fuchsia","Gainsboro","GhostWhite","Gold","GoldenRod","Gray","Grey","Green","GreenYellow","HoneyDew","HotPink","IndianRed","Indigo","Ivory","Khaki","Lavender","LavenderBlush","LawnGreen","LemonChiffon","LightBlue","LightCoral","LightCyan","LightGoldenRodYellow","LightGray","LightGrey","LightGreen","LightPink","LightSalmon","LightSeaGreen","LightSkyBlue","LightSlateGray","LightSlateGrey","LightSteelBlue","LightYellow","Lime","LimeGreen","Linen","Magenta","Maroon","MediumAquaMarine","MediumBlue","MediumOrchid","MediumPurple","MediumSeaGreen","MediumSlateBlue","MediumSpringGreen","MediumTurquoise","MediumVioletRed","MidnightBlue","MintCream","MistyRose","Moccasin","NavajoWhite","Navy","OldLace","Olive","OliveDrab","Orange","OrangeRed","Orchid","PaleGoldenRod","PaleGreen","PaleTurquoise","PaleVioletRed","PapayaWhip","PeachPuff","Peru","Pink","Plum","PowderBlue","Purple","Red","RosyBrown","RoyalBlue","SaddleBrown","Salmon","SandyBrown","SeaGreen","SeaShell","Sienna","Silver","SkyBlue","SlateBlue","SlateGray","SlateGrey","Snow","SpringGreen","SteelBlue","Tan","Teal","Thistle","Tomato","Turquoise","Violet","Wheat","White","WhiteSmoke","Yellow","YellowGreen"]
+ALPHABET = "abcdefghijklmnopqrstuvwxyz"
+color_tab = []
+var_tab = {}
 lambda_exemples = ["(λx.x) (λy.y)","(λx.λy.x) (λy.y)","((λy.y) (λz.z))(λx.x)","(λx.λy. x) a b","(λx.λy. y) a b","(λa. a (λm.(λn. n ))(λp.(λq. p )))(λx.λy. y) a b","(λx.x x) (λx.x x)","λy.(λx.y (x x)) (λx.y (x x))","(λa.λs.λz.s (a s z)) (λs.λz.z) ","(λa.λb.λs.λz.(a s (b s z))) (λs.λz.(s z)) (λs.λz.(s z))","(λa.λb.λs.λz.(a s (b s z))) (λs.λz.(s (s (s z)))) (λs.λz.(s (s (s (s z)))))"]
 $ ->
+  for letter,index in ALPHABET[0..25]
+    color_tab.push CSS_COLOR_NAMES[index]
+    var_tab["#{letter}"] = CSS_COLOR_NAMES[index]
+
+  $.get "css/img/egg.svg", (rawSvg) -> 
+    importedSVGRootElement = document.importNode rawSvg.documentElement,true
+    $("#egg-svg").hide().append(importedSVGRootElement)
+  , "xml"
+  
+  $.get "css/img/open.svg", (rawSvg) -> 
+    importedSVGRootElement = document.importNode rawSvg.documentElement,true
+    $("#open-svg").hide().append(importedSVGRootElement)
+  , "xml"
+  
+  $.get "css/img/vieux.svg", (rawSvg) -> 
+    importedSVGRootElement = document.importNode rawSvg.documentElement,true
+    $("#vieux-svg").hide().append(importedSVGRootElement)
+  , "xml"
+
   #Preparation html
   #Construction du panel
   html = ""
@@ -28,22 +48,48 @@ $ ->
   #Préchargement des images
   for color in color_tab
     $( "#choose-color" ).append "<div class='color' style='background-color:#{color};' data-color='#{color}'></div>"
-    html = 
+    ###html = 
     """
       <img src='css/img/vieil-alligator-#{color}.png'/>
       <img src='css/img/alligator-#{color}.png' />
       <img src='css/img/egg-#{color}.png' />
     """
     $( "#preloaded-images" ).append html
-    
+   ### 
   #Choix d'une couleur dans la palette
   $( ".color" ).on "click", ->
     $( "#choose-color" ).data("color", $(this).data("color"))
     $( ".color" ).removeClass("selected-color" )
     $( this ).addClass( "selected-color" )
-
-  #On rend l'alligator et l'oeuf blanc draggable, il prendront la couleur preselectionnée 
+    
   $( ".item" ).draggable  helper : "clone"
+  
+  inserer = (draggable, droppable) ->  
+    variable = if draggable.hasClass("vieux-croco") then 'white' else $("#choose-color").attr("data-color")
+    if draggable.hasClass("egg")
+      type = "variable" 
+    else if draggable.hasClass("croco")
+        type = "lambda"
+    else
+      type ="lambda priorite"
+    lambda = "<div id='#{id++}' class='#{type} dropped' data-variable='#{variable}' ><div class='application_drop'></div></div>"
+    lambda = $('<div/>').html(lambda).contents()
+    if type isnt "variable"
+      $( lambda ).prepend "<div class='definition_drop'></div>"
+    switch type
+      when "variable"
+        $( "#egg-svg").find(".skin").css("fill",variable)
+        $( "#egg-svg").clone().contents().prependTo $(lambda)
+      when "lambda"
+        $( "#open-svg").find(".skin").css("fill",variable)
+        $( "#open-svg").clone().contents().prependTo $(lambda)
+      when "lambda priorite"
+        $( "#vieux-svg").clone().contents().prependTo $(lambda)       
+    if droppable.hasClass( "definition_drop" )
+      droppable.before $(lambda)
+    else
+      droppable.parent().after $(lambda)
+    droppable.remove()
   
   #Achaque fois qu'on droppe un item, il y a une(variable) ou deux(lambda) zones draggables
   make_dropped_droppable = () ->
@@ -51,69 +97,32 @@ $ ->
       hoverClass: "ui-state-hover"
       accept : ".croco, .vieux-croco, .egg"
       drop : ( event, ui ) ->
-        $( this ).parent(":first").removeClass("parentHighlight")
-        variable = if ui.draggable.hasClass("vieux-croco") then 'white' else $("#choose-color").data("color")
-        if ui.draggable.hasClass("croco") or ui.draggable.hasClass("vieux-croco")
-          lambda = 
-          """
-            <div id='#{id++}' style='background: url(css/img/alligator-#{variable}.png) top center no-repeat;' class='lambda dropped' data-variable='#{variable}' >
-            <div class='definition_drop'></div>
-            <div class='application_drop'></div>
-            </div>
-          """
-        else
-          lambda = 
-          """
-            <div id='#{id++}' style='background: url(css/img/egg-#{variable}.png) top center no-repeat;' class='variable dropped' data-variable='#{variable}' >
-            <div class='application_drop'></div>
-            </div>
-          """
-        if $( this ).hasClass( "definition_drop" )
-          $(this).before lambda
-        else
-          $(this).parent().after lambda
-        $(this).remove()
+        inserer ui.draggable, $(this)
         make_dropped_droppable()
 
-  do make_root_droppable = ->
-    $("#root" ).empty()
-    $( "#root" ).droppable
-      hoverClass: "ui-state-hover"
-      accept : ".croco, .vieux-croco"
-      drop : ( event, ui ) ->
-          variable = if ui.draggable.hasClass( "croco" ) then $("#choose-color").data("color") else 'white'
-          lambda = 
-          """
-            <div id='#{id++}' style='background: url(css/img/alligator-#{variable}.png) top center no-repeat;' class='lambda dropped' data-variable='#{variable}' >
-              <div class='definition_drop'></div>
-              <div class='application_drop'></div>
-           </div>
-          """
-          $( this )
-            .append(lambda)
-            .droppable("destroy")
-          make_dropped_droppable()
-      
-  $( "#clear" ).on "click", ->  make_root_droppable()
+  make_dropped_droppable()
+          
+  speed = false
   $( "#go" ).on "click", -> 
+    delta = if speed then 500 else 2000
     $( ".application_drop, .definition_drop" ).remove()   
     #Listes de couleurs reservées et donc interdites pour application
     ahead_color = ['white']
     # Top-left RULE
     pointer = $("#root > .lambda:first") 
-    while (not pointer.next().length or pointer.data("variable") is 'white')
+    while (not pointer.next(":not(svg)").length or pointer.data("variable") is 'white')
       current_color = pointer.data("variable")
       ahead_color.push current_color
       if pointer.data("variable") isnt "white"
         pointer = pointer.find(".lambda").first()
         if not pointer.length
-          alert "Là ça change pas !"
+          alert "Là ça change pas !" if not speed
           break
       else
-        if pointer.children().length is 1
-          pointer.css "background-image":"url(css/img/alligator-dead.png)"
-          alert "Oh il ne sert plus à rien le pauvre !"
-          pointer.replaceWith pointer.contents()
+        if pointer.children(":not(svg)").length is 1
+          pointer.children("svg").find("g#layer1").attr("transform", "rotate(180 149 60)")
+          alert "Oh il ne sert plus à rien le pauvre !" if not speed
+          pointer.children().unwrap().siblings("svg").remove()
           pointer = $("#root > .lambda:first") 
         else
           pointer = pointer.find(".lambda").first()
@@ -134,7 +143,7 @@ $ ->
         app_items = app.find( "[data-variable='#{color}']").andSelf().filter("[data-variable='#{color}']")
         # Aie ! On en a trouvé
         if app_items.length
-          alert "Règle de la couleur !(Color rule)"
+          alert "Règle de la couleur !(Color rule)" if not speed
           #Alors on va lister toutes les couleurs de l'application
           app_colors = get_colors app
           #On fabrique donc un ensemble de couleurs qu'on ne peut pas utiliser
@@ -147,44 +156,38 @@ $ ->
             app.find( "[data-variable=#{app_colors[index]}]").andSelf().filter("[data-variable=#{app_colors[index]}]").each ->
               if $( this ).attr("data-variable") not in ahead_color
                 $( this ).attr("data-variable", new_color)
-                if $( this ).hasClass( "lambda" )
-                  $( this ).css {"background-image": "url(css/img/alligator-#{new_color}.png)"}
-                else
-                  $( this ).css {"background-image": "url(css/img/egg-#{new_color}.png)"}
-                $( this ).css {"background-position" : "top center no-repeat;"}
-          alert "C'est vu ?"
+                $( this ).find(".skin").css("fill", new_color)
+          alert "C'est vu ?" if not speed
           break       
     # On recupere l'application, eventuellement on change de couleur et on la clone parce qu'elle va degager
     application = pointer.next()
     color_rule_check(pointer, application)
     applicationClone =  application.clone()
-    #Animation du croco qui bouffe
-    bust_a_move = (timer, croco,j=0) ->
-      images = ["alligator","vieil-alligator"]
-      bustit = interval 250, -> 
-        j += 1
-        croco.css "background-image": "url(css/img/#{images[j%2]}-#{variable}.png)"
-      delay timer, -> 
-        clearInterval bustit
-        croco.css {"background-image":"url(css/img/alligator-dead.png)","background-color": "#{croco.data('variable')}"}
-    bust_a_move 4000, pointer
-    application.css('visibility','hidden').clone().prependTo(pointer).css({"z-index" : "-1",border:"dashed black 10px",visibility:"visible",position:"absolute",top:"0px",left:"100%"}).animate {"min-width":"0px",padding:"0px", height: '50px', width: "50px", top:"50px", left:"70%"} , 4000, ->
+    application.css('visibility','hidden').clone().prependTo(pointer).css({"z-index" : "-1",border:"dashed black 10px",visibility:"visible",position:"absolute",top:"0px",left:"100%"}).animate {"min-width":"0px",padding:"0px", height: '50px', width: "50px", top:"50px", left:"70%"} , delta, ->
         #On fait disparaitre l'application
+        removal = (myNode)->
+          while (myNode.firstChild)
+            myNode.removeChild(myNode.firstChild)
+          myNode.remove()
         $(this).remove()
         application.remove()
+        pointer.children("svg").find("g#layer1").attr("transform", "rotate(180 150 62)")
         #On va faire reapparaitre l'application à chaque oeuf
         eggs = pointer.find( ".variable[data-variable=#{variable}]"  )
         n = eggs.length;
         if n>0
-          eggs.each (index, element) ->        
-            $(this).animate { opacity: 0} , 2000, ->
-                $(this).after applicationClone.clone()
-                $(this).remove()
-                pointer.replaceWith pointer.contents() if index is n-1              
+          eggs.each (index, element) ->                      
+            $(this).after applicationClone.clone().css(opacity: 0).animate {opacity: 1}, delta, ->
+              pointer.children().unwrap().siblings("svg").remove() if index is n-1
+            $(this).animate { opacity: 0} , delta, ->
+              $(this).remove()
         else 
-            alert "Aucun oeuf !(no egg)"
-            pointer.replaceWith pointer.contents()
-            
+          alert "Aucun oeuf !(no egg)" if not speed
+          pointer.children().unwrap().siblings("svg").remove()
+
+
+
+
   #Gestion du panel
   [expression, parentheses] = ["",0]
   $( ".panel-button" ).on "click", ->
@@ -210,54 +213,124 @@ $ ->
         $("#root").empty().append expression
       when "clear"
         [expression, parentheses] = ["",0]
-        $("#root").empty()
+        $("#root" ).empty().append "<div id='root_definition' class='definition_drop'></div>"
+        make_dropped_droppable()
         $( "#prompt" ).val("")
       when "exemple"
         $("#prompt").val lambda_exemples[$(this).data("numero")]
         e = jQuery.Event("keypress")
         e.which = 13
         $('#prompt').trigger(e)
-      when "auto"
+      when "autoclose"
          while parentheses
           expression += "</div>"
           $( "#prompt").val($( "#prompt").val() + ")")
           parentheses -= 1
+      when "speed"
+        if $(this).data "speed"
+          speed = false
+          $(this).data "speed", false
+          $(this).html "Go Slow"
+        else
+          speed = true
+          $(this).data "speed", true
+          $(this).html "Go Fast"
+
+  
+  inserer_direct = (type, droppable,mode) ->  
+    variable = if type is "lambda priorite" then 'white' else $("#choose-color").attr("data-color")
+    lambda = "<div id='#{id++}' class='#{type} dropped' data-variable='#{variable}' ></div>"
+    lambda = $('<div/>').html(lambda).contents()
+    switch type
+      when "variable"
+        $( "#egg-svg").find(".skin").css("fill",variable)
+        $( "#egg-svg").clone().contents().prependTo $(lambda)
+      when "lambda"
+        $( "#open-svg").find(".skin").css("fill",variable)
+        $( "#open-svg").clone().contents().prependTo $(lambda)
+      when "lambda priorite"
+        $( "#vieux-svg").clone().contents().prependTo $(lambda)       
+    if mode is "definition"
+      droppable.append $(lambda)
+    else
+      droppable.after $(lambda)
+      
   #Parser une expression
   $('#prompt').keypress (e) ->
+    local_debug = false
     key = e.which;
     if key is 13
-      [extra_lambda, div_open, html, exp] = [0, 0, "", $( "#prompt").val()]
+      $("#root" ).empty()
+      exp = $( "#prompt").val()
+      pointer = $("#root" )
+      alert "start: " + pointer.attr("id") if local_debug
+      first =true
+      parentheses = []
+      symbol = ""
+      previous = "none"
       for i in [0..exp.length-1]
-        if jump_on_next
-          jump_on_next=false
-          continue         
-        switch exp[i]
-          when "."," "
-            continue
-          when "λ"
-            [jump_on_next, j] = [true, i]        
-            div_open +=1
-            while exp[j+3] is "λ"
-              extra_lambda += 1
-              j += 3
-            variable = exp[i+1]
-            html += "<div id='#{id++}' style='background: url(css/img/alligator-#{var_tab[exp[i+1]]}.png) top center no-repeat;' class='lambda dropped' data-variable='#{var_tab[exp[i+1]]}'>"
-          when 'x','y','z','m','n','p','q','a','b','c','s'
-            html += "<div id='#{id++}' style='background: url(css/img/egg-#{var_tab[exp[i]]}.png) top center no-repeat;' class='variable dropped' data-variable='#{var_tab[exp[i]]}'></div>"
-          when "("
-            parentheses += 1
-            if exp[i+1] is "λ"
-              continue
-            else
-              html += "<div id='#{id++}' style='background: url(css/img/alligator-white.png) top center no-repeat;' class='lambda dropped' data-variable='white'>"
+        symbol += exp[i]
+        alert symbol if local_debug
+        switch symbol
+          when "(","λa.","λb.","λc.","λd.","λe.","λf.","λg.","λh.","λi.","λj.","λk.","λl.","λm.","λn.","λo.","λp.","λq.","λr.","λs.","λt.","λu.","λv.","λw.","λx.","λy.","λz.","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"
+            if symbol is "("
+              if previous is "("
+                parentheses.push pointer
+                alert "skip (, pushed current pointer:"+ pointer.attr("id") if local_debug
+                previous = symbol
+                symbol = ""
+                continue
+                
+              $( "#choose-color" ).attr("data-color", "white")
+              type = "lambda priorite"
+              classe = ".lambda.priorite"
+            else if ALPHABET.indexOf(symbol) > -1
+              $( "#choose-color" ).attr("data-color", var_tab[symbol[0]])
+              type = "variable"
+              classe = ".variable"  
+            else     
+              $( "#choose-color" ).attr("data-color", var_tab[symbol[1]])
+              type = "lambda"
+              classe = ".lambda"
+            alert "previous is : #{previous}" if local_debug
+            switch previous
+              when "(","λa.","λb.","λc.","λd.","λe.","λf.","λg.","λh.","λi.","λj.","λk.","λl.","λm.","λn.","λo.","λp.","λq.","λr.","λs.","λt.","λu.","λv.","λw.","λx.","λy.","λz."       
+                alert "1" if local_debug
+                inserer_direct type, pointer, "definition"
+                alert "before error #{type} pointer is:"+ pointer.attr("id") if local_debug
+                pointer = pointer.children().last(classe)
+              when ")"
+                alert "2"+pointer.attr("id") if local_debug
+                inserer_direct type, pointer, "application"
+                pointer = pointer.next(classe)
+                alert "new pointer is:"+ pointer.attr("id") if local_debug
+              else
+                if first
+                  alert "3" if local_debug
+                  inserer_direct type, pointer, "definition"
+                  pointer = pointer.find(classe).first()
+                  first=false
+                else
+                  alert "4" if local_debug
+                  inserer_direct type, pointer, "application"
+                  pointer = pointer.next(classe)
+            if symbol is "("
+              parentheses.push pointer 
+              alert "pushed current pointer:"+ pointer.attr("id") if local_debug
+            alert "new pointer is:"+ pointer.attr("id") if local_debug
+            previous = symbol
+            symbol = ""
           when ")"
-            parentheses -= 1
-            html += "</div>"
-            if parentheses is 0
-              while extra_lambda
-                extra_lambda -= 1
-                html += "</div>"
-      $("#root" ).empty().append html
+            alert ") pointer is:"+ pointer.attr("id") if local_debug
+            pointer = parentheses.pop()
+            alert ") pointer changed:"+ pointer.attr("id") if local_debug
+            previous = symbol
+            symbol = ""
+          when " "
+            symbol = ""
+            continue
+          else
+            continue     
       return false   
   #Pour l'article 
   $( ".run-previous-code" ).on "click", ->

@@ -180,7 +180,7 @@ pre.code{
   border : solid black 5px;
 }
 button {
-  width : 3vw;
+  min-width : 3vw;
   height : 2vw;
   display : inline-block;
   font-weight : bolder;
@@ -211,13 +211,14 @@ button {
 }
 
 #root {
+  position:relative;
   width : 100%;
   min-height : 800px;
   display : inline-block;
 }
 
 .lambda {
-  min-width : 500px;
+  min-width : 300px;
 }
 
 .variable {
@@ -252,6 +253,12 @@ button {
   width : 100px;
   height: 100px;
 }
+#root_definition {
+  top:0px;
+  left:0px;
+  width : 100%;
+  height:100%;
+}
 .variable.dropped > .application_drop {
   width : 100%;
   height: 100%;
@@ -259,8 +266,16 @@ button {
 .lambda.dropped > .application_drop {
   width : 50%;
 }
+svg {
+  position : absolute;
+  margin-left: auto;
+  margin-right: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+}
 .lambda.dropped{
-  padding-top:203px;
+  padding-top:124px;
   display: inline-flex;
   flex-flow: row no-wrap;
   justify-content: space-around;

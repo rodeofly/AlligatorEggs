@@ -17,6 +17,9 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
         <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+        <script src="js/vendor/svg.min.js"></script>
+        <script src="js/vendor/svg.import.min.js"></script>
+
         <!-- Pull the engine from the Quintus CDN or load it locally -->
         <!-- (use quintus-all.min.js for production) -->
         <script src='http://cdn.html5quintus.com/v0.2.0/quintus-all.js'></script>
@@ -37,17 +40,15 @@
                     </ul>
                 </nav>
             </header>
-        </div>
-
-      
-      
-        <div id="top-panel">
-            <button id="prompt-mode">λ</button>
-            <input id="prompt" type="text" value="" />
-            <div class="item croco"></div>
-            <div class="item vieux-croco"></div>
-            <div class="item egg"></div>     
-            <div id="choose-color" data-color="purple"></div>
+            <div id="top-panel">
+              <button id="prompt-mode">λ</button>
+              <input id="prompt" type="text" value="" />
+              <div id="item-croco" class="item croco"></div>
+              <div id="item-vieux-croco" class="item vieux-croco"></div>
+              <div id="item-egg" class="item egg"></div>     
+              <div id="choose-color" data-color="purple"></div>
+          </div>
+          
         </div>
         
         <div id="lambda-panel">
@@ -56,12 +57,14 @@
           <button class="panel-button" data-type="close">)</button>
           <button class="panel-button" data-type="go"   >Draw</button>
           <button class="panel-button" data-type="clear">clear</button>
-          <button class="panel-button" data-type="auto" >auto</button><br>
-          
+          <button class="panel-button" data-type="autoclose" >auto-close</button>
+          <button class="panel-button" data-type="speed" data-speed="true">Go Fast</button><br>
         </div>
       
         <div class="game-container">
-            <div id="root"></div>
+          <div id="root"><div id="root_definition" class='definition_drop'></div></div>
+          <div id="egg-svg"></div><div id="open-svg"></div><div id="vieux-svg"></div>
+         
         </div>
       
         <div class="main-container">
