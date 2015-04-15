@@ -25,11 +25,9 @@
     return setInterval(func, ms);
   };
 
-  nb_exemple = 9;
-
-  _ref = [true, 1000], debug = _ref[0], id = _ref[1];
-
   CSS_COLOR_NAMES = ["Blue", "BlueViolet", "Brown", "BurlyWood", "CadetBlue", "Chartreuse", "Chocolate", "Coral", "CornflowerBlue", "Cornsilk", "Crimson", "Cyan", "DarkBlue", "DarkCyan", "DarkGoldenRod", "DarkGray", "DarkGreen", "DarkKhaki", "DarkMagenta", "DarkOliveGreen", "Darkorange", "DarkOrchid", "DarkRed", "DarkSalmon", "DarkSeaGreen", "DarkSlateBlue", "DarkSlateGray", "DarkSlateGrey", "DarkTurquoise", "DarkViolet", "DeepPink", "DeepSkyBlue", "DimGray", "DimGrey", "DodgerBlue", "FireBrick", "FloralWhite", "ForestGreen", "Fuchsia", "Gainsboro", "GhostWhite", "Gold", "GoldenRod", "Gray", "Grey", "Green", "GreenYellow", "HoneyDew", "HotPink", "IndianRed", "Indigo", "Ivory", "Khaki", "Lavender", "LavenderBlush", "LawnGreen", "LemonChiffon", "LightBlue", "LightCoral", "LightCyan", "LightGoldenRodYellow", "LightGray", "LightGrey", "LightGreen", "LightPink", "LightSalmon", "LightSeaGreen", "LightSkyBlue", "LightSlateGray", "LightSlateGrey", "LightSteelBlue", "LightYellow", "Lime", "LimeGreen", "Linen", "Magenta", "Maroon", "MediumAquaMarine", "MediumBlue", "MediumOrchid", "MediumPurple", "MediumSeaGreen", "MediumSlateBlue", "MediumSpringGreen", "MediumTurquoise", "MediumVioletRed", "MidnightBlue", "MintCream", "MistyRose", "Moccasin", "NavajoWhite", "Navy", "OldLace", "Olive", "OliveDrab", "Orange", "OrangeRed", "Orchid", "PaleGoldenRod", "PaleGreen", "PaleTurquoise", "PaleVioletRed", "PapayaWhip", "PeachPuff", "Peru", "Pink", "Plum", "PowderBlue", "Purple", "Red", "RosyBrown", "RoyalBlue", "SaddleBrown", "Salmon", "SandyBrown", "SeaGreen", "SeaShell", "Sienna", "Silver", "SkyBlue", "SlateBlue", "SlateGray", "SlateGrey", "Snow", "SpringGreen", "SteelBlue", "Tan", "Teal", "Thistle", "Tomato", "Turquoise", "Violet", "Wheat", "White", "WhiteSmoke", "Yellow", "YellowGreen"];
+
+  lambda_exemples = ["(λx.x) (λy.y)", "(λx.λy.x) (λy.y)", "((λy.y) (λz.z))(λx.x)", "(λx.λy. x) a b", "(λx.λy. y) a b", "(λa. a (λm.(λn. n ))(λp.(λq. p )))(λx.λy. y) a b", "(λx.x x) (λx.x x)", "λy.(λx.y (x x)) (λx.y (x x))", "(λa.λs.λz.s (a s z)) (λs.λz.z) ", "(λa.λb.λs.λz.(a s (b s z))) (λs.λz.(s z)) (λs.λz.(s z))", "(λa.λb.λs.λz.(a s (b s z))) (λs.λz.(s (s (s z)))) (λs.λz.(s (s (s (s z)))))"];
 
   ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
@@ -37,7 +35,9 @@
 
   var_tab = {};
 
-  lambda_exemples = ["(λx.x) (λy.y)", "(λx.λy.x) (λy.y)", "((λy.y) (λz.z))(λx.x)", "(λx.λy. x) a b", "(λx.λy. y) a b", "(λa. a (λm.(λn. n ))(λp.(λq. p )))(λx.λy. y) a b", "(λx.x x) (λx.x x)", "λy.(λx.y (x x)) (λx.y (x x))", "(λa.λs.λz.s (a s z)) (λs.λz.z) ", "(λa.λb.λs.λz.(a s (b s z))) (λs.λz.(s z)) (λs.λz.(s z))", "(λa.λb.λs.λz.(a s (b s z))) (λs.λz.(s (s (s z)))) (λs.λz.(s (s (s (s z)))))"];
+  nb_exemple = 9;
+
+  _ref = [true, 1000], debug = _ref[0], id = _ref[1];
 
   $(function() {
     var color, expression, html, i, index, inserer, inserer_direct, key, letter, make_dropped_droppable, parentheses, speed, value, _i, _j, _k, _len, _len1, _ref1, _ref2, _ref3;
@@ -50,17 +50,20 @@
     $.get("css/img/egg.svg", function(rawSvg) {
       var importedSVGRootElement;
       importedSVGRootElement = document.importNode(rawSvg.documentElement, true);
-      return $("#egg-svg").hide().append(importedSVGRootElement);
+      $("#egg-svg").hide().append(importedSVGRootElement);
+      return $("#egg-svg svg")[0].setAttribute('viewBox', '0 0 116 80');
     }, "xml");
     $.get("css/img/open.svg", function(rawSvg) {
       var importedSVGRootElement;
       importedSVGRootElement = document.importNode(rawSvg.documentElement, true);
-      return $("#open-svg").hide().append(importedSVGRootElement);
+      $("#open-svg").hide().append(importedSVGRootElement);
+      return $("#open-svg svg")[0].setAttribute('viewBox', '-25 0 300 150');
     }, "xml");
     $.get("css/img/vieux.svg", function(rawSvg) {
       var importedSVGRootElement;
       importedSVGRootElement = document.importNode(rawSvg.documentElement, true);
-      return $("#vieux-svg").hide().append(importedSVGRootElement);
+      $("#vieux-svg").hide().append(importedSVGRootElement);
+      return $("#vieux-svg svg")[0].setAttribute('viewBox', '0 0 228 78');
     }, "xml");
     html = "";
     for (key in var_tab) {
@@ -152,8 +155,8 @@
     make_dropped_droppable();
     speed = false;
     $("#go").on("click", function() {
-      var ahead_color, application, applicationClone, color_rule_check, current_color, delta, pointer, variable;
-      delta = speed ? 500 : 2000;
+      var ahead_color, application, applicationClone, bust_a_move, color_rule_check, current_color, delta, pointer, variable;
+      delta = speed ? 500 : 4000;
       $(".application_drop, .definition_drop").remove();
       ahead_color = ['white'];
       pointer = $("#root > .lambda:first");
@@ -170,7 +173,7 @@
           }
         } else {
           if (pointer.children(":not(svg)").length === 1) {
-            pointer.children("svg").find("g#layer1").attr("transform", "rotate(180 149 60)");
+            pointer.children("svg").find("g#layer1").attr("transform", "rotate(180,140,65)");
             if (!speed) {
               alert("Oh il ne sert plus à rien le pauvre !");
             }
@@ -239,6 +242,28 @@
       application = pointer.next();
       color_rule_check(pointer, application);
       applicationClone = application.clone();
+      bust_a_move = function(p, timer) {
+        var bustit, j, k;
+        j = 0;
+        k = 1;
+        bustit = interval(10, function() {
+          j = j + k;
+          if (j < -15) {
+            k = 1;
+          }
+          if (j > 0) {
+            k = -1;
+          }
+          return p.children("svg").css({
+            "z-index": "9000"
+          }).find("#jaw").attr("transform", "rotate(" + j + ") translate(-100,20)");
+        });
+        return delay(timer, function() {
+          clearInterval(bustit);
+          return pointer.children("svg").find("g#layer1").attr("transform", "rotate(180 125 75)");
+        });
+      };
+      bust_a_move(pointer, delta);
       return application.css('visibility', 'hidden').clone().prependTo(pointer).css({
         "z-index": "-1",
         border: "dashed black 10px",
@@ -263,7 +288,6 @@
         };
         $(this).remove();
         application.remove();
-        pointer.children("svg").find("g#layer1").attr("transform", "rotate(180 150 62)");
         eggs = pointer.find(".variable[data-variable=" + variable + "]");
         n = eggs.length;
         if (n > 0) {
@@ -369,7 +393,7 @@
       }
     };
     $('#prompt').keypress(function(e) {
-      var classe, exp, first, local_debug, pointer, previous, symbol, type, _l, _ref4;
+      var classe, exp, first, local_debug, object, pointer, previous, push_next, symbol, type, _l, _ref4;
       local_debug = false;
       key = e.which;
       if (key === 13) {
@@ -383,6 +407,7 @@
         parentheses = [];
         symbol = "";
         previous = "none";
+        push_next = false;
         for (i = _l = 0, _ref4 = exp.length - 1; 0 <= _ref4 ? _l <= _ref4 : _l >= _ref4; i = 0 <= _ref4 ? ++_l : --_l) {
           symbol += exp[i];
           if (local_debug) {
@@ -443,12 +468,14 @@
             case "y":
             case "z":
               if (symbol === "(") {
-                if (previous === "(") {
-                  parentheses.push(pointer);
-                  if (local_debug) {
-                    alert("skip (, pushed current pointer:" + pointer.attr("id"));
+                if (")λa.λb.λc.λd.λe.λf.λg.λh.λi.λj.λk.λl.λm.λn.λo.λp.λq.λr.λs.λt.λu.λv.λw.λx.λy.λz.none".indexOf(previous > -1)) {
+                  if (previous === "(") {
+                    push_next = true;
                   }
-                  previous = symbol;
+                  parentheses.push("skip");
+                  if (local_debug) {
+                    alert("pushed 'skip' (");
+                  }
                   symbol = "";
                   continue;
                 }
@@ -499,14 +526,14 @@
                     alert("1");
                   }
                   inserer_direct(type, pointer, "definition");
+                  pointer = pointer.children(classe).first();
                   if (local_debug) {
-                    alert(("before error " + type + " pointer is:") + pointer.attr("id"));
+                    alert("new pointer is:" + pointer.attr("id"));
                   }
-                  pointer = pointer.children().last(classe);
                   break;
                 case ")":
                   if (local_debug) {
-                    alert("2" + pointer.attr("id"));
+                    alert("2 ");
                   }
                   inserer_direct(type, pointer, "application");
                   pointer = pointer.next(classe);
@@ -521,43 +548,70 @@
                     }
                     inserer_direct(type, pointer, "definition");
                     pointer = pointer.find(classe).first();
+                    if (local_debug) {
+                      alert("new pointer is:" + pointer.attr("id"));
+                    }
+                    if (push_next) {
+                      alert("4");
+                      parentheses.push(pointer);
+                      if (local_debug) {
+                        alert("pointer was pushed :" + pointer.attr("id"));
+                      }
+                      push_next = false;
+                    }
                     first = false;
                   } else {
                     if (local_debug) {
-                      alert("4");
+                      alert("5");
                     }
                     inserer_direct(type, pointer, "application");
                     pointer = pointer.next(classe);
+                    if (local_debug) {
+                      alert("new pointer is:" + pointer.attr("id"));
+                    }
+                    if (push_next) {
+                      if (local_debug) {
+                        alert("6");
+                      }
+                      parentheses.push(pointer);
+                      if (local_debug) {
+                        alert("pointer was pushed :" + pointer.attr("id"));
+                      }
+                      push_next = false;
+                    }
                   }
               }
               if (symbol === "(") {
                 parentheses.push(pointer);
+                pointer = pointer.children(":not(svg)").first();
                 if (local_debug) {
-                  alert("pushed current pointer:" + pointer.attr("id"));
+                  alert("pushed pointer:" + pointer.attr("id"));
                 }
-              }
-              if (local_debug) {
-                alert("new pointer is:" + pointer.attr("id"));
               }
               previous = symbol;
               symbol = "";
               break;
             case ")":
-              if (local_debug) {
-                alert(") pointer is:" + pointer.attr("id"));
-              }
-              pointer = parentheses.pop();
-              if (local_debug) {
-                alert(") pointer changed:" + pointer.attr("id"));
+              object = parentheses.pop();
+              if (object !== "skip") {
+                pointer = object;
+              } else {
+                pointer = $("#root").children(":last");
               }
               previous = symbol;
               symbol = "";
+              if (local_debug) {
+                alert(") pointer is:" + pointer.attr("id"));
+              }
               break;
             case " ":
               symbol = "";
               continue;
             default:
               continue;
+          }
+          if (local_debug) {
+            alert("parentheses stack : " + parentheses);
           }
         }
         return false;

@@ -4,13 +4,15 @@ Array::unique = ->
   value for key, value of output
 delay = (ms, func) -> setTimeout func, ms
 interval = (ms, func) -> setInterval func, ms
-nb_exemple = 9
-[debug, id] = [true, 1000]
+
 CSS_COLOR_NAMES = ["Blue","BlueViolet","Brown","BurlyWood","CadetBlue","Chartreuse","Chocolate","Coral","CornflowerBlue","Cornsilk","Crimson","Cyan","DarkBlue","DarkCyan","DarkGoldenRod","DarkGray","DarkGreen","DarkKhaki","DarkMagenta","DarkOliveGreen","Darkorange","DarkOrchid","DarkRed","DarkSalmon","DarkSeaGreen","DarkSlateBlue","DarkSlateGray","DarkSlateGrey","DarkTurquoise","DarkViolet","DeepPink","DeepSkyBlue","DimGray","DimGrey","DodgerBlue","FireBrick","FloralWhite","ForestGreen","Fuchsia","Gainsboro","GhostWhite","Gold","GoldenRod","Gray","Grey","Green","GreenYellow","HoneyDew","HotPink","IndianRed","Indigo","Ivory","Khaki","Lavender","LavenderBlush","LawnGreen","LemonChiffon","LightBlue","LightCoral","LightCyan","LightGoldenRodYellow","LightGray","LightGrey","LightGreen","LightPink","LightSalmon","LightSeaGreen","LightSkyBlue","LightSlateGray","LightSlateGrey","LightSteelBlue","LightYellow","Lime","LimeGreen","Linen","Magenta","Maroon","MediumAquaMarine","MediumBlue","MediumOrchid","MediumPurple","MediumSeaGreen","MediumSlateBlue","MediumSpringGreen","MediumTurquoise","MediumVioletRed","MidnightBlue","MintCream","MistyRose","Moccasin","NavajoWhite","Navy","OldLace","Olive","OliveDrab","Orange","OrangeRed","Orchid","PaleGoldenRod","PaleGreen","PaleTurquoise","PaleVioletRed","PapayaWhip","PeachPuff","Peru","Pink","Plum","PowderBlue","Purple","Red","RosyBrown","RoyalBlue","SaddleBrown","Salmon","SandyBrown","SeaGreen","SeaShell","Sienna","Silver","SkyBlue","SlateBlue","SlateGray","SlateGrey","Snow","SpringGreen","SteelBlue","Tan","Teal","Thistle","Tomato","Turquoise","Violet","Wheat","White","WhiteSmoke","Yellow","YellowGreen"]
+lambda_exemples = ["(λx.x) (λy.y)","(λx.λy.x) (λy.y)","((λy.y) (λz.z))(λx.x)","(λx.λy. x) a b","(λx.λy. y) a b","(λa. a (λm.(λn. n ))(λp.(λq. p )))(λx.λy. y) a b","(λx.x x) (λx.x x)","λy.(λx.y (x x)) (λx.y (x x))","(λa.λs.λz.s (a s z)) (λs.λz.z) ","(λa.λb.λs.λz.(a s (b s z))) (λs.λz.(s z)) (λs.λz.(s z))","(λa.λb.λs.λz.(a s (b s z))) (λs.λz.(s (s (s z)))) (λs.λz.(s (s (s (s z)))))"]
 ALPHABET = "abcdefghijklmnopqrstuvwxyz"
 color_tab = []
 var_tab = {}
-lambda_exemples = ["(λx.x) (λy.y)","(λx.λy.x) (λy.y)","((λy.y) (λz.z))(λx.x)","(λx.λy. x) a b","(λx.λy. y) a b","(λa. a (λm.(λn. n ))(λp.(λq. p )))(λx.λy. y) a b","(λx.x x) (λx.x x)","λy.(λx.y (x x)) (λx.y (x x))","(λa.λs.λz.s (a s z)) (λs.λz.z) ","(λa.λb.λs.λz.(a s (b s z))) (λs.λz.(s z)) (λs.λz.(s z))","(λa.λb.λs.λz.(a s (b s z))) (λs.λz.(s (s (s z)))) (λs.λz.(s (s (s (s z)))))"]
+nb_exemple = 9
+[debug, id] = [true, 1000]
+
 $ ->
   for letter,index in ALPHABET[0..25]
     color_tab.push CSS_COLOR_NAMES[index]
@@ -19,16 +21,18 @@ $ ->
   $.get "css/img/egg.svg", (rawSvg) -> 
     importedSVGRootElement = document.importNode rawSvg.documentElement,true
     $("#egg-svg").hide().append(importedSVGRootElement)
+    $("#egg-svg svg")[0].setAttribute('viewBox', '0 0 116 80')
   , "xml"
-  
   $.get "css/img/open.svg", (rawSvg) -> 
     importedSVGRootElement = document.importNode rawSvg.documentElement,true
     $("#open-svg").hide().append(importedSVGRootElement)
+    $("#open-svg svg")[0].setAttribute('viewBox', '-25 0 300 150')
   , "xml"
   
   $.get "css/img/vieux.svg", (rawSvg) -> 
     importedSVGRootElement = document.importNode rawSvg.documentElement,true
     $("#vieux-svg").hide().append(importedSVGRootElement)
+    $("#vieux-svg svg")[0].setAttribute('viewBox', '0 0 228 78')
   , "xml"
 
   #Preparation html
@@ -104,7 +108,7 @@ $ ->
           
   speed = false
   $( "#go" ).on "click", -> 
-    delta = if speed then 500 else 2000
+    delta = if speed then 500 else 4000
     $( ".application_drop, .definition_drop" ).remove()   
     #Listes de couleurs reservées et donc interdites pour application
     ahead_color = ['white']
@@ -120,7 +124,7 @@ $ ->
           break
       else
         if pointer.children(":not(svg)").length is 1
-          pointer.children("svg").find("g#layer1").attr("transform", "rotate(180 149 60)")
+          pointer.children("svg").find("g#layer1").attr("transform", "rotate(180,140,65)")
           alert "Oh il ne sert plus à rien le pauvre !" if not speed
           pointer.children().unwrap().siblings("svg").remove()
           pointer = $("#root > .lambda:first") 
@@ -163,6 +167,21 @@ $ ->
     application = pointer.next()
     color_rule_check(pointer, application)
     applicationClone =  application.clone()
+    bust_a_move = (p,timer) ->
+      j=0       
+      k=1
+      bustit = interval 10, -> 
+      
+        j = j + k
+        if j<-15
+          k = 1
+        if j>0
+          k=-1
+        p.children("svg").css("z-index":"9000").find("#jaw").attr("transform", "rotate(#{j}) translate(-100,20)")
+      delay timer, -> 
+        clearInterval bustit
+        pointer.children("svg").find("g#layer1").attr("transform", "rotate(180 125 75)")
+    bust_a_move pointer, delta
     application.css('visibility','hidden').clone().prependTo(pointer).css({"z-index" : "-1",border:"dashed black 10px",visibility:"visible",position:"absolute",top:"0px",left:"100%"}).animate {"min-width":"0px",padding:"0px", height: '50px', width: "50px", top:"50px", left:"70%"} , delta, ->
         #On fait disparaitre l'application
         removal = (myNode)->
@@ -171,7 +190,7 @@ $ ->
           myNode.remove()
         $(this).remove()
         application.remove()
-        pointer.children("svg").find("g#layer1").attr("transform", "rotate(180 150 62)")
+        
         #On va faire reapparaitre l'application à chaque oeuf
         eggs = pointer.find( ".variable[data-variable=#{variable}]"  )
         n = eggs.length;
@@ -268,27 +287,27 @@ $ ->
       parentheses = []
       symbol = ""
       previous = "none"
+      push_next = false
       for i in [0..exp.length-1]
         symbol += exp[i]
         alert symbol if local_debug
         switch symbol
           when "(","λa.","λb.","λc.","λd.","λe.","λf.","λg.","λh.","λi.","λj.","λk.","λl.","λm.","λn.","λo.","λp.","λq.","λr.","λs.","λt.","λu.","λv.","λw.","λx.","λy.","λz.","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"
             if symbol is "("
-              if previous is "("
-                parentheses.push pointer
-                alert "skip (, pushed current pointer:"+ pointer.attr("id") if local_debug
-                previous = symbol
+              if ")λa.λb.λc.λd.λe.λf.λg.λh.λi.λj.λk.λl.λm.λn.λo.λp.λq.λr.λs.λt.λu.λv.λw.λx.λy.λz.none".indexOf previous > -1
+                push_next = true if previous is "("
+                parentheses.push "skip"
+                alert "pushed 'skip' ("if local_debug
                 symbol = ""
                 continue
-                
               $( "#choose-color" ).attr("data-color", "white")
               type = "lambda priorite"
               classe = ".lambda.priorite"
             else if ALPHABET.indexOf(symbol) > -1
               $( "#choose-color" ).attr("data-color", var_tab[symbol[0]])
               type = "variable"
-              classe = ".variable"  
-            else     
+              classe = ".variable"
+            else
               $( "#choose-color" ).attr("data-color", var_tab[symbol[1]])
               type = "lambda"
               classe = ".lambda"
@@ -297,10 +316,10 @@ $ ->
               when "(","λa.","λb.","λc.","λd.","λe.","λf.","λg.","λh.","λi.","λj.","λk.","λl.","λm.","λn.","λo.","λp.","λq.","λr.","λs.","λt.","λu.","λv.","λw.","λx.","λy.","λz."       
                 alert "1" if local_debug
                 inserer_direct type, pointer, "definition"
-                alert "before error #{type} pointer is:"+ pointer.attr("id") if local_debug
-                pointer = pointer.children().last(classe)
+                pointer = pointer.children(classe).first()
+                alert "new pointer is:"+ pointer.attr("id") if local_debug
               when ")"
-                alert "2"+pointer.attr("id") if local_debug
+                alert "2 " if local_debug
                 inserer_direct type, pointer, "application"
                 pointer = pointer.next(classe)
                 alert "new pointer is:"+ pointer.attr("id") if local_debug
@@ -309,28 +328,46 @@ $ ->
                   alert "3" if local_debug
                   inserer_direct type, pointer, "definition"
                   pointer = pointer.find(classe).first()
+                  alert "new pointer is:"+ pointer.attr("id") if local_debug
+                  if push_next
+                    alert "4"
+                    parentheses.push pointer
+                    alert "pointer was pushed :" + pointer.attr("id") if local_debug
+                    push_next=false
                   first=false
                 else
-                  alert "4" if local_debug
+                  alert "5" if local_debug
                   inserer_direct type, pointer, "application"
                   pointer = pointer.next(classe)
+                  alert "new pointer is:"+ pointer.attr("id") if local_debug
+                  if push_next
+                    alert "6" if local_debug
+                    parentheses.push pointer 
+                    alert "pointer was pushed :" + pointer.attr("id") if local_debug
+                    push_next=false
+
             if symbol is "("
-              parentheses.push pointer 
-              alert "pushed current pointer:"+ pointer.attr("id") if local_debug
-            alert "new pointer is:"+ pointer.attr("id") if local_debug
+              parentheses.push pointer
+              pointer = pointer.children(":not(svg)").first()
+              alert "pushed pointer:"+ pointer.attr("id") if local_debug
             previous = symbol
             symbol = ""
           when ")"
-            alert ") pointer is:"+ pointer.attr("id") if local_debug
-            pointer = parentheses.pop()
-            alert ") pointer changed:"+ pointer.attr("id") if local_debug
+            object = parentheses.pop()
+            if object isnt "skip"
+              pointer = object
+            else
+              pointer = $("#root").children(":last")
+
             previous = symbol
             symbol = ""
+            alert ") pointer is:"+ pointer.attr("id") if local_debug
           when " "
             symbol = ""
             continue
           else
-            continue     
+            continue
+        alert "parentheses stack : " + parentheses if local_debug
       return false   
   #Pour l'article 
   $( ".run-previous-code" ).on "click", ->
