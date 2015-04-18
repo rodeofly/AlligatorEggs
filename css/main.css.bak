@@ -205,112 +205,104 @@ pre.code{
   border : solid black 0.2vw;
 
 }
-
-.ui-draggable-helper { 
-    z-index: 5000;
-}
 .item {
   display: inline-block;
   width : 3vw;
 }
-.item > svg {
+.item svg {
   display : inline-block;
   position : relative;
   height : 3vw;
-  width : 100%;
+  min-width : 3vw;
 }
+.lambda.dropped svg {
+  width:100%;
+  height : 3vw;
+  position : absolute;
+  margin-left: auto;
+  margin-right: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.lambda.priorite.dropped svg, .variable.dropped svg {
+  width:100%;
+  height : 2vw;
+  position : absolute;
+  margin-left: auto;
+  margin-right: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
 #root {
   position:relative;
   width : 100%;
   min-height : 25vw;
   display : inline-block;
 }
+
+.lambda {
+  min-width : 6vw;
+  min-height : 2vw;
+}
+
+.variable {
+  width : 4vw;
+  height: 2vw;
+}
+.dropped {
+  position:relative;
+  display: inline-block;
+  vertical-align: top;
+  text-align:center;
+}
+.variable.dropped{
+  /* this can zoom-in-out */
+  width  : 4vw;
+  height : 2vw;
+}
+.lambda.dropped{
+  /* this can zoom-in-out */
+  min-width  : 6vw;
+  min-height : 2vw;
+  padding-top: 2vw;
+  display: inline-flex;
+  flex-flow: row no-wrap;
+  justify-content: space-around;
+  align-items: flex-start;
+}
+
+.definition_drop, .application_drop {
+  position : relative;
+  width : 4vw;
+  height: 4vw;
+  border:black dashed 1px;
+}
+.definition_drop {
+  top: 100%;
+  left:0%;
+}
+
+.application_drop {
+  position:absolute;
+  top:0%;
+  left:100%;
+}
+
 #root_definition.definition_drop {
   position : absolute;
   top : 0;left:0;
   width : 100%;
   height: 100%;
 }
-svg {
-  height : 2.5vw;
-  width : 6vw;
-}
-.lambda.priorite.dropped {
-  position:relative;
-  text-align:center;
-   /* this can zoom-in-out */
-  min-width  : 6vw;
-  min-height : 2vw;
-  padding-top: 2.5vw;
-  vertical-align: top;
-  display: inline-flex;
-  justify-content: space-around;
-  align-items: flex-start;
-  flex-flow: row no-wrap;
-}
-.lambda.priorite.dropped > svg, .variable.dropped > svg {
-  width:100%;
-  height : 2vw;
-  position : absolute;
-  margin-left: auto;
-  margin-right: auto;
-  top: 0;
-  left: 0;
-  right: 0;
+
+.ui-draggable-helper { 
+    z-index: 5000;
 }
 
-.lambda.dropped {
-  position:relative;
-  text-align:center;
-   /* this can zoom-in-out */
-  min-width  : 6vw;
-  min-height : 2vw;
-  padding-top: 2.5vw;
-  vertical-align: top;
-  display: inline-flex;
-  justify-content: space-around;
-  align-items: flex-start;
-  flex-flow: row no-wrap;
-}
-.lambda.dropped > svg {
-  width:100%;
-  height : 3vw;
-  position : absolute;
-  margin-left: auto;
-  margin-right: auto;
-  top: 0;
-  left: 0;
-  right: 0;
-}
-
-.variable.dropped{
-  position:relative;
-  display: inline-block;
-  vertical-align: top;
-  text-align:center;
-  /* this can zoom-in-out */
-  width  : 4vw;
-  height : 2vw;
-}
-
-.definition_drop, .application_drop {
-  position : absolute;
-  border:black dashed 1px;
-  width : 2vw;
-  height: 2vw;
-}
-.definition_drop {
-  bottom : 0;
-  left : 0;
-}
-.application_drop {
-  top : 0;
-  right : 0;
-}
-.lambda.dropped > .definition_drop {
-  bottom : 2vw;
-  left : 0;
-}
 /* ADD THIS TO CSS */
 div#preloaded-images, div.exemple {
    position: absolute;

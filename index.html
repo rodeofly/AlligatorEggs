@@ -13,22 +13,17 @@
 
         <link rel="stylesheet" href="css/normalize.min.css">
         <link rel="stylesheet" href="css/main.css">
-        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css" />
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
+        <link rel="stylesheet" href="css/jquery-ui.css" />
+        <script src="js/vendor/jquery.min.js"></script>
+        <script src="js/vendor/jquery-ui.min.js"></script>
         <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
         <script src="js/vendor/svg.min.js"></script>
         <script src="js/vendor/svg.import.min.js"></script>
-
-        <!-- Pull the engine from the Quintus CDN or load it locally -->
-        <!-- (use quintus-all.min.js for production) -->
-        <script src='http://cdn.html5quintus.com/v0.2.0/quintus-all.js'></script>
     </head>
     <body>
         <!--[if lt IE 8]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-
         <div class="header-container">
             <header class="wrapper clearfix">
                 <h1 class="title">Un jeu de logique : Les oeufs alligator</h1>
@@ -40,39 +35,41 @@
                     </ul>
                 </nav>
             </header>
-            <div id="top-panel">
-              <button id="prompt-mode">λ</button>
+        </div>
+
+        <div id="game-container">
+              <div id="top-panel">
+                  <button class="panel-button" id="go">Step</button>
+                  <button class="panel-button" data-type="speed"     >fast</button>
+                  <button class="panel-button" data-type="read"     >read</button>
+                  <div id="items">
+                      <div id="egg-svg"   class="item egg"></div>
+                      <div id="vieux-svg" class="item vieux-croco"></div>
+                      <div id="open-svg"  class="item croco"></div>
+                  </div>
+              </div>
               <input id="prompt" type="text" value="" />
-              <div id="item-croco" class="item croco"></div>
-              <div id="item-vieux-croco" class="item vieux-croco"></div>
-              <div id="item-egg" class="item egg"></div>     
-              <div id="choose-color" data-color="purple"></div>
-          </div>
-          
+              <div id="root">
+                  <div id="root_definition" class='definition_drop'></div>
+              </div>
+              <div id="lambda-panel">
+                <div id="choose-color" data-color="Blue"></div><br>
+                <button class="panel-button" data-type="clear"     >clear</button>
+                <button class="panel-button" data-type="open"      >(</button>
+                <button class="panel-button" data-type="close"     >)</button>
+                <button class="panel-button" data-type="autoclose" >auto-close</button>
+                <button class="panel-button" data-type="draw"      >Draw</button>
+                <button id="prompt-mode">λ</button>
+              </div>
         </div>
-        
-        <div id="lambda-panel">
-          <button class="panel-button" id="go">Step</button>
-          <button class="panel-button" data-type="open" >(</button>
-          <button class="panel-button" data-type="close">)</button>
-          <button class="panel-button" data-type="go"   >Draw</button>
-          <button class="panel-button" data-type="clear">clear</button>
-          <button class="panel-button" data-type="autoclose" >auto-close</button>
-          <button class="panel-button" data-type="speed" data-speed="true">Go Fast</button><br>
-        </div>
-      
-        <div class="game-container">
-          <div id="root"><div id="root_definition" class='definition_drop'></div></div>
-          <div id="egg-svg"></div><div id="open-svg"></div><div id="vieux-svg"></div>
-         
-        </div>
-      
+
+        <!-- #main-container -->
         <div class="main-container">
             <div class="main wrapper clearfix">
                 <article>
                     <header>
                         <h1>Théorie</h1>
-                      Ce jeu représente le lambda calcul (non typé). 
+                      Ce jeu représente le lambda calcul (non typé).<button id="play">Jouer</button>
                       <ul>
                         <li>Un alligator de couleur est une lambda abstraction</li>
                         <li>Un (vieil) alligator blanc représente des parenthèses</li>
@@ -297,17 +294,14 @@ alert int FACT FOUR
                 </aside>
 
             </div> <!-- #main -->
-        </div> <!-- #main-container -->
-        
-        <div id="main"></div>
-      
+        </div>
+
         <div class="footer-container">
             <footer class="wrapper">
                 <h3>Florian Tobé 2015</h3>
-            
             </footer>
         </div>
-      
+
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
 
         <script src="js/main.js"></script>
