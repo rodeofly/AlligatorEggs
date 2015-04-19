@@ -36,7 +36,7 @@
   $(function() {
     var get_lambda_from, initialize_html, inserer, inserer_direct, make_dropped_droppable;
     (initialize_html = function() {
-      var color, html, i, index, key, letter, value, _i, _j, _k, _len, _len1, _ref1, _ref2;
+      var color, html, i, index, letter, _i, _j, _k, _len, _len1, _ref1, _ref2;
       _ref1 = ALPHABET.slice(0, 26);
       for (index = _i = 0, _len = _ref1.length; _i < _len; index = ++_i) {
         letter = _ref1[index];
@@ -62,31 +62,21 @@
         return $("#vieux-svg svg")[0].setAttribute('viewBox', '0 0 228 78');
       }, "xml");
       html = "";
-      for (key in var_tab) {
-        value = var_tab[key];
-        html += "<button class='panel-button' data-type='lambda' data-variable='" + key + "'>λ" + key + "</button>";
-      }
-      html += "";
-      for (key in var_tab) {
-        value = var_tab[key];
-        html += "<button class='panel-button' data-type='variable' data-variable='" + key + "'>" + key + "</button>";
-      }
-      $("#lambda-panel").append(html);
-      html = "";
       for (i = _j = 0, _ref2 = lambda_exemples.length - 1; 0 <= _ref2 ? _j <= _ref2 : _j >= _ref2; i = 0 <= _ref2 ? ++_j : --_j) {
         html += "<button id='ex-" + i + "' class='panel-button' data-type='exemple' data-numero='" + i + "'>" + i + "</button>";
       }
-      $("#top-panel").prepend(html);
-      $("#prompt-mode").on("click", function() {
-        return $("#lambda-panel").dialog("open");
-      });
+      $("#items").before(html);
       for (index = _k = 0, _len1 = color_tab.length; _k < _len1; index = ++_k) {
         color = color_tab[index];
-        $("#choose-color").append("<div id='" + color + "' class='color' style='background-color:" + color + ";' data-color='" + color + "'>" + ALPHABET[index] + "</div>");
+        $("#choose-color").append("<div id='" + color + "' class='color' style='background-color:" + color + ";' data-color='" + color + "' data-variable='" + ALPHABET[index] + "'>" + ALPHABET[index] + "</div>");
       }
       $(".color").on("click", function() {
-        $("#choose-color").attr("data-color", $(this).attr("data-color"));
-        $(".item").find(".skin").css("fill", $(this).attr("data-color"));
+        var variable, _ref3;
+        _ref3 = [$(this).attr("data-color"), $(this).attr("data-variable")], color = _ref3[0], variable = _ref3[1];
+        $("#choose-color").attr("data-color", color);
+        $("#panel-lambda").attr("data-variable", variable).html("λ" + variable);
+        $("#panel-variable").attr("data-variable", variable).html("" + variable);
+        $(".item").find(".skin").css("fill", color);
         $(".color").removeClass("selected-color");
         return $(this).addClass("selected-color");
       });
@@ -108,9 +98,7 @@
           duration: 2000
         },
         hide: "size",
-        resizable: true,
-        draggable: true,
-        width: "80%",
+        width: "90%",
         height: Math.floor(90 * $(window).height() / 100),
         position: {
           my: "center",
@@ -129,19 +117,16 @@
       return $("#game-container").dialog("open");
     });
     $(".panel-button").on("click", function() {
-      var e, _results;
+      var e, index, letter, _i, _len, _ref1, _results;
       switch ($(this).data("type")) {
         case "lambda":
-          $("#prompt").val($("#prompt").val() + ("(λ" + ($(this).data("variable")) + "."));
-          return parentheses += 1;
+          return $("#prompt").val($("#prompt").val() + ("(λ" + ($(this).data("variable")) + "."));
         case "variable":
           return $("#prompt").val($("#prompt").val() + (" " + ($(this).data("variable")) + " "));
         case "open":
-          $("#prompt").val($("#prompt").val() + "(");
-          return parentheses += 1;
+          return $("#prompt").val($("#prompt").val() + "(");
         case "close":
-          $("#prompt").val($("#prompt").val() + ")");
-          return parentheses -= 1;
+          return $("#prompt").val($("#prompt").val() + ")");
         case "draw":
           e = jQuery.Event("keypress");
           e.which = 13;
@@ -157,12 +142,28 @@
           e.which = 13;
           return $('#prompt').trigger(e);
         case "autoclose":
-          _results = [];
-          while (parentheses > 0) {
-            $("#prompt").val($("#prompt").val() + ")");
-            _results.push(parentheses -= 1);
+          parentheses = 0;
+          _ref1 = $("#prompt").val();
+          for (index = _i = 0, _len = _ref1.length; _i < _len; index = ++_i) {
+            letter = _ref1[index];
+            switch (letter) {
+              case "(":
+                parentheses += 1;
+                break;
+              case ")":
+                parentheses -= 1;
+            }
           }
-          return _results;
+          if (parentheses < 0) {
+            return alert("il y a " + parentheses + " parenthese(s) fermée en trop !)");
+          } else {
+            _results = [];
+            while (parentheses > 0) {
+              $("#prompt").val($("#prompt").val() + ")");
+              _results.push(parentheses -= 1);
+            }
+            return _results;
+          }
           break;
         case "speed":
           $(this).html(speed ? "slow" : "fast");
@@ -172,7 +173,7 @@
       }
     });
     get_lambda_from = function(root) {
-      var data, exp, getKeyByValue;
+      var exp, getKeyByValue;
       getKeyByValue = function(value) {
         var key;
         for (key in var_tab) {
@@ -181,20 +182,19 @@
           }
         }
       };
-      data = root.clone();
-      data.find("svg").remove();
-      data.find(".definition_drop").remove();
-      data.find(".application_drop").remove();
-      exp = data.html();
-      exp = exp.replace(/<div id="\d*" class="variable dropped" data-variable="(\w+)"[ style="opacity: 1;"]*><\/div>/g, function(str, match) {
+      exp = root.clone();
+      exp.find("svg").remove();
+      exp.find(".definition_drop").remove();
+      exp.find(".application_drop").remove();
+      exp = exp.html();
+      exp = exp.replace(/<div id="\d+" class="variable dropped" data-variable="(\w+)"[ style="opacity: 1;"]*>\s*<\/div>/g, function(str, match) {
         return " " + getKeyByValue(match);
       });
-      exp = exp.replace(/<div id="\d*" class="lambda dropped" data-variable="(\w+)">/g, function(str, match) {
+      exp = exp.replace(/<div id="\d*" class="lambda dropped" data-variable="(\w+)"[ style="opacity: 1;"]*>/g, function(str, match) {
         return "(λ" + getKeyByValue(match) + ".";
       });
-      exp = exp.replace(/<div id="\d*" class="lambda priorite dropped" data-variable="white">/g, "(");
-      exp = exp.replace(/<\/div>/g, ")");
-      return exp;
+      exp = exp.replace(/<div id="\d*" class="lambda priorite dropped" data-variable="white"[ style="opacity: 1;"]*>/g, "(");
+      return exp = exp.replace(/<\/div>/g, ")");
     };
     inserer_direct = function(symbole, droppable, mode) {
       var classe, color, lambda, type, _ref1, _ref2, _ref3;

@@ -181,10 +181,13 @@ pre.code{
   margin-top : 0.5vw;
 }
 #top-panel {
-  display : inline-block;
-  width : 99%;
-  border-bottom : solid black 0.1vw;
-  margin-bottom : 0.5vw;
+  position : absolute;
+  margin: auto;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-top : solid black 0.1vw;
+  margin-top : 0.5vw;
 }
 #choose-color {
   display : inline-flex;
@@ -195,6 +198,7 @@ pre.code{
   width : 99%;
 }
 .color {
+  text-align : center;
   width : 2vw;
   height : 2vw;
 }
@@ -222,7 +226,7 @@ pre.code{
 #root {
   position:relative;
   width : 100%;
-  min-height : 25vw;
+  height : 80%;
   display : inline-block;
 }
 #root_definition.definition_drop {

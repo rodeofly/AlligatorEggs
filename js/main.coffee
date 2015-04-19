@@ -34,23 +34,19 @@ $ ->
       $("#vieux-svg svg")[0].setAttribute('viewBox', '0 0 228 78')
     , "xml"
 
-    html = ""
-    html+= "<button class='panel-button' data-type='lambda' data-variable='#{key}'>λ#{key}</button>" for key,value of var_tab
-    html+= ""
-    html+= "<button class='panel-button' data-type='variable' data-variable='#{key}'>#{key}</button>" for key,value of var_tab
-    $( "#lambda-panel" ).append html
     html= ""
     html += "<button id='ex-#{i}' class='panel-button' data-type='exemple' data-numero='#{i}'>#{i}</button>" for i in [0..lambda_exemples.length-1]
-    $( "#top-panel" ).prepend html
-    #Et pour faire apparaitre le panel
-    $( "#prompt-mode" ).on "click", -> $( "#lambda-panel").dialog("open")  
+    $( "#items" ).before html
     #Préchargement des images
     for color,index in color_tab
-      $( "#choose-color" ).append "<div id='#{color}' class='color' style='background-color:#{color};' data-color='#{color}'>#{ALPHABET[index]}</div>"
+      $( "#choose-color" ).append "<div id='#{color}' class='color' style='background-color:#{color};' data-color='#{color}' data-variable='#{ALPHABET[index]}'>#{ALPHABET[index]}</div>"
     #Choix d'une couleur dans la palette
     $( ".color" ).on "click", ->
-      $( "#choose-color" ).attr("data-color", $(this).attr("data-color"))
-      $( ".item" ).find(".skin").css("fill", $(this).attr("data-color"))
+      [color, variable] = [$( this ).attr("data-color"),$( this ).attr("data-variable")]
+      $( "#choose-color" ).attr("data-color", color)
+      $( "#panel-lambda").attr("data-variable",variable).html("λ#{variable}")
+      $( "#panel-variable").attr("data-variable", variable).html("#{variable}")
+      $( ".item" ).find(".skin").css("fill", color)
       $( ".color" ).removeClass("selected-color" )
       $( this ).addClass( "selected-color" )
 
@@ -66,9 +62,7 @@ $ ->
       modal: true
       show:  {effect: 'fade', duration: 2000}
       hide: "size"
-      resizable:true
-      draggable:true
-      width : "80%"
+      width : "90%"
       height:  Math.floor(90 * $(window).height() / 100)
       position:
         my: "center"
@@ -83,15 +77,12 @@ $ ->
     switch $( this ).data("type")
       when "lambda"
         $( "#prompt").val($( "#prompt").val() + "(λ#{$( this ).data("variable")}.")
-        parentheses += 1
       when "variable"
         $( "#prompt").val($( "#prompt").val() + " #{$( this ).data("variable")} ")
       when "open"
         $( "#prompt").val($( "#prompt").val() + "(")
-        parentheses += 1
       when "close"
         $( "#prompt").val($( "#prompt").val() + ")")
-        parentheses -= 1
       when "draw"
         e = jQuery.Event("keypress")
         e.which = 13
@@ -107,32 +98,39 @@ $ ->
         e.which = 13
         $('#prompt').trigger(e)
       when "autoclose"
-        while parentheses > 0
-          $( "#prompt").val($( "#prompt").val() + ")")
-          parentheses -= 1
+        parentheses = 0
+        for letter,index in $("#prompt").val()
+          switch letter
+            when "("
+              parentheses += 1
+            when ")" 
+              parentheses -= 1
+        if parentheses < 0
+          alert "il y a #{parentheses} parenthese(s) fermée en trop !)"
+        else
+          while parentheses > 0
+            $( "#prompt").val($( "#prompt").val() + ")")
+            parentheses -= 1
       when "speed"
-        $(this).html if speed then "slow" else "fast"
+        $(this).html( if speed then "slow" else "fast" )
         speed = not speed
       when "read"
         $("#prompt").val get_lambda_from $("#root")
-  
+
   get_lambda_from = (root) ->
-    getKeyByValue = ( value ) ->
+    getKeyByValue = ( value ) -> 
       for key of var_tab
         return key if ( var_tab[key] is value )
-    data = root.clone()
-    data.find("svg").remove()
-    data.find(".definition_drop").remove()
-    data.find(".application_drop").remove()
-    exp = data.html()
-    exp = exp.replace /<div id="\d*" class="variable dropped" data-variable="(\w+)"[ style="opacity: 1;"]*><\/div>/g, (str,match) ->
-      return " " + getKeyByValue(match)
-    exp = exp.replace /<div id="\d*" class="lambda dropped" data-variable="(\w+)">/g, (str,match) ->
-      return "(λ"+getKeyByValue(match)+"."
-    exp = exp.replace /<div id="\d*" class="lambda priorite dropped" data-variable="white">/g, "("
+    exp = root.clone()
+    exp.find("svg").remove()
+    exp.find(".definition_drop").remove()
+    exp.find(".application_drop").remove()
+    exp = exp.html()
+    exp = exp.replace /<div id="\d+" class="variable dropped" data-variable="(\w+)"[ style="opacity: 1;"]*>\s*<\/div>/g, (str,match) -> return " " + getKeyByValue(match)
+    exp = exp.replace /<div id="\d*" class="lambda dropped" data-variable="(\w+)"[ style="opacity: 1;"]*>/g, (str,match) -> return "(λ"+getKeyByValue(match)+"."
+    exp = exp.replace /<div id="\d*" class="lambda priorite dropped" data-variable="white"[ style="opacity: 1;"]*>/g, "("
     exp = exp.replace(/<\/div>/g , ")")
-    return exp
-        
+
   #Parser une expression
   inserer_direct = (symbole, droppable,mode) ->
     switch symbole
