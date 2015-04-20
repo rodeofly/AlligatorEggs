@@ -86,19 +86,19 @@
       for (i = _j = 0, _ref2 = lambda_exemples.length - 1; 0 <= _ref2 ? _j <= _ref2 : _j >= _ref2; i = 0 <= _ref2 ? ++_j : --_j) {
         html += "<button id='ex-" + i + "' class='panel-button' data-type='exemple' data-numero='" + i + "'>" + i + "</button>";
       }
-      $("#items").before(html + "<br>");
+      $("#draw").after(html + "<br>");
       html = "";
       for (key in EXEMPLES) {
         value = EXEMPLES[key];
         html += "<button id='" + key + "' class='panel-button' data-type='fonction' data-lambda='" + value + "'>" + key + "</button>";
       }
       $("#items").before(html);
-      html = "<br>";
+      html = "";
       for (index = _k = 0, _len1 = color_tab.length; _k < _len1; index = ++_k) {
         color = color_tab[index];
         html += "<div id='" + color + "' class='color' style='background-color:" + color + ";' data-color='" + color + "' data-variable='" + ALPHABET[index] + "'>" + ALPHABET[index] + "</div>";
       }
-      $("#items").before(html);
+      $("#panel-variable").after(html);
       $(".item").draggable({
         helper: "clone",
         tolerance: "touch",

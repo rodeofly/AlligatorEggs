@@ -183,28 +183,24 @@ pre.code{
   margin-top : 0.5vw;
 }
 #top-panel {
-  vertical-align : middle;
   position : relative;
   display : inline-block;
   margin: auto;
-  top: 0;
-  left: 0;
-  right: 0;
-  border-top : solid black 0.1vw;
-  margin-top : 0.5vw;
+  margin-bottom : 0.5vw;
 }
 .color {
   display : inline-block;
+  vertical-align : middle;
+  text-align : center;
+  line-height : 3vw;
+  width : 3vw;
+  height : 3vw;
 }
 #prompt {
   font-size : 1vw;
   width : 99%;
 }
-.color {
-  text-align : center;
-  width : 3.25vw;
-  height : 3.25vw;
-}
+
 .selected-color {
   -webkit-box-shadow:inset 0px 0px 0px 0.2vw #000;
   -moz-box-shadow:inset 0px 0px 0px 0.2vw #000;

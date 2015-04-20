@@ -56,16 +56,16 @@ $ ->
 
     html= ""
     html += "<button id='ex-#{i}' class='panel-button' data-type='exemple' data-numero='#{i}'>#{i}</button>" for i in [0..lambda_exemples.length-1]
-    $( "#items" ).before "#{html}<br>"
+    $( "#draw" ).after "#{html}<br>"
 
     html= ""
     html += "<button id='#{key}' class='panel-button' data-type='fonction' data-lambda='#{value}'>#{key}</button>" for key,value of EXEMPLES
     $( "#items" ).before html
-    html= "<br>"
+    html= ""
     #Préchargement des images
     for color,index in color_tab
       html+= "<div id='#{color}' class='color' style='background-color:#{color};' data-color='#{color}' data-variable='#{ALPHABET[index]}'>#{ALPHABET[index]}</div>"
-    $( "#items" ).before html
+    $( "#panel-variable" ).after html
 
     $( ".item" ).draggable
       helper : "clone"

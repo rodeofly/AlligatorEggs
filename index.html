@@ -38,7 +38,6 @@
 
         <div id="game-container">
               <div id="top-panel">
-                  <input id="prompt" type="text" value="" />
                   <button class="panel-button" id="go">Step</button>
                   <button class="panel-button" data-type="speed"     >fast</button>
                   <button class="panel-button" data-type="read"     >read</button>
@@ -46,7 +45,7 @@
                   <button class="panel-button" data-type="open"      >(</button>
                   <button class="panel-button" data-type="close"     >)</button>
                   <button class="panel-button" data-type="autoclose" >auto-close</button>
-                  <button class="panel-button" data-type="draw"      >Draw</button>
+                  <button id="draw" class="panel-button" data-type="draw"      >Draw</button><br>
                   <button id="panel-lambda"   class="panel-button" data-type="lambda"   data-variable="a">λa</button>
                   <button id="panel-variable" class="panel-button" data-type="variable" data-variable="a">a</button>
                   <div id="items">
@@ -55,6 +54,7 @@
                       <div id="open-svg"  class="item croco"></div>
                       <div id="choose-color" data-color="Blue"></div>
                   </div>
+                 <input id="prompt" type="text" value="" />
               </div>
               <div id="root">
                   <div id="root_definition" class='definition_drop'></div>
