@@ -110,7 +110,7 @@
         },
         cursorAt: {
           top: 100,
-          left: 0
+          left: 25
         }
       });
       return $("#game-container").dialog({

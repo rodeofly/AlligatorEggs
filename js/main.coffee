@@ -72,7 +72,7 @@ $ ->
       tolerance :"touch"
       start:  (event, ui) -> $(ui.helper).addClass("ui-draggable-helper")
       stop : (event, ui) ->  $(this).show()
-      cursorAt : {top :  100, left : 0}
+      cursorAt : {top :  100, left : 25}
      
     $("#game-container").dialog
       zIndex : 10
