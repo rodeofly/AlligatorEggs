@@ -223,11 +223,20 @@ pre.code{
 }
 #root {
   position:relative;
-  width : 100%;
+  width : 49%;
   min-height : 25%;
   display : inline-block;
+  border : 0.2vw solid black;
 }
-#root_definition.definition_drop {
+#solution {
+  position:relative;
+  width : 49%;
+  min-height : 25%;
+  display : inline-block;
+  border : 0.2vw solid red;
+
+}
+#root_definition.definition_drop, #solution_definition.definition_drop {
   position : absolute;
   top : 0;left:0;
   width : 100%;
@@ -294,7 +303,9 @@ svg {
   width  : 4vw;
   height : 2vw;
 }
-
+.variable.dropped:before {
+content: attr(data-variable);
+}
 .definition_drop, .application_drop {
   position : absolute;
   border:black dashed 1px;
