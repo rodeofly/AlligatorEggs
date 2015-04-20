@@ -40,18 +40,7 @@ $ ->
     #Préchargement des images
     for color,index in color_tab
       $( "#choose-color" ).append "<div id='#{color}' class='color' style='background-color:#{color};' data-color='#{color}' data-variable='#{ALPHABET[index]}'>#{ALPHABET[index]}</div>"
-    #Choix d'une couleur dans la palette
-    $( ".color" ).on "click", ->
-      [color, variable] = [$( this ).attr("data-color"),$( this ).attr("data-variable")]
-      $( "#choose-color" ).attr("data-color", color)
-      $( "#panel-lambda").attr("data-variable",variable).html("λ#{variable}")
-      $( "#panel-variable").attr("data-variable", variable).html("#{variable}")
-      $( ".item" ).find(".skin").css("fill", color)
-      $( ".color" ).removeClass("selected-color" )
-      $( this ).addClass( "selected-color" )
-
-    $( "#Blue" ).trigger "click"
-
+    
     $( ".item" ).draggable
       helper : "clone"
       start:  (event, ui) -> $(ui.helper).addClass("ui-draggable-helper")
@@ -71,14 +60,27 @@ $ ->
       open: -> $("body").addClass("stop-scrolling")
       close: -> $("body").removeClass("stop-scrolling")
         
+
   $("#play").on "click", -> $("#game-container").dialog("open")
+  
+  #Choix d'une couleur dans la palette
+  $( ".color" ).on "click", ->
+    [color, variable] = [$( this ).attr("data-color"),$( this ).attr("data-variable")]
+    $( "#choose-color" ).attr("data-color", color)
+    $( "#panel-lambda" ).attr("data-variable", variable).html("λ#{variable}")
+    $("#panel-variable").attr("data-variable", variable).html("#{variable}")
+    $( ".item" ).find(".skin").css("fill", color)
+    $( ".color" ).removeClass("selected-color" )
+    $( this ).addClass( "selected-color" )
+  $( "#Blue" ).trigger "click"
+
   #Gestion du panel
   $( ".panel-button" ).on "click", ->
-    switch $( this ).data("type")
+    switch $( this ).attr("data-type")
       when "lambda"
-        $( "#prompt").val($( "#prompt").val() + "(λ#{$( this ).data("variable")}.")
+        $( "#prompt").val($( "#prompt").val() + "λ#{$( this ).attr('data-variable')}.")
       when "variable"
-        $( "#prompt").val($( "#prompt").val() + " #{$( this ).data("variable")} ")
+        $( "#prompt").val($( "#prompt").val() + " #{$( this ).attr('data-variable')} ")
       when "open"
         $( "#prompt").val($( "#prompt").val() + "(")
       when "close"
@@ -93,7 +95,7 @@ $ ->
         $( "#prompt" ).val("")
         make_dropped_droppable()
       when "exemple"
-        $("#prompt").val lambda_exemples[$(this).data("numero")]
+        $("#prompt").val lambda_exemples[$(this).attr("data-numero")]
         e = jQuery.Event("keypress")
         e.which = 13
         $('#prompt').trigger(e)
@@ -103,7 +105,7 @@ $ ->
           switch letter
             when "("
               parentheses += 1
-            when ")" 
+            when ")"
               parentheses -= 1
         if parentheses < 0
           alert "il y a #{parentheses} parenthese(s) fermée en trop !)"
@@ -232,7 +234,7 @@ $ ->
       pointer[0].parentNode.replaceChild(fragment, pointer[0])
     while stay
       alert "stay for a loop" if local_debug
-      ahead_color.push pointer.data("variable")
+      ahead_color.push pointer.attr("data-variable")
       #On tombe sur un croco blanc
       if (pointer.hasClass "priorite")
         alert "Croco blanc !" if local_debug
@@ -253,7 +255,7 @@ $ ->
             continue
       #On tombe sur un croco de couleur
       if (pointer.hasClass "lambda") and (not pointer.hasClass "priorite")
-        alert "Croco #{pointer.data('variable')} !" if local_debug
+        alert "Croco #{pointer.attr('data-variable')} !" if local_debug
         switch pointer.next().length
           when 0
             alert "has nothing to eat...go deeper" if local_debug
@@ -270,17 +272,17 @@ $ ->
             continue
       # On tombe sur un oeuf
       if (pointer.hasClass "variable")
-        alert "Oeuf #{pointer.data('variable')} !" if local_debug
+        alert "Oeuf #{pointer.attr('data-variable')} !" if local_debug
         pointer = pointer.next()
         continue
       #rien ne va plus
       alert "no if detected. breakin' !" if local_debug
       stay = false
 
-    if (pointer.hasClass "lambda") and (pointer.data("color") isnt "white") and (pointer.next().length > 0)
+    if (pointer.hasClass "lambda") and (pointer.attr("data-color") isnt "white") and (pointer.next().length > 0)
       #Paré pour la regle de la couleur, on a la couleur de base et l'ensemble de couleurs reservées !
       ahead_color = ahead_color.unique()
-      variable = pointer.data("variable")
+      variable = pointer.attr("data-variable")
       # On recupere l'application, eventuellement on change de couleur et on la clone parce qu'elle va degager
       application = pointer.next()
       do color_rule_check = (pointer, application) ->

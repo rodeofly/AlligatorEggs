@@ -70,17 +70,6 @@
         color = color_tab[index];
         $("#choose-color").append("<div id='" + color + "' class='color' style='background-color:" + color + ";' data-color='" + color + "' data-variable='" + ALPHABET[index] + "'>" + ALPHABET[index] + "</div>");
       }
-      $(".color").on("click", function() {
-        var variable, _ref3;
-        _ref3 = [$(this).attr("data-color"), $(this).attr("data-variable")], color = _ref3[0], variable = _ref3[1];
-        $("#choose-color").attr("data-color", color);
-        $("#panel-lambda").attr("data-variable", variable).html("λ" + variable);
-        $("#panel-variable").attr("data-variable", variable).html("" + variable);
-        $(".item").find(".skin").css("fill", color);
-        $(".color").removeClass("selected-color");
-        return $(this).addClass("selected-color");
-      });
-      $("#Blue").trigger("click");
       $(".item").draggable({
         helper: "clone",
         start: function(event, ui) {
@@ -116,13 +105,24 @@
     $("#play").on("click", function() {
       return $("#game-container").dialog("open");
     });
+    $(".color").on("click", function() {
+      var color, variable, _ref1;
+      _ref1 = [$(this).attr("data-color"), $(this).attr("data-variable")], color = _ref1[0], variable = _ref1[1];
+      $("#choose-color").attr("data-color", color);
+      $("#panel-lambda").attr("data-variable", variable).html("λ" + variable);
+      $("#panel-variable").attr("data-variable", variable).html("" + variable);
+      $(".item").find(".skin").css("fill", color);
+      $(".color").removeClass("selected-color");
+      return $(this).addClass("selected-color");
+    });
+    $("#Blue").trigger("click");
     $(".panel-button").on("click", function() {
       var e, index, letter, _i, _len, _ref1, _results;
-      switch ($(this).data("type")) {
+      switch ($(this).attr("data-type")) {
         case "lambda":
-          return $("#prompt").val($("#prompt").val() + ("(λ" + ($(this).data("variable")) + "."));
+          return $("#prompt").val($("#prompt").val() + ("λ" + ($(this).attr('data-variable')) + "."));
         case "variable":
-          return $("#prompt").val($("#prompt").val() + (" " + ($(this).data("variable")) + " "));
+          return $("#prompt").val($("#prompt").val() + (" " + ($(this).attr('data-variable')) + " "));
         case "open":
           return $("#prompt").val($("#prompt").val() + "(");
         case "close":
@@ -137,7 +137,7 @@
           $("#prompt").val("");
           return make_dropped_droppable();
         case "exemple":
-          $("#prompt").val(lambda_exemples[$(this).data("numero")]);
+          $("#prompt").val(lambda_exemples[$(this).attr("data-numero")]);
           e = jQuery.Event("keypress");
           e.which = 13;
           return $('#prompt').trigger(e);
@@ -408,7 +408,7 @@
         if (local_debug) {
           alert("stay for a loop");
         }
-        ahead_color.push(pointer.data("variable"));
+        ahead_color.push(pointer.attr("data-variable"));
         if (pointer.hasClass("priorite")) {
           if (local_debug) {
             alert("Croco blanc !");
@@ -433,7 +433,7 @@
         }
         if ((pointer.hasClass("lambda")) && (!pointer.hasClass("priorite"))) {
           if (local_debug) {
-            alert("Croco " + (pointer.data('variable')) + " !");
+            alert("Croco " + (pointer.attr('data-variable')) + " !");
           }
           switch (pointer.next().length) {
             case 0:
@@ -458,7 +458,7 @@
         }
         if (pointer.hasClass("variable")) {
           if (local_debug) {
-            alert("Oeuf " + (pointer.data('variable')) + " !");
+            alert("Oeuf " + (pointer.attr('data-variable')) + " !");
           }
           pointer = pointer.next();
           continue;
@@ -468,9 +468,9 @@
         }
         stay = false;
       }
-      if ((pointer.hasClass("lambda")) && (pointer.data("color") !== "white") && (pointer.next().length > 0)) {
+      if ((pointer.hasClass("lambda")) && (pointer.attr("data-color") !== "white") && (pointer.next().length > 0)) {
         ahead_color = ahead_color.unique();
-        variable = pointer.data("variable");
+        variable = pointer.attr("data-variable");
         application = pointer.next();
         (color_rule_check = function(pointer, application) {
           var application_colors, application_items, color, difference, get_colors, index, item, new_color, pointer_colors, used_colors, _i, _j, _len, _len1, _results;
