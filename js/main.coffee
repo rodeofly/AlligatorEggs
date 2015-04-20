@@ -6,6 +6,26 @@ delay = (ms, func) -> setTimeout func, ms
 interval = (ms, func) -> setInterval func, ms
 
 CSS_COLOR_NAMES = ["Blue","BlueViolet","Brown","BurlyWood","CadetBlue","Chartreuse","Chocolate","Coral","CornflowerBlue","Cornsilk","Crimson","Cyan","DarkBlue","DarkCyan","DarkGoldenRod","DarkGray","DarkGreen","DarkKhaki","DarkMagenta","DarkOliveGreen","Darkorange","DarkOrchid","DarkRed","DarkSalmon","DarkSeaGreen","DarkSlateBlue","DarkSlateGray","DarkSlateGrey","DarkTurquoise","DarkViolet","DeepPink","DeepSkyBlue","DimGray","DimGrey","DodgerBlue","FireBrick","FloralWhite","ForestGreen","Fuchsia","Gainsboro","GhostWhite","Gold","GoldenRod","Gray","Grey","Green","GreenYellow","HoneyDew","HotPink","IndianRed","Indigo","Ivory","Khaki","Lavender","LavenderBlush","LawnGreen","LemonChiffon","LightBlue","LightCoral","LightCyan","LightGoldenRodYellow","LightGray","LightGrey","LightGreen","LightPink","LightSalmon","LightSeaGreen","LightSkyBlue","LightSlateGray","LightSlateGrey","LightSteelBlue","LightYellow","Lime","LimeGreen","Linen","Magenta","Maroon","MediumAquaMarine","MediumBlue","MediumOrchid","MediumPurple","MediumSeaGreen","MediumSlateBlue","MediumSpringGreen","MediumTurquoise","MediumVioletRed","MidnightBlue","MintCream","MistyRose","Moccasin","NavajoWhite","Navy","OldLace","Olive","OliveDrab","Orange","OrangeRed","Orchid","PaleGoldenRod","PaleGreen","PaleTurquoise","PaleVioletRed","PapayaWhip","PeachPuff","Peru","Pink","Plum","PowderBlue","Purple","Red","RosyBrown","RoyalBlue","SaddleBrown","Salmon","SandyBrown","SeaGreen","SeaShell","Sienna","Silver","SkyBlue","SlateBlue","SlateGray","SlateGrey","Snow","SpringGreen","SteelBlue","Tan","Teal","Thistle","Tomato","Turquoise","Violet","Wheat","White","WhiteSmoke","Yellow","YellowGreen"]
+EXEMPLES = 
+  "ZERO"  : "(λf.λx.x)"
+  "ONE"   : "(λf.λx.f x)"
+  "TWO"   : "(λf.λx.f (f x))"
+  "THREE" : "(λf.λx.f (f (f x)))"
+  "SUCC"  : "(λn.λf.λx.f (n f x))"
+  "PLUS"  : "(λm.λn.λf.λx.m f (n f x))"
+  "MULT"  : "(λm.λn.λf.m (n f))"
+  "POW"   : "(λb.λe.e b)"
+  "PRED"  : "(λn.λf.λx.n (λg.λh.h (g f)) (λu.x) (λu.u))"
+  "SUB"   : "(λm.λn.n (λn.λf.λx.n (λg.λh.h (g f)) (λu.x) (λu.u)) m)"
+  "TRUE"  : "(λx.λy.x)"
+  "FALSE" : "(λx.λy.y)"
+  "AND"   : "(λp.λq.p q p)"
+  "OR"    : "(λp.λq.p p q)"
+  "NOT"   : "(λp.λa.λb.p b a)"
+  "IFTHENELSE" : "(λp.λa.λb.p a b)"
+  "ISZERO"     : "(λn.n (λx.(λx.λy.y)) (λx.λy.x))"
+  "LEQ"        : "(λm.λn.(λp.p (λx.(λx.λy.y)) (λx.λy.x)) ((λq.λr.r (λr.λf.λx.r (λg.λh.h (g f)) (λu.x) (λu.u)) q) m n))"
+
 lambda_exemples = ["(λx.x) (λy.y)","(λx.λy.x) (λy.y)","((λy.y) (λz.z))(λx.x)","(λx.λy. x) a b","(λx.λy. y) a b","(λa. a (λm.(λn. n ))(λp.(λq. p )))(λx.λy. y) a b","(λx.x x) (λx.x x)","λy.(λx.y (x x)) (λx.y (x x))","(λa.λs.λz.s (a s z)) (λs.λz.z) ","(λa.λb.λs.λz.(a s (b s z))) (λs.λz.(s z)) (λs.λz.(s z))","(λa.λb.λs.λz.(a s (b s z))) (λs.λz.(s (s (s z)))) (λs.λz.(s (s (s (s z)))))"]
 ALPHABET = "abcdefghijklmnopqrstuvwxyz"
 [color_tab, var_tab, debug, speed, id, parentheses] = [ [], {}, false, true, 0, 0 ]
@@ -36,16 +56,24 @@ $ ->
 
     html= ""
     html += "<button id='ex-#{i}' class='panel-button' data-type='exemple' data-numero='#{i}'>#{i}</button>" for i in [0..lambda_exemples.length-1]
+    $( "#items" ).before "#{html}<br>"
+
+    html= ""
+    html += "<button id='#{key}' class='panel-button' data-type='fonction' data-lambda='#{value}'>#{key}</button>" for key,value of EXEMPLES
     $( "#items" ).before html
+    html= "<br>"
     #Préchargement des images
     for color,index in color_tab
-      $( "#choose-color" ).append "<div id='#{color}' class='color' style='background-color:#{color};' data-color='#{color}' data-variable='#{ALPHABET[index]}'>#{ALPHABET[index]}</div>"
-    
+      html+= "<div id='#{color}' class='color' style='background-color:#{color};' data-color='#{color}' data-variable='#{ALPHABET[index]}'>#{ALPHABET[index]}</div>"
+    $( "#items" ).before html
+
     $( ".item" ).draggable
       helper : "clone"
+      tolerance :"touch"
       start:  (event, ui) -> $(ui.helper).addClass("ui-draggable-helper")
       stop : (event, ui) ->  $(this).show()
-
+      cursorAt : {top :  100, left : 0}
+     
     $("#game-container").dialog
       zIndex : 10
       modal: true
@@ -99,6 +127,8 @@ $ ->
         e = jQuery.Event("keypress")
         e.which = 13
         $('#prompt').trigger(e)
+      when "fonction"
+        $("#prompt").val( $("#prompt").val() + " " + $(this).attr("data-lambda") )
       when "autoclose"
         parentheses = 0
         for letter,index in $("#prompt").val()
@@ -225,7 +255,7 @@ $ ->
     $( ".application_drop, .definition_drop" ).remove()
     # Top-left RULE
     pointer = $("#root > .lambda:first")
-    ahead_color =["white"]
+    ahead_color =[]
     stay = true
     decapsule = (pointer) ->
       fragment = document.createDocumentFragment()
@@ -234,7 +264,6 @@ $ ->
       pointer[0].parentNode.replaceChild(fragment, pointer[0])
     while stay
       alert "stay for a loop" if local_debug
-      ahead_color.push pointer.attr("data-variable")
       #On tombe sur un croco blanc
       if (pointer.hasClass "priorite")
         alert "Croco blanc !" if local_debug
@@ -256,6 +285,7 @@ $ ->
       #On tombe sur un croco de couleur
       if (pointer.hasClass "lambda") and (not pointer.hasClass "priorite")
         alert "Croco #{pointer.attr('data-variable')} !" if local_debug
+        ahead_color.push pointer.attr("data-variable")
         switch pointer.next().length
           when 0
             alert "has nothing to eat...go deeper" if local_debug
@@ -273,6 +303,7 @@ $ ->
       # On tombe sur un oeuf
       if (pointer.hasClass "variable")
         alert "Oeuf #{pointer.attr('data-variable')} !" if local_debug
+        ahead_color.push pointer.attr("data-variable")
         pointer = pointer.next()
         continue
       #rien ne va plus
@@ -288,7 +319,7 @@ $ ->
       do color_rule_check = (pointer, application) ->
         get_colors = (tree) ->
           palette = []
-          tree.find( "[data-variable]" ).andSelf().filter("[data-variable]").each -> palette.push $( this ).data("variable")
+          tree.find( "[data-variable]" ).andSelf().filter("[data-variable]").not(".lambda.priorite").each -> palette.push $( this ).data("variable")
           palette.unique()
         #On va lister les couleurs utilisées dans la definition de la fonction
         pointer_colors = get_colors pointer
@@ -310,7 +341,7 @@ $ ->
               application.find( "[data-variable=#{application_colors[index]}]").andSelf().filter("[data-variable=#{application_colors[index]}]").each ->
                 if $( this ).attr("data-variable") not in ahead_color
                   $( this ).attr("data-variable", new_color)
-                  $( this ).find(".skin").css("fill", new_color)
+                  $( this ).find("svg").first().find(".skin").css("fill", new_color)
             alert "C'est vu ?" if not speed
             break
       applicationClone =  application.clone()

@@ -163,10 +163,11 @@ nav a:hover {
   height:100%;
 }
 button {
-  min-width : 2.5vw;
-  height : 2vw;
+  min-width : 3.5vw;
+  height : 3.5vw;
   display : inline-block;
-  font-size : .75vw !important;
+  line-height: auto;
+  font-size : 1vw !important;
  
 }
 pre.code{
@@ -183,17 +184,17 @@ pre.code{
 }
 #top-panel {
   vertical-align : middle;
-  position : absolute;
+  position : relative;
+  display : inline-block;
   margin: auto;
-  bottom: 0;
+  top: 0;
   left: 0;
   right: 0;
   border-top : solid black 0.1vw;
   margin-top : 0.5vw;
 }
-#choose-color {
-  display : inline-flex;
-  flex-wrap: wrap;
+.color {
+  display : inline-block;
 }
 #prompt {
   font-size : 1vw;
@@ -201,14 +202,13 @@ pre.code{
 }
 .color {
   text-align : center;
-  width : 2vw;
-  height : 2vw;
+  width : 3.25vw;
+  height : 3.25vw;
 }
 .selected-color {
-  box-sizing:border-box;
-  -moz-box-sizing:border-box;
-  -webkit-box-sizing:border-box;
-  border : solid black 0.2vw;
+  -webkit-box-shadow:inset 0px 0px 0px 0.2vw #000;
+  -moz-box-shadow:inset 0px 0px 0px 0.2vw #000;
+  box-shadow:inset 0px 0px 0px 0.2<vw #000;
 
 }
 
@@ -228,7 +228,7 @@ pre.code{
 #root {
   position:relative;
   width : 100%;
-  height : 80%;
+  min-height : 25%;
   display : inline-block;
 }
 #root_definition.definition_drop {
@@ -326,7 +326,11 @@ div#preloaded-images, div.exemple {
    height: 1px;
    width: 1px;
 }
-
+#go {
+  position : fixed;
+  top : 50%;
+  left : 0;
+}
 
 
 /* ==========================================================================
