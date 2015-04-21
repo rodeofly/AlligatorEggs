@@ -30,9 +30,9 @@ lambda_exemples = ["(λx.x) (λy.y)","(λx.λy.x) (λy.y)","((λy.y) (λz.z))(λ
 EXERCICES =
   "0" :
     "titre"    : 'Tutoriel : "Le vieil alligator & les oeufs"'
-    "texte"     : "Voilà un vieil alligator avec des oeufs ! Le vieil alligator n'a plus faim, il a assez mangé.<br>Tous ce qu'il fait, c'est prendre soins de sa famille ; ici ce sont des oeufs ! Les oeufs vont éclorent et donner de nouvelles familles d'alligators"
-    "lambda"   : "(f g h i i)"
-    "solution" : "(f g h i i)" 
+    "texte"     : "Voilà un vieil alligator avec des oeufs ! Le vieil alligator n'a plus faim, il a assez mangé.<br>Tous ce qu'il fait, c'est prendre soins de sa famille ; ici ce sont des oeufs ! Les oeufs vont éclorent et donner de nouvelles familles d'alligators<br>Fais glisser le premier oeuf sur le bout de la queue. Enfin, un à un, glisse des oeufs les uns sur les autres pour les ajouter !"
+    "lambda"   : "(?)"
+    "solution" : "(f g h i i )" 
   "1" :
     "titre"    : 'Tutoriel : "Les alligators affamés"'
     "texte"     : "Voilà des alligators affamés...Les alligators affamés ont faim. Ils vont manger tout ce qui est en face d'eux! Mais ils sont aussi des alligators responsables, et comme les vieux alligators, ils gardent leurs familles."
@@ -84,7 +84,6 @@ $ ->
 
     $( ".item" ).draggable
       helper : "clone"
-      tolerance :"touch"
       start:  (event, ui) -> $(ui.helper).addClass("ui-draggable-helper")
       stop : (event, ui) ->  $(this).show()
       cursorAt : {top :  100, left : 150}
@@ -167,7 +166,7 @@ $ ->
     exp.find(".definition_drop").remove()
     exp.find(".application_drop").remove()
     exp = exp.html()
-    exp = exp.replace /<div id="\d*" class="variable dropped" data-variable="(\w+)" data-color="\w+"[ style="opacity: 1;"]*>\s*<\/div>/g, "$1"
+    exp = exp.replace /<div id="\d*" class="variable dropped" data-variable="(\w+)" data-color="\w+"[ style="opacity: 1;"]*>\s*<\/div>/g, "$1 "
     exp = exp.replace /<div id="\d*" class="lambda dropped" data-variable="(\w+)" data-color="\w+"[ style="opacity: 1;"]*>/g, "λ$1.("
     exp = exp.replace /<div id="\d*" class="lambda priorite dropped" data-variable="\(" data-color="white"[ style="opacity: 1;"]*>/g, "("
     exp = exp.replace(/<\/div>/g , ")")
@@ -176,7 +175,7 @@ $ ->
     expression = exp
     id = 0
     #make it easy to retrieve variables
-    expression = expression.replace /([.( ])([a-z])/g, "$1woot$2 " 
+    expression = expression.replace /([.( ])([a-z])/g, "$1woot$2" 
     #lambdas
     while expression.match /λ/
       expression = expression.replace /λ(\w).([^)]*\s?\)*)/ , "<div id='' class='lambda dropped' data-variable='$1' data-color=''>$2</div>"
@@ -420,7 +419,7 @@ $ ->
     if s is r
       alert "Super ! Si tu as tout compris, passe à l'exo suivant. Sinon rejoue !"
     else
-      alert "bittos !" 
+      alert "bittos ! cliques sur go...[debug soluce : #{s} ; eleve : #{r}]" 
     
 
   #Pour l'article
