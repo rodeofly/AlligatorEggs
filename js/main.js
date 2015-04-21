@@ -48,11 +48,25 @@
     "LEQ": "(λm.λn.(λp.p (λx.(λx.λy.y)) (λx.λy.x)) ((λq.λr.r (λr.λf.λx.r (λg.λh.h (g f)) (λu.x) (λu.u)) q) m n))"
   };
 
-  lambda_exemples = ["(λx.x) (λy.y)", "(λx.λy.x) (λy.y)", "((λy.y) (λz.z))(λx.x)", "(λx.λy. x) a b", "(λx.λy. y) a b", "(λa. a (λm.(λn. n ))(λp.(λq. p )))(λx.λy. y) a b", "(λx.x x) (λx.x x)", "λy.(λx.y (x x)) (λx.y (x x))", "(λa.λs.λz.s (a s z)) (λs.λz.z) ", "(λa.λb.λs.λz.(a s (b s z))) (λs.λz.(s z)) (λs.λz.(s z))", "(λa.λb.λs.λz.(a s (b s z))) (λs.λz.(s (s (s z)))) (λs.λz.(s (s (s (s z)))))"];
+  lambda_exemples = ["(λx.x) (λy.y)", "(λx.λy.x) (λy.y)", "((λy.y) (λz.z))(λx.x)", "(λx.λy. x) a b", "(λx.λy. y) a b", "(λa. a (λm.(λn. n ))(λp.(λq. p )))(λx.λy. y) a b", "(λx.x x) (λx.x x)", "λy.((λx.y (x x)) (λx.y (x x)))", "(λa.λs.λz.s (a s z)) (λs.λz.z) ", "(λa.λb.λs.λz.(a s (b s z))) (λs.λz.(s z)) (λs.λz.(s z))", "(λa.λb.λs.λz.(a s (b s z))) (λs.λz.(s (s (s z)))) (λs.λz.(s (s (s (s z)))))"];
 
   EXERCICES = {
+    "0": {
+      "titre": 'Tutoriel : "Le vieil alligator & les oeufs"',
+      "texte": "Voilà un vieil alligator avec des oeufs ! Le vieil alligator n'a plus faim, il a assez mangé.<br>Tous ce qu'il fait, c'est prendre soins de sa famille ; ici ce sont des oeufs ! Les oeufs vont éclorent et donner de nouvelles familles d'alligators",
+      "lambda": "(f g h i i)",
+      "solution": "(f g h i i)"
+    },
     "1": {
-      "content": "(λx.?) (λy.y)",
+      "titre": 'Tutoriel : "Les alligators affamés"',
+      "texte": "Voilà des alligators affamés...Les alligators affamés ont faim. Ils vont manger tout ce qui est en face d'eux! Mais ils sont aussi des alligators responsables, et comme les vieux alligators, ils gardent leurs familles.",
+      "lambda": "λx.λy.λz.",
+      "solution": "λx.λy.λz."
+    },
+    "2": {
+      "titre": 'Exercice 1 - La règle du "Mange-moi"',
+      "texte": "Trouves le bon oeuf à placer sous le crocodile 'x' afin d'obtenir le résultat ci dessous",
+      "lambda": "(λx.?) (λy.y)",
       "solution": "λy.y"
     }
   };
@@ -65,6 +79,9 @@
     var get_lambda_from, initialize_html, inserer, inserer_direct, insert_exp_into_div, make_dropped_droppable;
     (initialize_html = function() {
       var color, html, i, index, key, letter, value, _i, _j, _k, _len, _len1, _ref1, _ref2;
+      for (key in EXERCICES) {
+        $('#exercices').append("<button class='panel-button exercice'  data-id='" + key + "'>Ex" + key + "</button>");
+      }
       _ref1 = ALPHABET.slice(0, 26);
       for (index = _i = 0, _len = _ref1.length; _i < _len; index = ++_i) {
         letter = _ref1[index];
@@ -72,21 +89,15 @@
         var_tab["" + letter] = CSS_COLOR_NAMES[index];
       }
       $.get("css/svg/egg.svg", function(rawSvg) {
-        var importedSVGRootElement;
-        importedSVGRootElement = document.importNode(rawSvg.documentElement, true);
-        $("#egg-svg").append(importedSVGRootElement);
+        $("#egg-svg").append(document.importNode(rawSvg.documentElement, true));
         return $("#egg-svg svg")[0].setAttribute('viewBox', '0 0 116 80');
       }, "xml");
       $.get("css/svg/open.svg", function(rawSvg) {
-        var importedSVGRootElement;
-        importedSVGRootElement = document.importNode(rawSvg.documentElement, true);
-        $("#open-svg").append(importedSVGRootElement);
+        $("#open-svg").append(document.importNode(rawSvg.documentElement, true));
         return $("#open-svg svg")[0].setAttribute('viewBox', '-25 0 330 150');
       }, "xml");
       $.get("css/svg/vieux.svg", function(rawSvg) {
-        var importedSVGRootElement;
-        importedSVGRootElement = document.importNode(rawSvg.documentElement, true);
-        $("#vieux-svg").append(importedSVGRootElement);
+        $("#vieux-svg").append(document.importNode(rawSvg.documentElement, true));
         return $("#vieux-svg svg")[0].setAttribute('viewBox', '0 0 228 78');
       }, "xml");
       html = "";
@@ -99,16 +110,15 @@
         value = EXEMPLES[key];
         html += "<button id='" + key + "' class='panel-button' data-type='fonction' data-lambda='" + value + "'>" + key + "</button>";
       }
-      $("#items").before(html);
+      $("#panel-variable").after(html);
       html = "";
       for (index = _k = 0, _len1 = color_tab.length; _k < _len1; index = ++_k) {
         color = color_tab[index];
         html += "<div id='" + color + "' class='color' style='background-color:" + color + ";' data-color='" + color + "' data-variable='" + ALPHABET[index] + "'>" + ALPHABET[index] + "</div>";
       }
-      $("#panel-variable").after(html);
+      $("#items").before(html);
       $(".item").draggable({
         helper: "clone",
-        tolerance: "touch",
         start: function(event, ui) {
           return $(ui.helper).addClass("ui-draggable-helper");
         },
@@ -117,12 +127,10 @@
         },
         cursorAt: {
           top: 100,
-          left: 25
+          left: 150
         }
       });
       return $("#game-container").dialog({
-        zIndex: 10,
-        modal: true,
         show: {
           effect: 'fade',
           duration: 2000
@@ -146,6 +154,7 @@
     $(".color").on("click", function() {
       var color, variable, _ref1;
       _ref1 = [$(this).attr("data-color"), $(this).attr("data-variable")], color = _ref1[0], variable = _ref1[1];
+      $("#choose-color").attr("data-variable", variable);
       $("#choose-color").attr("data-color", color);
       $("#panel-lambda").attr("data-variable", variable).html("λ" + variable);
       $("#panel-variable").attr("data-variable", variable).html("" + variable);
@@ -213,220 +222,54 @@
       }
     });
     get_lambda_from = function(root) {
-      var exp, getKeyByValue;
-      getKeyByValue = function(value) {
-        var key;
-        for (key in var_tab) {
-          if (var_tab[key] === value) {
-            return key;
-          }
-        }
-      };
+      var exp;
       exp = root.clone();
       exp.find("svg").remove();
       exp.find(".definition_drop").remove();
       exp.find(".application_drop").remove();
       exp = exp.html();
-      exp = exp.replace(/<div id="\d+" class="variable dropped" data-variable="(\w+)"[ style="opacity: 1;"]*>\s*<\/div>/g, function(str, match) {
-        return " " + getKeyByValue(match);
-      });
-      exp = exp.replace(/<div id="\d*" class="lambda dropped" data-variable="(\w+)"[ style="opacity: 1;"]*>/g, function(str, match) {
-        return "(λ" + getKeyByValue(match) + ".";
-      });
-      exp = exp.replace(/<div id="\d*" class="lambda priorite dropped" data-variable="white"[ style="opacity: 1;"]*>/g, "(");
+      exp = exp.replace(/<div id="\d*" class="variable dropped" data-variable="(\w+)" data-color="\w+"[ style="opacity: 1;"]*>\s*<\/div>/g, "$1");
+      exp = exp.replace(/<div id="\d*" class="lambda dropped" data-variable="(\w+)" data-color="\w+"[ style="opacity: 1;"]*>/g, "λ$1.(");
+      exp = exp.replace(/<div id="\d*" class="lambda priorite dropped" data-variable="\(" data-color="white"[ style="opacity: 1;"]*>/g, "(");
       return exp = exp.replace(/<\/div>/g, ")");
     };
     insert_exp_into_div = function(exp, root) {
-      var i, local_debug, pointer, previous, symbole, _i, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _results;
-      local_debug = false;
-      pointer = root.empty();
-      _ref1 = [[], "", "none"], parentheses = _ref1[0], symbole = _ref1[1], previous = _ref1[2];
-      _results = [];
-      for (i = _i = 0, _ref2 = exp.length - 1; 0 <= _ref2 ? _i <= _ref2 : _i >= _ref2; i = 0 <= _ref2 ? ++_i : --_i) {
-        symbole += exp[i];
-        if (local_debug) {
-          alert(symbole);
-        }
-        switch (symbole) {
-          case "?":
-            switch (previous) {
-              case "(":
-              case "λa.":
-              case "λb.":
-              case "λc.":
-              case "λd.":
-              case "λe.":
-              case "λf.":
-              case "λg.":
-              case "λh.":
-              case "λi.":
-              case "λj.":
-              case "λk.":
-              case "λl.":
-              case "λm.":
-              case "λn.":
-              case "λo.":
-              case "λp.":
-              case "λq.":
-              case "λr.":
-              case "λs.":
-              case "λt.":
-              case "λu.":
-              case "λv.":
-              case "λw.":
-              case "λx.":
-              case "λy.":
-              case "λz.":
-                pointer.append("<div class='definition_drop'></div>");
-                make_dropped_droppable();
-                _results.push((_ref3 = ["a", ""], previous = _ref3[0], symbole = _ref3[1], _ref3));
-                break;
-              case ")":
-              case "a":
-              case "b":
-              case "c":
-              case "d":
-              case "e":
-              case "f":
-              case "g":
-              case "h":
-              case "i":
-              case "j":
-              case "k":
-              case "l":
-              case "m":
-              case "n":
-              case "o":
-              case "p":
-              case "q":
-              case "r":
-              case "s":
-              case "t":
-              case "u":
-              case "v":
-              case "w":
-              case "x":
-              case "y":
-              case "z":
-                pointer.append("<div class='application_drop'></div>");
-                _ref4 = ["a", ""], previous = _ref4[0], symbole = _ref4[1];
-                _results.push(make_dropped_droppable());
-                break;
-              default:
-                alert("oops !");
-                _results.push((_ref5 = ["a", ""], previous = _ref5[0], symbole = _ref5[1], _ref5));
-            }
-            break;
-          case "(":
-          case "λa.":
-          case "λb.":
-          case "λc.":
-          case "λd.":
-          case "λe.":
-          case "λf.":
-          case "λg.":
-          case "λh.":
-          case "λi.":
-          case "λj.":
-          case "λk.":
-          case "λl.":
-          case "λm.":
-          case "λn.":
-          case "λo.":
-          case "λp.":
-          case "λq.":
-          case "λr.":
-          case "λs.":
-          case "λt.":
-          case "λu.":
-          case "λv.":
-          case "λw.":
-          case "λx.":
-          case "λy.":
-          case "λz.":
-          case "a":
-          case "b":
-          case "c":
-          case "d":
-          case "e":
-          case "f":
-          case "g":
-          case "h":
-          case "i":
-          case "j":
-          case "k":
-          case "l":
-          case "m":
-          case "n":
-          case "o":
-          case "p":
-          case "q":
-          case "r":
-          case "s":
-          case "t":
-          case "u":
-          case "v":
-          case "w":
-          case "x":
-          case "y":
-          case "z":
-            if (local_debug) {
-              alert("previous:" + previous);
-            }
-            switch (previous) {
-              case "none":
-              case "(":
-              case "λa.":
-              case "λb.":
-              case "λc.":
-              case "λd.":
-              case "λe.":
-              case "λf.":
-              case "λg.":
-              case "λh.":
-              case "λi.":
-              case "λj.":
-              case "λk.":
-              case "λl.":
-              case "λm.":
-              case "λn.":
-              case "λo.":
-              case "λp.":
-              case "λq.":
-              case "λr.":
-              case "λs.":
-              case "λt.":
-              case "λu.":
-              case "λv.":
-              case "λw.":
-              case "λx.":
-              case "λy.":
-              case "λz.":
-                pointer = inserer_direct(symbole, pointer, "definition");
-                if (previous === "(") {
-                  parentheses.push(pointer.parent());
-                }
-                break;
-              default:
-                pointer = inserer_direct(symbole, pointer, "application");
-            }
-            if (local_debug) {
-              alert((symbole + " - new pointer is:") + pointer.attr("id"));
-            }
-            _results.push((_ref6 = [symbole, ""], previous = _ref6[0], symbole = _ref6[1], _ref6));
-            break;
-          case ")":
-            pointer = parentheses.pop();
-            _results.push((_ref7 = [symbole, ""], previous = _ref7[0], symbole = _ref7[1], _ref7));
-            break;
-          case " ":
-            symbole = "";
-            continue;
-          default:
-            continue;
-        }
+      var expression, reg;
+      expression = exp;
+      id = 0;
+      expression = expression.replace(/([.( ])([a-z])/g, "$1woot$2 ");
+      while (expression.match(/λ/)) {
+        expression = expression.replace(/λ(\w).([^)]*\s?\)*)/, "<div id='' class='lambda dropped' data-variable='$1' data-color=''>$2</div>");
       }
-      return _results;
+      expression = expression.replace(/[ ]*\(([^)]*\s?\)*)\)[ ]*/g, "<div id='' class='lambda priorite dropped' data-variable='parenthese' data-color='white' >$1</div>");
+      expression = expression.replace(/\(/g, "<div id='' class='lambda priorite dropped' data-variable='parenthese' data-color='white'>");
+      expression = expression.replace(/\)/g, "</div>");
+      expression = expression.replace(/parenthese/g, "(");
+      reg = /woot(\w)/g;
+      expression = expression.replace(reg, "<div id='' class='variable dropped' data-variable='$1' data-color='' ></div>");
+      if (expression.match(/\?/)) {
+        expression = expression.replace(/\?/, "<div class='definition_drop'></div>");
+      }
+      expression = $('<div/>').html(expression).contents();
+      root.empty().append($(expression));
+      make_dropped_droppable();
+      return $(root).find(".dropped").each(function() {
+        var variable;
+        $(this).attr("id", "" + (id++));
+        if (($(this).hasClass("lambda")) && ($(this).hasClass("priorite"))) {
+          return $("#vieux-svg").clone().contents().prependTo($(this));
+        } else {
+          variable = $(this).attr("data-variable");
+          $(this).attr("data-color", "" + var_tab[variable]);
+          if ($(this).hasClass("variable")) {
+            $("#egg-svg").find(".skin").css("fill", $(this).attr("data-color"));
+            return $("#egg-svg").clone().contents().prependTo($(this));
+          } else {
+            $("#open-svg").find(".skin").css("fill", $(this).attr("data-color"));
+            return $("#open-svg").clone().contents().prependTo($(this));
+          }
+        }
+      });
     };
     $('#prompt').keypress(function(key) {
       if (key.which === 13) {
@@ -438,27 +281,35 @@
       switch (symbole) {
         case "(":
           _ref1 = ["white", "lambda priorite", ".lambda.priorite"], color = _ref1[0], type = _ref1[1], classe = _ref1[2];
-          lambda = $('<div/>').html("<div id='" + (id++) + "' class='" + type + " dropped' data-variable='" + color + "' ></div>").contents();
+          lambda = $('<div/>').html("<div id='" + (id++) + "' class='" + type + " dropped' data-variable='" + symbole + "' data-color='" + color + "' ></div>").contents();
           $("#vieux-svg").clone().contents().prependTo($(lambda));
           break;
         default:
           if (ALPHABET.indexOf(symbole) > -1) {
             _ref2 = ["" + var_tab[symbole[0]], "variable", ".variable"], color = _ref2[0], type = _ref2[1], classe = _ref2[2];
             $("#egg-svg").find(".skin").css("fill", color);
-            lambda = $('<div/>').html("<div id='" + (id++) + "' class='" + type + " dropped' data-variable='" + color + "' ></div>").contents();
+            lambda = $('<div/>').html("<div id='" + (id++) + "' class='" + type + " dropped' data-variable='" + symbole[0] + "' data-color='" + color + "' ></div>").contents();
             $("#egg-svg").clone().contents().prependTo($(lambda));
           } else {
             _ref3 = ["" + var_tab[symbole[1]], "lambda", ".lambda"], color = _ref3[0], type = _ref3[1], classe = _ref3[2];
             $("#open-svg").find(".skin").css("fill", color);
-            lambda = $('<div/>').html("<div id='" + (id++) + "' class='" + type + " dropped' data-variable='" + color + "' ></div>").contents();
+            lambda = $('<div/>').html("<div id='" + (id++) + "' class='" + type + " dropped' data-variable='" + symbole[1] + "' data-color='" + color + "' ></div>").contents();
             $("#open-svg").clone().contents().prependTo($(lambda));
           }
       }
-      return droppable = mode === "definition" ? droppable.append($(lambda)).children(classe).first() : droppable = droppable.after($(lambda)).next(classe);
+      if (mode === "definition") {
+        return droppable = droppable.append($(lambda)).children(classe).first();
+      } else {
+        return droppable = droppable.after($(lambda)).next(classe);
+      }
     };
     inserer = function(draggable, droppable) {
-      var lambda, type, variable;
-      variable = draggable.hasClass("vieux-croco") ? 'white' : $("#choose-color").attr("data-color");
+      var color, lambda, type, variable, _ref1, _ref2;
+      if (draggable.hasClass("vieux-croco")) {
+        _ref1 = ["(", "white"], variable = _ref1[0], color = _ref1[1];
+      } else {
+        _ref2 = [$("#choose-color").attr("data-variable"), $("#choose-color").attr("data-color")], variable = _ref2[0], color = _ref2[1];
+      }
       if (draggable.hasClass("egg")) {
         type = "variable";
       } else if (draggable.hasClass("croco")) {
@@ -466,18 +317,18 @@
       } else {
         type = "lambda priorite";
       }
-      lambda = "<div id='" + (id++) + "' class='" + type + " dropped' data-variable='" + variable + "' ><div class='application_drop'></div></div>";
+      lambda = "<div id='" + (id++) + "' class='" + type + " dropped' data-variable='" + variable + "' data-color='" + color + "' ><div class='application_drop'></div></div>";
       lambda = $('<div/>').html(lambda).contents();
       if (type !== "variable") {
         $(lambda).prepend("<div class='definition_drop'></div>");
       }
       switch (type) {
         case "variable":
-          $("#egg-svg").find(".skin").css("fill", variable);
+          $("#egg-svg").find(".skin").css("fill", color);
           $("#egg-svg").clone().contents().prependTo($(lambda));
           break;
         case "lambda":
-          $("#open-svg").find(".skin").css("fill", variable);
+          $("#open-svg").find(".skin").css("fill", color);
           $("#open-svg").clone().contents().prependTo($(lambda));
           break;
         case "lambda priorite":
@@ -490,7 +341,7 @@
       }
       return droppable.remove();
     };
-    (make_dropped_droppable = function() {
+    make_dropped_droppable = function() {
       return $(".application_drop, .definition_drop").droppable({
         hoverClass: "ui-state-hover",
         accept: ".item",
@@ -499,14 +350,15 @@
           return make_dropped_droppable();
         }
       });
-    })();
+    };
+    make_dropped_droppable();
     $("#go").on("click", function() {
-      var ahead_color, application, applicationClone, bust_a_move, color_rule_check, decapsule, delta, local_debug, pointer, stay, variable;
+      var ahead_vars, application, applicationClone, bust_a_move, color_rule_check, decapsule, delta, local_debug, pointer, stay, variable;
       local_debug = false;
       delta = speed ? 500 : 4000;
       $(".application_drop, .definition_drop").remove();
       pointer = $("#root > .lambda:first");
-      ahead_color = [];
+      ahead_vars = [];
       stay = true;
       decapsule = function(pointer) {
         var fragment;
@@ -546,7 +398,7 @@
           if (local_debug) {
             alert("Croco " + (pointer.attr('data-variable')) + " !");
           }
-          ahead_color.push(pointer.attr("data-variable"));
+          ahead_vars.push(pointer.attr("data-variable"));
           switch (pointer.next().length) {
             case 0:
               if (local_debug) {
@@ -572,7 +424,7 @@
           if (local_debug) {
             alert("Oeuf " + (pointer.attr('data-variable')) + " !");
           }
-          ahead_color.push(pointer.attr("data-variable"));
+          ahead_vars.push(pointer.attr("data-variable"));
           pointer = pointer.next();
           continue;
         }
@@ -582,12 +434,12 @@
         stay = false;
       }
       if ((pointer.hasClass("lambda")) && (pointer.attr("data-color") !== "white") && (pointer.next().length > 0)) {
-        ahead_color = ahead_color.unique();
+        ahead_vars = ahead_vars.unique();
         variable = pointer.attr("data-variable");
         application = pointer.next();
         (color_rule_check = function(pointer, application) {
-          var application_colors, application_items, color, difference, get_colors, index, item, new_color, pointer_colors, used_colors, _i, _j, _len, _len1, _results;
-          get_colors = function(tree) {
+          var $var, application_items, application_vars, difference, get_vars, item, new_var, pointer_vars, used_vars, _i, _j, _len, _len1, _results;
+          get_vars = function(tree) {
             var palette;
             palette = [];
             tree.find("[data-variable]").andSelf().filter("[data-variable]").not(".lambda.priorite").each(function() {
@@ -595,36 +447,37 @@
             });
             return palette.unique();
           };
-          pointer_colors = get_colors(pointer);
+          pointer_vars = get_vars(pointer);
           _results = [];
-          for (_i = 0, _len = pointer_colors.length; _i < _len; _i++) {
-            color = pointer_colors[_i];
-            application_items = application.find("[data-variable='" + color + "']").andSelf().filter("[data-variable='" + color + "']");
+          for (_i = 0, _len = pointer_vars.length; _i < _len; _i++) {
+            $var = pointer_vars[_i];
+            application_items = application.find("[data-variable='" + $var + "']").andSelf().filter("[data-variable='" + $var + "']");
             if (application_items.length) {
               if (!speed) {
                 alert("Règle de la couleur !(Color rule)");
               }
-              application_colors = get_colors(application);
-              used_colors = (pointer_colors.concat(application_colors.concat(ahead_color))).unique();
+              application_vars = get_vars(application);
+              used_vars = (pointer_vars.concat(application_vars.concat(ahead_vars))).unique();
               difference = (function() {
                 var _j, _len1, _results1;
                 _results1 = [];
-                for (_j = 0, _len1 = color_tab.length; _j < _len1; _j++) {
-                  item = color_tab[_j];
-                  if (__indexOf.call(used_colors, item) < 0) {
+                for (_j = 0, _len1 = ALPHABET.length; _j < _len1; _j++) {
+                  item = ALPHABET[_j];
+                  if (__indexOf.call(used_vars, item) < 0) {
                     _results1.push(item);
                   }
                 }
                 return _results1;
               })();
-              difference = difference.slice(0, +(application_colors.length - 1) + 1 || 9e9);
-              for (index = _j = 0, _len1 = difference.length; _j < _len1; index = ++_j) {
-                new_color = difference[index];
-                application.find("[data-variable=" + application_colors[index] + "]").andSelf().filter("[data-variable=" + application_colors[index] + "]").each(function() {
+              difference = difference.slice(0, +(application_vars.length - 1) + 1 || 9e9);
+              for (_j = 0, _len1 = difference.length; _j < _len1; _j++) {
+                new_var = difference[_j];
+                application.find("[data-variable=" + new_var + "]").andSelf().filter("[data-variable=" + new_var + "]").each(function() {
                   var _ref1;
-                  if (_ref1 = $(this).attr("data-variable"), __indexOf.call(ahead_color, _ref1) < 0) {
-                    $(this).attr("data-variable", new_color);
-                    return $(this).find("svg").first().find(".skin").css("fill", new_color);
+                  if (_ref1 = $(this).attr("data-variable"), __indexOf.call(ahead_vars, _ref1) < 0) {
+                    $(this).attr("data-variable", new_var);
+                    $(this).attr("data-variable", application_colors[new_var]);
+                    return $(this).find("svg").first().find(".skin").css("fill", application_colors[new_var]);
                   }
                 });
               }
@@ -702,9 +555,31 @@
         });
       }
     });
-    $("#exercice1").on("click", function() {
-      insert_exp_into_div(EXERCICES["1"]["content"], $("#root"));
-      return insert_exp_into_div(EXERCICES["1"]["solution"], $("#solution"));
+    $("#console").toggle();
+    $("#toggle-console").on("click", function() {
+      return $("#console").toggle();
+    });
+    $("#exercice").hide();
+    $(".exercice").on("click", function() {
+      var i, texte, titre, _ref1;
+      i = $(this).attr("data-id");
+      $("#exercice > .panel-button.exercice").attr("data-id", $(this).attr("data-id"));
+      insert_exp_into_div(EXERCICES["" + i]["lambda"], $("#root"));
+      insert_exp_into_div(EXERCICES["" + i]["solution"], $("#solution"));
+      _ref1 = [EXERCICES["" + i]["titre"], EXERCICES["" + i]["texte"]], titre = _ref1[0], texte = _ref1[1];
+      $("#exercice > .titre").html("<h1>" + titre + "</h1>");
+      $("#exercice > .texte").html("<p>" + texte + "</p>");
+      return $("#exercice").show().draggable();
+    });
+    $("#exercice > .check").on("click", function() {
+      var r, s;
+      s = get_lambda_from($("#solution"));
+      r = get_lambda_from($("#root"));
+      if (s === r) {
+        return alert("Super ! Si tu as tout compris, passe à l'exo suivant. Sinon rejoue !");
+      } else {
+        return alert("bittos !");
+      }
     });
     $("#play").on("click", function() {
       return $("#game-container").dialog("open");
