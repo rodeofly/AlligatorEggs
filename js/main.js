@@ -25,7 +25,7 @@
     return setInterval(func, ms);
   };
 
-  CSS_COLOR_NAMES = ["Blue", "Brown", "BurlyWood", "CadetBlue", "Chartreuse", "Chocolate", "Coral", "CornflowerBlue", "Crimson", "Cyan", "DarkBlue", "DarkCyan", "DarkGoldenRod", "DarkGray", "DarkGreen", "DarkKhaki", "DarkMagenta", "DarkOliveGreen", "Darkorange", "DarkOrchid", "DarkRed", "DarkSalmon", "DarkSeaGreen", "DarkSlateBlue", "DarkSlateGrey", "DeepPink", "DeepSkyBlue", "DimGray", "DimGrey", "DodgerBlue", "FireBrick", "FloralWhite", "ForestGreen", "Fuchsia", "Gainsboro", "GhostWhite", "Gold", "GoldenRod", "Gray", "Grey", "Green", "GreenYellow", "HoneyDew", "HotPink", "IndianRed", "Indigo", "Ivory", "Khaki", "Lavender", "LavenderBlush", "LawnGreen", "LemonChiffon", "LightBlue", "LightCoral", "LightCyan", "LightGoldenRodYellow", "LightGray", "LightGrey", "LightGreen", "LightPink", "LightSalmon", "LightSeaGreen", "LightSkyBlue", "LightSlateGray", "LightSlateGrey", "LightSteelBlue", "LightYellow", "Lime", "LimeGreen", "Linen", "Magenta", "Maroon", "MediumAquaMarine", "MediumBlue", "MediumOrchid", "MediumPurple", "MediumSeaGreen", "MediumSlateBlue", "MediumSpringGreen", "MediumTurquoise", "MediumVioletRed", "MidnightBlue", "MintCream", "MistyRose", "Moccasin", "NavajoWhite", "Navy", "OldLace", "Olive", "OliveDrab", "Orange", "OrangeRed", "Orchid", "PaleGoldenRod", "PaleGreen", "PaleTurquoise", "PaleVioletRed", "PapayaWhip", "PeachPuff", "Peru", "Pink", "Plum", "PowderBlue", "Purple", "Red", "RosyBrown", "RoyalBlue", "SaddleBrown", "Salmon", "SandyBrown", "SeaGreen", "SeaShell", "Sienna", "Silver", "SkyBlue", "SlateBlue", "SlateGray", "SlateGrey", "Snow", "SpringGreen", "SteelBlue", "Tan", "Teal", "Thistle", "Tomato", "Turquoise", "Violet", "Wheat", "White", "WhiteSmoke", "Yellow", "YellowGreen"];
+  CSS_COLOR_NAMES = ["Blue", "Brown", "BurlyWood", "CadetBlue", "Chartreuse", "Chocolate", "Coral", "Yellow", "Crimson", "Cyan", "DarkBlue", "DarkCyan", "DarkGoldenRod", "DarkGray", "DarkGreen", "DarkKhaki", "DarkMagenta", "DarkOliveGreen", "Darkorange", "DarkOrchid", "DarkRed", "DarkSalmon", "DarkSeaGreen", "DarkSlateBlue", "DarkSlateGrey", "DeepPink", "DeepSkyBlue", "DimGray", "DimGrey", "DodgerBlue", "FireBrick", "FloralWhite", "ForestGreen", "Fuchsia", "Gainsboro", "GhostWhite", "Gold", "GoldenRod", "Gray", "Grey", "Green", "GreenYellow", "HoneyDew", "HotPink", "IndianRed", "Indigo", "Ivory", "Khaki", "Lavender", "LavenderBlush", "LawnGreen", "LemonChiffon", "LightBlue", "LightCoral", "LightCyan", "LightGoldenRodYellow", "LightGray", "LightGrey", "LightGreen", "LightPink", "LightSalmon", "LightSeaGreen", "LightSkyBlue", "LightSlateGray", "LightSlateGrey", "LightSteelBlue", "LightYellow", "Lime", "LimeGreen", "Linen", "Magenta", "Maroon", "MediumAquaMarine", "MediumBlue", "MediumOrchid", "MediumPurple", "MediumSeaGreen", "MediumSlateBlue", "MediumSpringGreen", "MediumTurquoise", "MediumVioletRed", "MidnightBlue", "MintCream", "MistyRose", "Moccasin", "NavajoWhite", "Navy", "OldLace", "Olive", "OliveDrab", "Orange", "OrangeRed", "Orchid", "PaleGoldenRod", "PaleGreen", "PaleTurquoise", "PaleVioletRed", "PapayaWhip", "PeachPuff", "Peru", "Pink", "Plum", "PowderBlue", "Purple", "Red", "RosyBrown", "RoyalBlue", "SaddleBrown", "Salmon", "SandyBrown", "SeaGreen", "SeaShell", "Sienna", "Silver", "SkyBlue", "SlateBlue", "SlateGray", "SlateGrey", "Snow", "SpringGreen", "SteelBlue", "Tan", "Teal", "Thistle", "Tomato", "Turquoise", "Violet", "Wheat", "White", "WhiteSmoke", "YellowGreen"];
 
   EXEMPLES = {
     "ZERO": "(λf.λx.x)",
@@ -81,10 +81,10 @@
     },
     "4": {
       "titre": 'Tutoriel 1 - Les familles"',
-      "texte": "Voici une petite famille un peu plus grande. Peux tu la recréer ?",
-      "contenu-exercice": "λe.λf.e f",
+      "texte": "<p>Voici une enorme famille ! Nous avons un alligator jaune, vert et rouge qui gardent cette famille . Ils gardent trois choses: un oeuf vert, un vieux crocodile , et un oeuf rouge. Le vieil alligator, lui, garde un œuf jaune et un oeuf vert.</p><p>Notez que les œufs n'utilisent que les couleurs des alligators qui les surveillent . Vous ne pouvez pas avoir un œuf bleu sans qu'il y ait un alligator bleu autour pour le garder.</p><p>Peux tu la recréer ?</p>",
+      "contenu-exercice": "λh.λe.λf.(e (h e) f)",
       "contenu-eleve": "",
-      "solution": "λe.(λf.(e f ))"
+      "solution": "λh.(λe.(λf.(e (h  e ) f ) ) ) "
     }
   };
 
@@ -240,15 +240,81 @@
       exp = exp.replace(/<div id="\d*" class="variable dropped" data-variable="(\w+)" data-color="\w+"[ style="opacity: 1;"]*>\s*<\/div>/g, "$1 ");
       exp = exp.replace(/<div id="\d*" class="lambda dropped" data-variable="(\w+)" data-color="\w+"[ style="opacity: 1;"]*>/g, "λ$1.(");
       exp = exp.replace(/<div id="\d*" class="lambda priorite dropped" data-variable="\(" data-color="white"[ style="opacity: 1;"]*>/g, "(");
-      return exp = exp.replace(/<\/div>/g, ")");
+      return exp = exp.replace(/<\/div>/g, ") ");
     };
     insert_exp_into_div = function(exp, root) {
-      var expression, reg;
+      var current_index, expression, local_debug, reg, λ_index, λ_variable;
       expression = exp;
       id = 0;
       expression = expression.replace(/([.( ])([a-z])/g, "$1woot$2");
+      local_debug = false;
       while (expression.match(/λ/)) {
-        expression = expression.replace(/λ(\w).([^)]*\s?\)*)/, "<div id='' class='lambda dropped' data-variable='$1' data-color=''>$2</div>");
+        λ_index = 0;
+        while (expression[λ_index] !== "λ") {
+          λ_index += 1;
+        }
+        λ_variable = λ_index + 1;
+        current_index = λ_index + 3;
+        switch (expression[λ_index - 1]) {
+          case "(":
+            if (local_debug) {
+              alert("prototype : (λx. lambda ) = " + expression);
+            }
+            parentheses = 1;
+            while ((parentheses > 0) && (current_index < expression.length) && (expression[current_index] !== "<")) {
+              switch (expression[current_index]) {
+                case "(":
+                  parentheses += 1;
+                  break;
+                case ")":
+                  parentheses -= 1;
+              }
+              current_index += 1;
+            }
+            if (local_debug) {
+              alert("I got this : " + (expression.substring(λ_index - 1, current_index)));
+            }
+            expression = expression.replace(expression.substring(λ_index - 1, current_index), "<div id='' class='lambda dropped' data-variable='" + expression[λ_variable] + "' data-color=''>" + (expression.substring(λ_index + 3, current_index - 1)) + "</div>");
+            continue;
+          default:
+            switch (expression[current_index]) {
+              case "(":
+                if (local_debug) {
+                  alert("prototype : λx.(lambda) = " + expression);
+                }
+                parentheses = 1;
+                while ((parentheses > 0) && (current_index < expression.length) && (expression[current_index] !== "<")) {
+                  current_index += 1;
+                  switch (expression[current_index]) {
+                    case "(":
+                      parentheses += 1;
+                      continue;
+                    case ")":
+                      parentheses -= 1;
+                      continue;
+                    default:
+                      continue;
+                  }
+                }
+                if (local_debug) {
+                  alert("I got this : " + (expression.substring(λ_index, current_index + 1)));
+                }
+                expression = expression.replace(expression.substring(λ_index, current_index + 1), "<div id='' class='lambda dropped' data-variable='" + expression[λ_variable] + "' data-color=''>" + (expression.substring(λ_index + 4, current_index)) + "</div>");
+                continue;
+              default:
+                if (local_debug) {
+                  alert("prototype : λx.lambda = " + expression);
+                }
+                while ((expression[current_index] !== "<") && (current_index < expression.length)) {
+                  current_index += 1;
+                }
+                if (local_debug) {
+                  alert("I got this : " + (expression.substring(λ_index, current_index)));
+                }
+                expression = expression.replace(expression.substring(λ_index, current_index), "<div id='' class='lambda dropped' data-variable='" + expression[λ_variable] + "' data-color=''>" + (expression.substring(λ_index + 3, current_index)) + "</div>");
+                continue;
+            }
+        }
       }
       expression = expression.replace(/[ ]*\(([^)]*\s?\)*)\)[ ]*/g, "<div id='' class='lambda priorite dropped' data-variable='parenthese' data-color='white' >$1</div>");
       expression = expression.replace(/\(/g, "<div id='' class='lambda priorite dropped' data-variable='parenthese' data-color='white'>");
