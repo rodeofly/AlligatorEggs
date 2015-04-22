@@ -124,10 +124,6 @@
         },
         stop: function(event, ui) {
           return $(this).show();
-        },
-        cursorAt: {
-          top: 50,
-          left: 150
         }
       });
       return $("#game-container").dialog({
