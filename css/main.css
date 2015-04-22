@@ -362,7 +362,7 @@ svg {
 }
 .application_drop {
   top : 0;
-  right : 0;
+  right : -1vw;
 }
 .lambda.dropped > .definition_drop {
   bottom : 2vw;
