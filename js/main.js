@@ -53,8 +53,8 @@
   EXERCICES = {
     "0": {
       "titre": 'Tutoriel : "Le vieil alligator & les oeufs"',
-      "texte": "Voilà un vieil alligator avec des oeufs ! Le vieil alligator n'a plus faim, il a assez mangé.<br>Tous ce qu'il fait, c'est prendre soins de sa famille ; ici ce sont des oeufs ! Les oeufs vont éclorent et donner de nouvelles familles d'alligators<br>Fais glisser le premier oeuf sur le bout de la queue. Enfin, un à un, glisse des oeufs les uns sur les autres pour les ajouter !",
-      "lambda": "(?)",
+      "texte": "<p>Voilà un vieil alligator avec des oeufs ! Le vieil alligator n'a plus faim, il a assez mangé.</p> <p>Tous ce qu'il fait, c'est prendre soins de sa famille : ici ce sont des oeufs !</p> <p>Les oeufs vont éclorent et donner de nouvelles familles d'alligators</p> <p>Fais glisser un vieil alligator dans le panel, puis fais glisser le premier oeuf sur le bout de la queue. Enfin, un à un, glisse des oeufs les uns sur les autres pour les ajouter !</p>",
+      "lambda": "",
       "solution": "(f g h i i )"
     },
     "1": {
@@ -557,24 +557,34 @@
     });
     $("#exercice").hide();
     $(".exercice").on("click", function() {
-      var i, texte, titre, _ref1;
+      var i, solution, texte, titre, _ref1;
       i = $(this).attr("data-id");
       $("#exercice > .panel-button.exercice").attr("data-id", $(this).attr("data-id"));
-      insert_exp_into_div(EXERCICES["" + i]["lambda"], $("#root"));
-      insert_exp_into_div(EXERCICES["" + i]["solution"], $("#solution"));
+      if (EXERCICES["" + i]["lambda"] !== "") {
+        insert_exp_into_div(EXERCICES["" + i]["lambda"], $("#root"));
+      } else {
+        $("#root").empty().append("<div id='root_definition' class='definition_drop'></div>");
+      }
+      solution = EXERCICES["" + i]["solution"];
+      insert_exp_into_div(solution, $("#solution"));
+      $("#exercice").attr("data-solution", solution);
       _ref1 = [EXERCICES["" + i]["titre"], EXERCICES["" + i]["texte"]], titre = _ref1[0], texte = _ref1[1];
       $("#exercice > .titre").html("<h1>" + titre + "</h1>");
       $("#exercice > .texte").html("<p>" + texte + "</p>");
       return $("#exercice").show().draggable();
     });
     $("#exercice > .check").on("click", function() {
-      var r, s;
-      s = get_lambda_from($("#solution"));
-      r = get_lambda_from($("#root"));
-      if (s === r) {
+      var local_debug, resultat, solution;
+      local_debug = true;
+      solution = $("#exercice").attr("data-solution");
+      resultat = get_lambda_from($("#root"));
+      if (resultat === solution) {
         return alert("Super ! Si tu as tout compris, passe à l'exo suivant. Sinon rejoue !");
       } else {
-        return alert("bittos ! cliques sur go...[debug soluce : " + s + " ; eleve : " + r + "]");
+        alert("Raté ! Essaye encore, n'oublie pas de cliquer sur 'rejouer'");
+        if (local_debug) {
+          return alert("[debug soluce : " + solution + " ; eleve : " + resultat + "]");
+        }
       }
     });
     $("#play").on("click", function() {

@@ -30,8 +30,11 @@ lambda_exemples = ["(λx.x) (λy.y)","(λx.λy.x) (λy.y)","((λy.y) (λz.z))(λ
 EXERCICES =
   "0" :
     "titre"    : 'Tutoriel : "Le vieil alligator & les oeufs"'
-    "texte"     : "Voilà un vieil alligator avec des oeufs ! Le vieil alligator n'a plus faim, il a assez mangé.<br>Tous ce qu'il fait, c'est prendre soins de sa famille ; ici ce sont des oeufs ! Les oeufs vont éclorent et donner de nouvelles familles d'alligators<br>Fais glisser le premier oeuf sur le bout de la queue. Enfin, un à un, glisse des oeufs les uns sur les autres pour les ajouter !"
-    "lambda"   : "(?)"
+    "texte"     : "<p>Voilà un vieil alligator avec des oeufs ! Le vieil alligator n'a plus faim, il a assez mangé.</p>
+                   <p>Tous ce qu'il fait, c'est prendre soins de sa famille : ici ce sont des oeufs !</p>
+                   <p>Les oeufs vont éclorent et donner de nouvelles familles d'alligators</p>
+                   <p>Fais glisser un vieil alligator dans le panel, puis fais glisser le premier oeuf sur le bout de la queue. Enfin, un à un, glisse des oeufs les uns sur les autres pour les ajouter !</p>"
+    "lambda"   : ""
     "solution" : "(f g h i i )" 
   "1" :
     "titre"    : 'Tutoriel : "Les alligators affamés"'
@@ -86,7 +89,7 @@ $ ->
       helper : "clone"
       start:  (event, ui) -> $(ui.helper).addClass("ui-draggable-helper")
       stop : (event, ui) ->  $(this).show()
-      cursorAt : {top :  50, left : 150}
+      #cursorAt : {top :  50, left : 150}
 
     $("#game-container").dialog
       show:  {effect: 'fade', duration: 2000}
@@ -406,20 +409,27 @@ $ ->
   $( ".exercice").on "click", () ->
     i = $( this ).attr( "data-id" )
     $( "#exercice > .panel-button.exercice").attr( "data-id", $( this ).attr( "data-id" ))
-    insert_exp_into_div(EXERCICES["#{i}"]["lambda"],$("#root"))
-    insert_exp_into_div(EXERCICES["#{i}"]["solution"],$("#solution"))
+    if EXERCICES["#{i}"]["lambda"] isnt ""
+      insert_exp_into_div(EXERCICES["#{i}"]["lambda"],$("#root"))
+    else
+      $("#root" ).empty().append "<div id='root_definition' class='definition_drop'></div>"
+    solution = EXERCICES["#{i}"]["solution"]
+    insert_exp_into_div(solution,$("#solution"))
+    $( "#exercice" ).attr("data-solution", solution)
     [titre, texte] = [EXERCICES["#{i}"]["titre"], EXERCICES["#{i}"]["texte"]]
     $( "#exercice > .titre" ).html("<h1>#{titre}</h1>")
     $( "#exercice > .texte" ).html("<p>#{texte}</p>")
     $( "#exercice").show().draggable()
   
   $( "#exercice > .check" ).on "click", ->
-    s = get_lambda_from $("#solution") 
-    r = get_lambda_from $("#root")
-    if s is r
+    local_debug = true
+    solution = $( "#exercice" ).attr("data-solution")
+    resultat = get_lambda_from $("#root")
+    if resultat is solution
       alert "Super ! Si tu as tout compris, passe à l'exo suivant. Sinon rejoue !"
     else
-      alert "bittos ! cliques sur go...[debug soluce : #{s} ; eleve : #{r}]" 
+      alert "Raté ! cliques sur go avant de valider..."
+      alert "[debug soluce : #{solution} ; eleve : #{resultat}]" if local_debug
     
 
   #Pour l'article

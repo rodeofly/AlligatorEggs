@@ -57,14 +57,14 @@
                       
                   </div>
               </div>
+              <div id="root">
+                  <div id="root_definition" class='definition_drop'></div>
+              </div>
               <div id="command-panel">
                   <button class="panel-button" id="go">Go</button>
                   <button class="panel-button" data-type="speed" >fast</button>
                   <button class="panel-button" data-type="read"  >Lire</button>
                   <button class="panel-button" data-type="clear" >Effacer</button>
-              </div>
-              <div id="root">
-                  <div id="root_definition" class='definition_drop'></div>
               </div>
               <div id="exercice" data-id="">
                   <div class="titre"></div>
