@@ -29,23 +29,31 @@ EXEMPLES =
 lambda_exemples = ["(λx.x) (λy.y)","(λx.λy.x) (λy.y)","((λy.y) (λz.z))(λx.x)","(λx.λy. x) a b","(λx.λy. y) a b","(λa. a (λm.(λn. n ))(λp.(λq. p )))(λx.λy. y) a b","(λx.x x) (λx.x x)","λy.((λx.y (x x)) (λx.y (x x)))","(λa.λs.λz.s (a s z)) (λs.λz.z) ","(λa.λb.λs.λz.(a s (b s z))) (λs.λz.(s z)) (λs.λz.(s z))","(λa.λb.λs.λz.(a s (b s z))) (λs.λz.(s (s (s z)))) (λs.λz.(s (s (s (s z)))))"]
 EXERCICES =
   "0" :
-    "titre"    : 'Tutoriel : "Le vieil alligator & les oeufs"'
-    "texte"     : "<p>Voilà un vieil alligator avec des oeufs ! Le vieil alligator n'a plus faim, il a assez mangé.</p>
-                   <p>Tous ce qu'il fait, c'est prendre soins de sa famille : ici ce sont des oeufs !</p>
-                   <p>Les oeufs vont éclorent et donner de nouvelles familles d'alligators</p>
-                   <p>Fais glisser un vieil alligator dans le panel, puis fais glisser le premier oeuf sur le bout de la queue. Enfin, un à un, glisse des oeufs les uns sur les autres pour les ajouter !</p>"
-    "lambda"   : ""
-    "solution" : "(f g h i i )" 
+    "titre"            : 'Tutoriel : "Le vieil alligator & les oeufs"'
+    "texte"            : "<p>Voilà un vieil alligator avec des oeufs ! Le vieil alligator n'a plus faim, il a assez mangé.</p><p>Tous ce qu'il fait, c'est prendre soins de sa famille : ici ce sont des oeufs !</p><p>Les oeufs vont éclorent et donner de nouvelles familles d'alligators.</p><p>Fais glisser un vieil alligator dans le panel, puis fais glisser le premier oeuf sur le bout de la queue. Enfin, un à un, glisse des oeufs les uns sur les autres pour les ajouter !</p>"
+    "contenu-exercice" : "(f g h i i )"
+    "contenu-eleve"    : ""
+    "solution"         : "(f g h i i )" 
   "1" :
-    "titre"    : 'Tutoriel : "Les alligators affamés"'
-    "texte"     : "Voilà des alligators affamés...Les alligators affamés ont faim. Ils vont manger tout ce qui est en face d'eux! Mais ils sont aussi des alligators responsables, et comme les vieux alligators, ils gardent leurs familles. Allez fais glisser !"
-    "lambda"   : "λx.?"
-    "solution" : "λx.λy.λz." 
+    "titre"            : 'Tutoriel : "Les alligators affamés"'
+    "texte"            : "Voilà des alligators affamés...Les alligators affamés ont faim. Ils vont manger tout ce qui est en face d'eux! Mais ils sont aussi des alligators responsables, et comme les vieux alligators, ils gardent leurs familles. Allez fais glisser !"
+    "contenu-exercice" : "λx.λy.λz."
+    "contenu-eleve"    : ""
+    "solution"         : "λx.(λy.(λz.()))"
   "2" :
-    "titre"    : 'Exercice 1 - La règle du "Mange-moi"'
-    "texte"     : "Trouves le bon oeuf à placer sous le crocodile 'x' afin d'obtenir le résultat ci dessous"
-    "lambda"   : "(λx.?) (λy.y)"
-    "solution" : "λy.y"
+    "titre"            : 'Tutoriel 1 - Les familles"'
+    "texte"            : "Voici une petite famille. Peux tu la recréer ?"
+    "contenu-exercice" : "λe.e"
+    "contenu-eleve"    : ""
+    "solution"         : "λe.(e )"
+
+  "3" :
+    "titre"            : 'Tutoriel 1 - Les familles"'
+    "texte"            : "Voici une petite famille un peu plus grande. Peux tu la recréer ?"
+    "contenu-exercice" : "λe.λf.e f"
+    "contenu-eleve"    : ""
+    "solution"         : "λe.(λf.(e f ))"
+
 ALPHABET = "abcdefghijklmnopqrstuvwxyz"
 [color_tab, var_tab, debug, speed, id, parentheses] = [ [], {}, false, true, 0, 0 ]
 
@@ -94,8 +102,8 @@ $ ->
     $("#game-container").dialog
       show:  {effect: 'fade', duration: 2000}
       hide: "size"
-      width : "90%"
-      height:  Math.floor(90 * $(window).height() / 100)
+      width : "100%"
+      height:  Math.floor(100 * $(window).height() / 100)
       position:
         my: "center"
         at: "center"
@@ -408,17 +416,17 @@ $ ->
   $( "#exercice").hide()
   $( ".exercice").on "click", () ->
     i = $( this ).attr( "data-id" )
-    $( "#exercice > .panel-button.exercice").attr( "data-id", $( this ).attr( "data-id" ))
-    if EXERCICES["#{i}"]["lambda"] isnt ""
-      insert_exp_into_div(EXERCICES["#{i}"]["lambda"],$("#root"))
+    exo = EXERCICES[i]
+    $( "#exercice > .panel-button.exercice").attr "data-id", i
+    $( "#exercice").attr "data-solution", exo["solution"]
+    $( "#exercice > .titre" ).html("<h1>#{exo['titre']}</h1>")
+    $( "#exercice > .texte" ).html("<p>#{exo['texte']}</p>")
+    if exo["contenu-eleve"] isnt ""
+      insert_exp_into_div(exo["contenu-eleve"], $("#root"))
     else
       $("#root" ).empty().append "<div id='root_definition' class='definition_drop'></div>"
-    solution = EXERCICES["#{i}"]["solution"]
-    insert_exp_into_div(solution,$("#solution"))
-    $( "#exercice" ).attr("data-solution", solution)
-    [titre, texte] = [EXERCICES["#{i}"]["titre"], EXERCICES["#{i}"]["texte"]]
-    $( "#exercice > .titre" ).html("<h1>#{titre}</h1>")
-    $( "#exercice > .texte" ).html("<p>#{texte}</p>")
+    insert_exp_into_div exo["contenu-exercice"], $( "#contenu-exercice" ) if exo["contenu-exercice"] isnt ""
+    
     $( "#exercice").show().draggable()
   
   $( "#exercice > .check" ).on "click", ->

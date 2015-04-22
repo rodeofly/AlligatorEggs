@@ -178,8 +178,8 @@ nav a:hover {
 #command-panel {
   z-index: 1500;
   position : fixed;
-  bottom : 2vw;
-  left : 2vw;
+  top : 2vw;
+  left : 25vw;
   padding : 1vw;
   border-radius : 0.5vw;
   background-color : rgba(0,0,0,0.5)
@@ -362,7 +362,7 @@ svg {
 }
 .application_drop {
   top : 0;
-  right : 0;
+  right : -1vw;
 }
 .lambda.dropped > .definition_drop {
   bottom : 2vw;

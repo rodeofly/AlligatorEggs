@@ -53,21 +53,31 @@
   EXERCICES = {
     "0": {
       "titre": 'Tutoriel : "Le vieil alligator & les oeufs"',
-      "texte": "<p>Voilà un vieil alligator avec des oeufs ! Le vieil alligator n'a plus faim, il a assez mangé.</p> <p>Tous ce qu'il fait, c'est prendre soins de sa famille : ici ce sont des oeufs !</p> <p>Les oeufs vont éclorent et donner de nouvelles familles d'alligators</p> <p>Fais glisser un vieil alligator dans le panel, puis fais glisser le premier oeuf sur le bout de la queue. Enfin, un à un, glisse des oeufs les uns sur les autres pour les ajouter !</p>",
-      "lambda": "",
+      "texte": "<p>Voilà un vieil alligator avec des oeufs ! Le vieil alligator n'a plus faim, il a assez mangé.</p><p>Tous ce qu'il fait, c'est prendre soins de sa famille : ici ce sont des oeufs !</p><p>Les oeufs vont éclorent et donner de nouvelles familles d'alligators.</p><p>Fais glisser un vieil alligator dans le panel, puis fais glisser le premier oeuf sur le bout de la queue. Enfin, un à un, glisse des oeufs les uns sur les autres pour les ajouter !</p>",
+      "contenu-exercice": "(f g h i i )",
+      "contenu-eleve": "",
       "solution": "(f g h i i )"
     },
     "1": {
       "titre": 'Tutoriel : "Les alligators affamés"',
       "texte": "Voilà des alligators affamés...Les alligators affamés ont faim. Ils vont manger tout ce qui est en face d'eux! Mais ils sont aussi des alligators responsables, et comme les vieux alligators, ils gardent leurs familles. Allez fais glisser !",
-      "lambda": "λx.?",
-      "solution": "λx.λy.λz."
+      "contenu-exercice": "λx.λy.λz.",
+      "contenu-eleve": "",
+      "solution": "λx.(λy.(λz.()))"
     },
     "2": {
-      "titre": 'Exercice 1 - La règle du "Mange-moi"',
-      "texte": "Trouves le bon oeuf à placer sous le crocodile 'x' afin d'obtenir le résultat ci dessous",
-      "lambda": "(λx.?) (λy.y)",
-      "solution": "λy.y"
+      "titre": 'Tutoriel 1 - Les familles"',
+      "texte": "Voici une petite famille. Peux tu la recréer ?",
+      "contenu-exercice": "λe.e",
+      "contenu-eleve": "",
+      "solution": "λe.(e )"
+    },
+    "3": {
+      "titre": 'Tutoriel 1 - Les familles"',
+      "texte": "Voici une petite famille un peu plus grande. Peux tu la recréer ?",
+      "contenu-exercice": "λe.λf.e f",
+      "contenu-eleve": "",
+      "solution": "λe.(λf.(e f ))"
     }
   };
 
@@ -132,8 +142,8 @@
           duration: 2000
         },
         hide: "size",
-        width: "90%",
-        height: Math.floor(90 * $(window).height() / 100),
+        width: "100%",
+        height: Math.floor(100 * $(window).height() / 100),
         position: {
           my: "center",
           at: "center",
@@ -557,20 +567,21 @@
     });
     $("#exercice").hide();
     $(".exercice").on("click", function() {
-      var i, solution, texte, titre, _ref1;
+      var exo, i;
       i = $(this).attr("data-id");
-      $("#exercice > .panel-button.exercice").attr("data-id", $(this).attr("data-id"));
-      if (EXERCICES["" + i]["lambda"] !== "") {
-        insert_exp_into_div(EXERCICES["" + i]["lambda"], $("#root"));
+      exo = EXERCICES[i];
+      $("#exercice > .panel-button.exercice").attr("data-id", i);
+      $("#exercice").attr("data-solution", exo["solution"]);
+      $("#exercice > .titre").html("<h1>" + exo['titre'] + "</h1>");
+      $("#exercice > .texte").html("<p>" + exo['texte'] + "</p>");
+      if (exo["contenu-eleve"] !== "") {
+        insert_exp_into_div(exo["contenu-eleve"], $("#root"));
       } else {
         $("#root").empty().append("<div id='root_definition' class='definition_drop'></div>");
       }
-      solution = EXERCICES["" + i]["solution"];
-      insert_exp_into_div(solution, $("#solution"));
-      $("#exercice").attr("data-solution", solution);
-      _ref1 = [EXERCICES["" + i]["titre"], EXERCICES["" + i]["texte"]], titre = _ref1[0], texte = _ref1[1];
-      $("#exercice > .titre").html("<h1>" + titre + "</h1>");
-      $("#exercice > .texte").html("<p>" + texte + "</p>");
+      if (exo["contenu-exercice"] !== "") {
+        insert_exp_into_div(exo["contenu-exercice"], $("#contenu-exercice"));
+      }
       return $("#exercice").show().draggable();
     });
     $("#exercice > .check").on("click", function() {
