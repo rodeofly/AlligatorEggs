@@ -353,8 +353,8 @@ svg {
 .definition_drop, .application_drop {
   position : absolute;
   border:black dashed 1px;
-  width : 2vw;
-  height: 2vw;
+  width : 2.5vw;
+  height: 2.5vw;
 }
 .definition_drop {
   bottom : 0;

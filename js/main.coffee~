@@ -35,8 +35,8 @@ EXERCICES =
     "solution" : "(f g h i i )" 
   "1" :
     "titre"    : 'Tutoriel : "Les alligators affamés"'
-    "texte"     : "Voilà des alligators affamés...Les alligators affamés ont faim. Ils vont manger tout ce qui est en face d'eux! Mais ils sont aussi des alligators responsables, et comme les vieux alligators, ils gardent leurs familles."
-    "lambda"   : "λx.λy.λz."
+    "texte"     : "Voilà des alligators affamés...Les alligators affamés ont faim. Ils vont manger tout ce qui est en face d'eux! Mais ils sont aussi des alligators responsables, et comme les vieux alligators, ils gardent leurs familles. Allez fais glisser !"
+    "lambda"   : "λx.?"
     "solution" : "λx.λy.λz." 
   "2" :
     "titre"    : 'Exercice 1 - La règle du "Mange-moi"'

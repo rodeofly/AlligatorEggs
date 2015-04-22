@@ -126,7 +126,7 @@
           return $(this).show();
         },
         cursorAt: {
-          top: 100,
+          top: 50,
           left: 150
         }
       });

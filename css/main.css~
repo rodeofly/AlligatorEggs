@@ -181,6 +181,7 @@ nav a:hover {
   bottom : 2vw;
   left : 2vw;
   padding : 1vw;
+  border-radius : 0.5vw;
   background-color : rgba(0,0,0,0.5)
 }
 .stop-scrolling {
