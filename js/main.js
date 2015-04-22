@@ -60,19 +60,26 @@
     },
     "1": {
       "titre": 'Tutoriel : "Les alligators affamés"',
-      "texte": "Voilà des alligators affamés...Les alligators affamés ont faim. Ils vont manger tout ce qui est en face d'eux! Mais ils sont aussi des alligators responsables, et comme les vieux alligators, ils gardent leurs familles. Allez fais glisser !",
+      "texte": "<p>Voilà des alligators affamés...Les alligators affamés ont faim. Ils vont manger tout ce qui est en face d'eux! Mais ils sont aussi des alligators responsables, et comme les vieux alligators, ils gardent leurs familles.</p><p>Allez fais glisser !</p>",
       "contenu-exercice": "λx.λy.λz.",
       "contenu-eleve": "",
       "solution": "λx.(λy.(λz.()))"
     },
     "2": {
       "titre": 'Tutoriel 1 - Les familles"',
-      "texte": "Voici une petite famille. Peux tu la recréer ?",
+      "texte": "<p>Voici une petite famille : un alligator garde son oeuf !</p><p>Peux tu la recréer ?</p>",
       "contenu-exercice": "λe.e",
       "contenu-eleve": "",
       "solution": "λe.(e )"
     },
     "3": {
+      "titre": 'Tutoriel 1 - Les familles"',
+      "texte": "<p>Voici une petite famille un peu plus grande.</p><p>Un alligator garde un autre alligator qui gardent deux oeufs. Ou tu pourrez dire qu'un alligator garder un autre alligator qui est gardien des deux oeufs.</p><p>Peux tu la recréer ?</p>",
+      "contenu-exercice": "λe.λf.e f",
+      "contenu-eleve": "",
+      "solution": "λe.(λf.(e f ))"
+    },
+    "4": {
       "titre": 'Tutoriel 1 - Les familles"',
       "texte": "Voici une petite famille un peu plus grande. Peux tu la recréer ?",
       "contenu-exercice": "λe.λf.e f",
@@ -143,12 +150,8 @@
         },
         hide: "size",
         width: "100%",
+        draggable: false,
         height: Math.floor(100 * $(window).height() / 100),
-        position: {
-          my: "center",
-          at: "center",
-          of: window
-        },
         open: function() {
           return $("body").addClass("stop-scrolling");
         },
