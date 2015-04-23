@@ -436,7 +436,6 @@ $ ->
               application.find( "[data-variable='#{$var}']").andSelf().filter("[data-variable='#{$var}']").each ->
                 if $( this ).attr("data-variable") in (pointer_vars.concat ahead_vars)
                   $( this ).attr("data-variable", $var)
-                  $( this ).attr("data-variable", color_tab[index])
                   $( this ).find("svg").first().find(".skin").css("fill", color_tab[index])
               alert "C'est vu ?" if not speed
             break
