@@ -61,9 +61,9 @@
     "1": {
       "titre": 'Tutoriel : "Les alligators affamés"',
       "texte": "<p>Voilà des alligators affamés...Les alligators affamés ont faim. Ils vont manger tout ce qui est en face d'eux! Mais ils sont aussi des alligators responsables, et comme les vieux alligators, ils gardent leurs familles.</p><p>Allez fais glisser !</p>",
-      "contenu-exercice": "λx.λy.λz.",
+      "contenu-exercice": "λx.(λy.(λz.() ) ) ",
       "contenu-eleve": "",
-      "solution": "λx.(λy.(λz.()))"
+      "solution": "λx.(λy.(λz.() ) ) "
     },
     "2": {
       "titre": 'Tutoriel 1 - Les familles"',
@@ -513,7 +513,7 @@
         variable = pointer.attr("data-variable");
         application = pointer.next();
         (color_rule_check = function(pointer, application) {
-          var $var, application_items, application_vars, difference, get_vars, item, new_var, pointer_vars, used_vars, _i, _j, _len, _len1, _results;
+          var $var, application_items, application_vars, difference, get_vars, index, item, pointer_vars, used_vars, _i, _j, _len, _len1, _results;
           get_vars = function(tree) {
             var palette;
             palette = [];
@@ -545,19 +545,18 @@
                 return _results1;
               })();
               difference = difference.slice(0, +(application_vars.length - 1) + 1 || 9e9);
-              for (_j = 0, _len1 = difference.length; _j < _len1; _j++) {
-                new_var = difference[_j];
-                application.find("[data-variable=" + new_var + "]").andSelf().filter("[data-variable=" + new_var + "]").each(function() {
+              for (index = _j = 0, _len1 = application_vars.length; _j < _len1; index = ++_j) {
+                $var = application_vars[index];
+                application.find("[data-variable='" + $var + "']").andSelf().filter("[data-variable='" + $var + "']").each(function() {
                   var _ref1;
-                  if (_ref1 = $(this).attr("data-variable"), __indexOf.call(ahead_vars, _ref1) < 0) {
-                    $(this).attr("data-variable", new_var);
-                    $(this).attr("data-variable", application_colors[new_var]);
-                    return $(this).find("svg").first().find(".skin").css("fill", application_colors[new_var]);
+                  if (_ref1 = $(this).attr("data-variable"), __indexOf.call(pointer_vars.concat(ahead_vars), _ref1) >= 0) {
+                    $(this).attr("data-variable", $var);
+                    return $(this).find("svg").first().find(".skin").css("fill", color_tab[index]);
                   }
                 });
-              }
-              if (!speed) {
-                alert("C'est vu ?");
+                if (!speed) {
+                  alert("C'est vu ?");
+                }
               }
               break;
             } else {
