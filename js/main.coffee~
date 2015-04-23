@@ -6,17 +6,19 @@ delay = (ms, func) -> setTimeout func, ms
 interval = (ms, func) -> setInterval func, ms
 
 CSS_COLOR_NAMES = ["Blue","Brown","BurlyWood","CadetBlue","Chartreuse","Chocolate","Coral","Yellow","Crimson","Cyan","DarkBlue","DarkCyan","DarkGoldenRod","DarkGray","DarkGreen","DarkKhaki","DarkMagenta","DarkOliveGreen","Darkorange","DarkOrchid","DarkRed","DarkSalmon","DarkSeaGreen","DarkSlateBlue","DarkSlateGrey","DeepPink","DeepSkyBlue","DimGray","DimGrey","DodgerBlue","FireBrick","FloralWhite","ForestGreen","Fuchsia","Gainsboro","GhostWhite","Gold","GoldenRod","Gray","Grey","Green","GreenYellow","HoneyDew","HotPink","IndianRed","Indigo","Ivory","Khaki","Lavender","LavenderBlush","LawnGreen","LemonChiffon","LightBlue","LightCoral","LightCyan","LightGoldenRodYellow","LightGray","LightGrey","LightGreen","LightPink","LightSalmon","LightSeaGreen","LightSkyBlue","LightSlateGray","LightSlateGrey","LightSteelBlue","LightYellow","Lime","LimeGreen","Linen","Magenta","Maroon","MediumAquaMarine","MediumBlue","MediumOrchid","MediumPurple","MediumSeaGreen","MediumSlateBlue","MediumSpringGreen","MediumTurquoise","MediumVioletRed","MidnightBlue","MintCream","MistyRose","Moccasin","NavajoWhite","Navy","OldLace","Olive","OliveDrab","Orange","OrangeRed","Orchid","PaleGoldenRod","PaleGreen","PaleTurquoise","PaleVioletRed","PapayaWhip","PeachPuff","Peru","Pink","Plum","PowderBlue","Purple","Red","RosyBrown","RoyalBlue","SaddleBrown","Salmon","SandyBrown","SeaGreen","SeaShell","Sienna","Silver","SkyBlue","SlateBlue","SlateGray","SlateGrey","Snow","SpringGreen","SteelBlue","Tan","Teal","Thistle","Tomato","Turquoise","Violet","Wheat","White","WhiteSmoke","YellowGreen"]
-EXEMPLES =
+FUNCTION =
   "ZERO"  : "(λf.λx.x)"
-  "ONE"   : "(λf.λx.f x)"
-  "TWO"   : "(λf.λx.f (f x))"
-  "THREE" : "(λf.λx.f (f (f x)))"
+  "ONE"   : "(λf.λx.(f x))"
+  "TWO"   : "(λf.λx.(f(f x)))"
+  "THREE" : "(λf.λx.(f(f(f(x)))))"
+  "FOUR"  : "(λf.λx.(f(f(f(f(x))))))"
+  "FIVE"  : "(λf.λx.((f(f(f(f(x)))))))"
   "SUCC"  : "(λn.λf.λx.f (n f x))"
   "PLUS"  : "(λm.λn.λf.λx.m f (n f x))"
   "MULT"  : "(λm.λn.λf.m (n f))"
   "POW"   : "(λb.λe.e b)"
-  "PRED"  : "(λn.λf.λx.n (λg.λh.h (g f)) (λu.x) (λu.u))"
-  "SUB"   : "(λm.λn.n (λn.λf.λx.n (λg.λh.h (g f)) (λu.x) (λu.u)) m)"
+  "PRED"  : "(λa.λf.λx.a (λg.λh.h (g f)) (λu.x) (λu.u))"
+  "SUB"   : " (λm.λa. (a  (λn.λf.λx. n (λg.λh.h (g f)) (λu.x) (λu.u))) m) "
   "TRUE"  : "(λx.λy.x)"
   "FALSE" : "(λx.λy.y)"
   "AND"   : "(λp.λq.p q p)"
@@ -33,7 +35,7 @@ EXERCICES =
     "texte"            : "<p>Voilà un vieil alligator avec des oeufs ! Le vieil alligator n'a plus faim, il a assez mangé.</p><p>Tous ce qu'il fait, c'est prendre soins de sa famille : ici ce sont des oeufs !</p><p>Les oeufs vont éclorent et donner de nouvelles familles d'alligators.</p><p>Fais glisser un vieil alligator dans le panel, puis fais glisser le premier oeuf sur le bout de la queue. Enfin, un à un, glisse des oeufs les uns sur les autres pour les ajouter !</p>"
     "contenu-exercice" : "(f g h i i )"
     "contenu-eleve"    : ""
-    "solution"         : "(f g h i i )" 
+    "solution"         : "(f g h i i ) " 
 
   "1" :
     "titre"            : 'Tutoriel : "Les alligators affamés"'
@@ -47,21 +49,21 @@ EXERCICES =
     "texte"            : "<p>Voici une petite famille : un alligator garde son oeuf !</p><p>Peux tu la recréer ?</p>"
     "contenu-exercice" : "λe.e"
     "contenu-eleve"    : ""
-    "solution"         : "λe.(e )"
+    "solution"         : "λe.(e ) "
 
   "3" :
     "titre"            : 'Tutoriel 1 - Les familles"'
     "texte"            : "<p>Voici une petite famille un peu plus grande.</p><p>Un alligator garde un autre alligator qui gardent deux oeufs. Ou tu pourrez dire qu'un alligator garder un autre alligator qui est gardien des deux oeufs.</p><p>Peux tu la recréer ?</p>"
     "contenu-exercice" : "λe.λf.e f"
     "contenu-eleve"    : ""
-    "solution"         : "λe.(λf.(e f ))"
+    "solution"         : "λe.(λf.(e f ) ) "
     
   "4" :
     "titre"            : 'Tutoriel 1 - Les familles"'
     "texte"            : "<p>Voici une enorme famille ! Nous avons un alligator jaune, vert et rouge qui gardent cette famille . Ils gardent trois choses: un oeuf vert, un vieux crocodile , et un oeuf rouge. Le vieil alligator, lui, garde un œuf jaune et un oeuf vert.</p><p>Notez que les œufs n'utilisent que les couleurs des alligators qui les surveillent . Vous ne pouvez pas avoir un œuf bleu sans qu'il y ait un alligator bleu autour pour le garder.</p><p>Peux tu la recréer ?</p>"
     "contenu-exercice" : "λh.λe.λf.(e (h e) f)"
     "contenu-eleve"    : ""
-    "solution"         : "λh.(λe.(λf.(e (h  e ) f ) ) ) "
+    "solution"         : "λh.(λe.(λf.(e (h e ) f ) ) ) "
 
 
 ALPHABET = "abcdefghijklmnopqrstuvwxyz"
@@ -95,7 +97,7 @@ $ ->
     $( "#draw" ).after "#{html}<br>"
 
     html= ""
-    html += "<button id='#{key}' class='panel-button' data-type='fonction' data-lambda='#{value}'>#{key}</button>" for key,value of EXEMPLES
+    html += "<button id='#{key}' class='panel-button' data-type='fonction' data-lambda='#{value}'>#{key}</button>" for key,value of FUNCTION
     $( "#panel-variable" ).after html
     html= ""
     #Préchargement des images
@@ -263,7 +265,7 @@ $ ->
     make_dropped_droppable()
     #Insert alligators
     $( root ).find(".dropped").each ->
-      $( this ).attr "id", "#{id++}"
+      $( this ).attr "id", "#{id += 1}"
       if ($( this ).hasClass "lambda") and ($( this ).hasClass "priorite") 
         $( "#vieux-svg").clone().contents().prependTo $(this)
       else
@@ -346,17 +348,21 @@ $ ->
   #gestion d'une etape
   $( "#go" ).on "click", ->
     local_debug = false
-    delta = if speed then 500 else 4000
+    delta = if speed then 0 else 4000
+    ahead_vars = []
     $( ".application_drop, .definition_drop" ).remove()
+    $("#root").find( ".dropped" ).each -> 
+      id += 1
+      $(this).attr "id", id
     # Top-left RULE
     pointer = $("#root > .lambda:first")
-    ahead_vars =[]
     stay = true
     decapsule = (pointer) ->
       fragment = document.createDocumentFragment()
       while (pointer[0].firstChild)
         fragment.appendChild(pointer[0].firstChild)
       pointer[0].parentNode.replaceChild(fragment, pointer[0])
+      pointer[0] = $(pointer).find( "svg" ).first().remove()[0]
     while stay
       alert "stay for a loop" if local_debug
       #On tombe sur un croco blanc
@@ -368,7 +374,7 @@ $ ->
           when 1
             pointer.find("svg").first().find("g#layer1").attr("transform", "rotate(180,140,65)")
             alert "Ce vieil alligator ne sert plus à rien !" if not speed
-            pointer.find("svg").first().remove()
+            pointer.find( "> svg").remove()
             decapsule(pointer)
             continue
           else
@@ -392,13 +398,18 @@ $ ->
               stay = false
               continue
           else
-            #c'est bon action !
-            stay = false
-            continue
+            if (pointer.next().hasClass( "priorite" )) and (pointer.next().find(".lambda:not(.priorite)").next().length > 0)
+              pointer = pointer.next()
+              continue
+            else
+              #c'est bon action !
+              stay = false
+              continue
+    
       # On tombe sur un oeuf
-      if (pointer.hasClass "variable")
+      if (pointer.hasClass "variable")      
+        ahead_vars.push pointer.attr("data-variable")  
         alert "Oeuf #{pointer.attr('data-variable')} !" if local_debug
-        ahead_vars.push pointer.attr("data-variable")
         pointer = pointer.next()
         continue
       #rien ne va plus
@@ -406,39 +417,60 @@ $ ->
       stay = false
 
     if (pointer.hasClass "lambda") and (pointer.attr("data-color") isnt "white") and (pointer.next().length > 0)
-      #Paré pour la regle de la couleur, on a la couleur de base et l'ensemble de couleurs reservées !
-      ahead_vars = ahead_vars.unique()
+      #on retire la variable courante des variables precedemment rencontrées
+      ahead_vars.pop()
       variable = pointer.attr("data-variable")
       # On recupere l'application, eventuellement on change de couleur et on la clone parce qu'elle va degager
       application = pointer.next()
       do color_rule_check = (pointer, application) ->
+
+        closestCommonAncestor = (a, b) -> a.parents().has(b).first()
         get_vars = (tree) ->
           palette = []
-          tree.find( "[data-variable]" ).andSelf().filter("[data-variable]").not(".lambda.priorite").each -> palette.push $( this ).data("variable")
+          tree.find( "[data-variable]" ).andSelf().filter("[data-variable]").not(".lambda.priorite").each -> 
+            if $( this ).data("variable") not in ahead_vars
+              palette.push $( this ).data("variable")
           palette.unique()
+        find_tree = (element, racine_id) ->
+          i = element.attr("id")
+          tree = $("##{racine_id}").find(".dropped").has( "##{i}" )
+        common_ancestor = closestCommonAncestor pointer, application
+        i = "##{pointer.attr('id')}"
+        j = "##{application.attr('id')}"
+        #alert "ahead_vars : " + ahead_vars
+        common_ancestor = common_ancestor.clone()
+        common_ancestor.find(i).remove()
+        common_ancestor.find(j).remove()
+        #alert "ancestor : #{common_ancestor.attr("id")} to_children : #{common_ancestor.find( "[data-variable]" ).andSelf().filter("[data-variable]").not(".lambda.priorite").length}"
+        if common_ancestor.attr("id") isnt "root"
+          common_ancestor.find( "[data-variable]" ).andSelf().filter("[data-variable]").not(".lambda.priorite").each -> 
+            ahead_vars.push $(this).attr "data-variable"
+        ahead_vars = ahead_vars.unique()
+        #alert "ahead_vars : " + ahead_vars
         #On va lister les variables utilisées dans la definition de la fonction
-        pointer_vars = get_vars pointer
+        function_vars = get_vars pointer
+        #Et on va lister toutes les couleurs de l'application
+        application_vars = get_vars application
+        #On regarde s'il y a des couleurs en commun
+        intersect = (a,b) -> a.filter (n) -> b.indexOf(n) isnt -1
+        intersection = intersect(application_vars, function_vars)
+
         #On verifie en suite que chacune des couleurs de la fonction ne se retrouve pas dans l'application
-        for $var in pointer_vars
-          application_items = application.find( "[data-variable='#{$var}']").andSelf().filter("[data-variable='#{$var}']")
+        if intersection.length
           # Aie ! On en a trouvé
-          if application_items.length
-            alert "Règle de la couleur !(Color rule)" if not speed
-            #Alors on va lister toutes les couleurs de l'application
-            application_vars = get_vars application
-            #On fabrique donc un ensemble de couleurs qu'on ne peut pas utiliser
-            used_vars = (pointer_vars.concat application_vars.concat ahead_vars).unique()
-            #Et on prend autant de couleurs dans la palette qu'il y en a dans la fonction
-            difference = (item for item in ALPHABET when item not in used_vars)
-            difference = difference[0..application_vars.length-1]
-            #Pour chacune des couleurs de la fonction on va echanger dans l'application avec une couleur disponible de la palette
-            for $var, index in application_vars
-              application.find( "[data-variable='#{$var}']").andSelf().filter("[data-variable='#{$var}']").each ->
-                if $( this ).attr("data-variable") in (pointer_vars.concat ahead_vars)
-                  $( this ).attr("data-variable", $var)
-                  $( this ).find("svg").first().find(".skin").css("fill", color_tab[index])
-              alert "C'est vu ?" if not speed
-            break
+          #Et on prend autant de couleurs dans la palette qu'il y en a dans l'intersection
+          used_vars = function_vars.concat(application_vars.concat(ahead_vars.concat)).unique()
+          palette = (item for item in ALPHABET when item not in used_vars)
+          palette = palette[0..intersection.length-1]   
+          #alert "app vars: #{application_vars} | func_vars : #{function_vars} | intersect : #{intersection} | palette : #{palette}"
+          alert "Règle de la couleur !(Color rule)" if not speed
+          #Pour chacune des couleurs de la fonction on va echanger dans l'application avec une couleur disponible de la palette
+          for $var, index in intersection
+            application.find( "[data-variable='#{$var}']").andSelf().filter("[data-variable='#{$var}']").each ->
+              if ($( this ).attr "data-variable") not in ahead_vars
+                $( this ).attr("data-variable", palette[index])
+                $( this ).find("> svg").find(".skin").css("fill", var_tab[palette[index]])
+          alert "C'est vu ?" if not speed
       applicationClone =  application.clone()
       do bust_a_move = (p=pointer,timer=delta ,j=0) ->
         bustit = interval 50, -> p.children("svg").css("z-index":"9000").find("#jaw").attr("transform", "rotate(#{-10+Math.floor 6*Math.cos(j++)}) translate(-100,20)")
@@ -450,8 +482,10 @@ $ ->
         .clone().prependTo(pointer)
         .css({"z-index" : "-1",border:"dashed black 1px",visibility:"visible",position:"absolute",top:"0px",left:"100%"})
         .animate {"min-width":"0px",padding:"0px", height: '1vw', width: "1vw", top:"0", left:"60%"} , delta, ->
-          #On fait disparaitre l'application
-          $(this).remove()
+          #On fait disparaitre l'application et son clone
+          $(this).find("> svg").remove() 
+          $(this).remove() 
+          application.find("> svg").remove() 
           application.remove()
           #On va faire reapparaitre l'application à chaque oeuf
           eggs = pointer.find( ".variable[data-variable=#{variable}]"  )
@@ -459,13 +493,19 @@ $ ->
           if n>0
             eggs.each (index, element) ->
               $(this).after applicationClone.clone().css(opacity: 0).animate {opacity: 1}, delta, ->
-                decapsule pointer if index is n-1
+                if index is n-1
+                  pointer.find("> svg").remove() 
+                  decapsule pointer
               $(this).animate { opacity: 0} , delta, ->
+                $(this).find("> svg").remove() 
                 $(this).remove()
+                
           else
             alert "Aucun oeuf !(no egg)" if not speed
+            pointer.find("> svg").remove()
             decapsule pointer
-  
+      $("#root").children( "svg").remove()
+    
   # Gestion du jeu
   $( "#console" ).toggle()     
   $( "#toggle-console" ).on "click", -> $( "#console" ).toggle()
