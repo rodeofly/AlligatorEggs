@@ -52,37 +52,44 @@
 
   EXERCICES = {
     "0": {
-      "titre": 'Tutoriel : "Le vieil alligator & les oeufs"',
-      "texte": "<p>Voilà un vieil alligator avec des oeufs ! Le vieil alligator n'a plus faim, il a assez mangé.</p><p>Tous ce qu'il fait, c'est prendre soins de sa famille : ici ce sont des oeufs !</p><p>Les oeufs vont éclorent et donner de nouvelles familles d'alligators.</p><p>Fais glisser un vieil alligator dans le panel, puis fais glisser le premier oeuf sur le bout de la queue. Enfin, un à un, glisse des oeufs les uns sur les autres pour les ajouter !</p>",
+      "titre": 'Les items (1): "Le vieil alligator & les oeufs"',
+      "texte": "<p>Voilà un vieil alligator avec des oeufs ! Le vieil alligator n'a plus faim, il a assez mangé.</p><p>Tous ce qu'il fait, c'est prendre soin de sa famille : ici ce sont des oeufs !</p><p>Les oeufs vont éclorent et donner de nouvelles familles d'alligators.</p><p>Fais glisser un vieil alligator dans le panel, puis fais glisser le premier oeuf sur le bout de la queue. Enfin, un à un, glisse des oeufs les uns sur les autres pour les ajouter !</p>",
       "contenu-exercice": "(f g h i i )",
       "contenu-eleve": "",
       "solution": "(f g h i i ) "
     },
     "1": {
-      "titre": 'Tutoriel : "Les alligators affamés"',
+      "titre": 'Les items (2) : "Les alligators affamés"',
       "texte": "<p>Voilà des alligators affamés...Les alligators affamés ont faim. Ils vont manger tout ce qui est en face d'eux! Mais ils sont aussi des alligators responsables, et comme les vieux alligators, ils gardent leurs familles.</p><p>Allez fais glisser !</p>",
       "contenu-exercice": "λx.(λy.(λz.() ) ) ",
       "contenu-eleve": "",
       "solution": "λx.(λy.(λz.() ) ) "
     },
     "2": {
-      "titre": 'Tutoriel 1 - Les familles"',
+      "titre": 'Les familles (1)',
       "texte": "<p>Voici une petite famille : un alligator garde son oeuf !</p><p>Peux tu la recréer ?</p>",
       "contenu-exercice": "λe.e",
       "contenu-eleve": "",
       "solution": "λe.(e ) "
     },
     "3": {
-      "titre": 'Tutoriel 1 - Les familles"',
+      "titre": 'Les familles (2)',
       "texte": "<p>Voici une petite famille un peu plus grande.</p><p>Un alligator garde un autre alligator qui gardent deux oeufs. Ou tu pourrez dire qu'un alligator garder un autre alligator qui est gardien des deux oeufs.</p><p>Peux tu la recréer ?</p>",
       "contenu-exercice": "λe.λf.e f",
       "contenu-eleve": "",
       "solution": "λe.(λf.(e f ) ) "
     },
     "4": {
-      "titre": 'Tutoriel 1 - Les familles"',
-      "texte": "<p>Voici une enorme famille ! Nous avons un alligator jaune, vert et rouge qui gardent cette famille . Ils gardent trois choses: un oeuf vert, un vieux crocodile , et un oeuf rouge. Le vieil alligator, lui, garde un œuf jaune et un oeuf vert.</p><p>Notez que les œufs n'utilisent que les couleurs des alligators qui les surveillent . Vous ne pouvez pas avoir un œuf bleu sans qu'il y ait un alligator bleu autour pour le garder.</p><p>Peux tu la recréer ?</p>",
+      "titre": 'Les familles (3)',
+      "texte": "<p>Voici une énorme famille ! Nous avons un alligator jaune, vert et rouge qui gardent cette famille. Ils gardent trois choses : un oeuf vert, un vieux crocodile , et un oeuf rouge. Le vieil alligator, lui, garde un œuf jaune et un oeuf vert.</p><p>Note bien que les œufs n'utilisent que les couleurs des alligators qui les surveillent . Vous ne pouvez pas avoir un œuf bleu sans qu'il y ait un alligator bleu autour pour le garder.</p><p>Peux recréer cette famille ?</p>",
       "contenu-exercice": "λh.λe.λf.(e (h e) f)",
+      "contenu-eleve": "",
+      "solution": "λh.(λe.(λf.(e (h e ) f ) ) ) "
+    },
+    "5": {
+      "titre": 'Manger',
+      "texte": "<p>Attention, ça va se compliquer !</p><p>Voivi deux familles, l'une à coté de l'autre.</p>",
+      "contenu-exercice": "(λh.λe.h e) (λa.a)",
       "contenu-eleve": "",
       "solution": "λh.(λe.(λf.(e (h e ) f ) ) ) "
     }
@@ -93,7 +100,7 @@
   _ref = [[], {}, false, true, 0, 0], color_tab = _ref[0], var_tab = _ref[1], debug = _ref[2], speed = _ref[3], id = _ref[4], parentheses = _ref[5];
 
   $(function() {
-    var get_lambda_from, initialize_html, inserer, insert_exp_into_div, make_dropped_droppable;
+    var get_lambda_from, go_one_step, initialize_html, inserer, insert_exp_into_div, make_dropped_droppable, repeat_step;
     (initialize_html = function() {
       var color, html, index, key, letter, s, value, _i, _j, _len, _len1, _ref1;
       for (key in EXERCICES) {
@@ -124,11 +131,13 @@
       };
       $.get("css/svg/egg.svg", function(rawSvg) {
         $("#egg-svg").append(document.importNode(rawSvg.documentElement, true));
-        return $("#egg-svg svg")[0].setAttribute('viewBox', '0 0 116 80');
+        $("#egg-svg svg")[0].setAttribute('viewBox', '0 0 116 80');
+        return $(".color:first()").trigger("click");
       }, "xml");
       $.get("css/svg/open.svg", function(rawSvg) {
         $("#open-svg").append(document.importNode(rawSvg.documentElement, true));
-        return $("#open-svg svg")[0].setAttribute('viewBox', '-25 0 330 150');
+        $("#open-svg svg")[0].setAttribute('viewBox', '-25 0 330 150');
+        return $(".color:first()").trigger("click");
       }, "xml");
       return $.get("css/svg/vieux.svg", function(rawSvg) {
         $("#vieux-svg").append(document.importNode(rawSvg.documentElement, true));
@@ -171,7 +180,6 @@
       $(".color").removeClass("selected-color");
       return $(this).addClass("selected-color");
     });
-    $(".color:first").trigger('click');
     $(".panel-button").on("click", function() {
       var e, index, letter, _i, _len, _ref1, _results;
       switch ($(this).attr("data-type")) {
@@ -402,16 +410,31 @@
     };
     make_dropped_droppable();
     $("#go").on("click", function() {
+      return go_one_step("#root");
+    });
+    $("#repeat").on("click", function() {
+      return repeat_step("#root");
+    });
+    repeat_step = function(root) {
+      var i;
+      i = interval(250, function() {
+        return go_one_step(root);
+      });
+      return document.onkeypress = function() {
+        return window.clearInterval(i);
+      };
+    };
+    go_one_step = function(root) {
       var ahead_vars, application, applicationClone, bust_a_move, color_rule_check, delta, local_debug, pointer, stay, variable;
       local_debug = false;
-      delta = speed ? 0 : 4000;
+      delta = speed ? 0 : 1000;
       ahead_vars = [];
-      $(".application_drop, .definition_drop").remove();
-      $("#root").find(".dropped").each(function() {
+      $(root + " .application_drop, " + root + " .definition_drop").remove();
+      $(root).find(".dropped").each(function() {
         id += 1;
         return $(this).attr("id", id);
       });
-      pointer = $("#root").children(".lambda:first()");
+      pointer = $(root).children(".lambda:first()");
       stay = true;
       while (stay) {
         if (local_debug) {
@@ -494,10 +517,10 @@
           find_tree = function(element) {
             var i, tree;
             i = element.attr("id");
-            if (element.parent().is($("#root"))) {
+            if (element.parent().is($(root))) {
               return tree = element;
             } else {
-              return tree = $("#root").children(".dropped").has("#" + i);
+              return tree = $(root).children(".dropped").has("#" + i);
             }
           };
           function_vars = get_vars(find_tree(pointer));
@@ -606,9 +629,12 @@
             return pointer.replaceWith(pointer.contents());
           }
         });
-        return $("#root").children("svg").remove();
+        $(root).children("svg").remove();
+        return true;
+      } else {
+        return false;
       }
-    });
+    };
     $("#console").toggle();
     $("#toggle-console").on("click", function() {
       return $("#console").toggle();

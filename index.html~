@@ -62,11 +62,12 @@
               </div>
               <div id="command-panel">
                   <button class="panel-button" id="go">Go</button>
+                  <button class="panel-button" id="repeat">Go</button>
                   <button class="panel-button" data-type="speed" >fast</button>
                   <button class="panel-button" data-type="read"  >Lire</button>
                   <button class="panel-button" data-type="clear" >Effacer</button>
               </div>
-              <div id="exercice" data-id="" data-solution>
+              <div id="exercice" data-id="" data-solution="">
                   <div class="titre"></div>
                   <div class="texte"></div>
                   <div id="contenu-exercice" ></div>
