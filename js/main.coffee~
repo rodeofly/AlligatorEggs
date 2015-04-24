@@ -10,25 +10,24 @@ FUNCTION =
   "ZERO"  : "(λf.λx.x)"
   "ONE"   : "(λf.λx.(f x))"
   "TWO"   : "(λf.λx.(f(f x)))"
-  "THREE" : "(λf.λx.(f(f(f(x)))))"
-  "FOUR"  : "(λf.λx.(f(f(f(f(x))))))"
-  "FIVE"  : "(λf.λx.((f(f(f(f(x)))))))"
+  "THREE" : "(λf.λx.(f(f(f x))))"
+  "FOUR"  : "(λf.λx.(f(f(f(f x)))))"
+  "FIVE"  : "(λf.λx.(f(f(f(f(f x))))))"
   "SUCC"  : "(λn.λf.λx.f (n f x))"
   "PLUS"  : "(λm.λn.λf.λx.m f (n f x))"
   "MULT"  : "(λm.λn.λf.m (n f))"
   "POW"   : "(λb.λe.e b)"
   "PRED"  : "(λa.λf.λx.a (λg.λh.h (g f)) (λu.x) (λu.u))"
   "SUB"   : " (λm.λa. (a  (λn.λf.λx. n (λg.λh.h (g f)) (λu.x) (λu.u))) m) "
-  "TRUE"  : "(λx.λy.x)"
-  "FALSE" : "(λx.λy.y)"
+  "TRUE"  : "(λa.λb.a)"
+  "FALSE" : "(λa.λb.b)"
   "AND"   : "(λp.λq.p q p)"
   "OR"    : "(λp.λq.p p q)"
   "NOT"   : "(λp.λa.λb.p b a)"
   "IFTHENELSE" : "(λp.λa.λb.p a b)"
-  "ISZERO"     : "(λn.n (λx.(λx.λy.y)) (λx.λy.x))"
-  "LEQ"        : "(λm.λn.(λp.p (λx.(λx.λy.y)) (λx.λy.x)) ((λq.λr.r (λr.λf.λx.r (λg.λh.h (g f)) (λu.x) (λu.u)) q) m n))"
+  "ISZERO"     : "(λn.n (λx.(λa.λb.b)) (λa.λb.a))"
+  "LEQ"        : "(λc.λp. (λq.q (λx.(λd.λe.e)) (λd.λe.d)) (SUB c p))"
 
-lambda_exemples = ["(λx.x) (λy.y)","(λx.λy.x) (λy.y)","((λy.y) (λz.z))(λx.x)","(λx.λy. x) a b","(λx.λy. y) a b","(λa. a (λm.(λn. n ))(λp.(λq. p )))(λx.λy. y) a b","(λx.x x) (λx.x x)","λy.((λx.y (x x)) (λx.y (x x)))","(λa.λs.λz.s (a s z)) (λs.λz.z) ","(λa.λb.λs.λz.(a s (b s z))) (λs.λz.(s z)) (λs.λz.(s z))","(λa.λb.λs.λz.(a s (b s z))) (λs.λz.(s (s (s z)))) (λs.λz.(s (s (s (s z)))))"]
 EXERCICES =
   "0" :
     "titre"            : 'Tutoriel : "Le vieil alligator & les oeufs"'
@@ -70,14 +69,25 @@ ALPHABET = "abcdefghijklmnopqrstuvwxyz"
 [color_tab, var_tab, debug, speed, id, parentheses] = [ [], {}, false, true, 0, 0 ]
 
 $ ->
+  ###########################################################################################################################################################
   #Preparation html - Construction de la console
+  ###########################################################################################################################################################
   do initialize_html = ->
     for key of EXERCICES
       $( '#exercices' ).append "<button class='panel-button exercice'  data-id='#{key}'>Ex#{key}</button>"
     for letter,index in ALPHABET[0..25]
       color_tab.push CSS_COLOR_NAMES[index]
       var_tab["#{letter}"] = CSS_COLOR_NAMES[index]
-
+    html= ""
+    for key,value of FUNCTION
+      html += "<button id='#{key}' class='panel-button' data-type='fonction' data-lambda='#{value}'>#{key}</button>"
+    $( "#console" ).prepend "#{html}<br>"
+    html= ""
+    for color,index in color_tab
+      html+= "<div id='#{color}' class='color' style='background-color:#{color};' data-color='#{color}' data-variable='#{ALPHABET[index]}'>#{ALPHABET[index]}</div>"
+    $( "#items" ).before html
+    s = {"egg" : "0 0 116 80", "open" : "-25 0 330 150", "vieux" : "0 0 228 78"}
+    
     $.get "css/svg/egg.svg", (rawSvg) -> 
       $("#egg-svg").append(document.importNode rawSvg.documentElement,true)
       $("#egg-svg svg")[0].setAttribute('viewBox', '0 0 116 80')
@@ -86,41 +96,28 @@ $ ->
       $("#open-svg").append(document.importNode rawSvg.documentElement,true)
       $("#open-svg svg")[0].setAttribute('viewBox', '-25 0 330 150')
     , "xml"
-
     $.get "css/svg/vieux.svg", (rawSvg) -> 
       $("#vieux-svg").append(document.importNode rawSvg.documentElement,true)
       $("#vieux-svg svg")[0].setAttribute('viewBox', '0 0 228 78')
     , "xml"
-
-    html= ""
-    html += "<button id='ex-#{i}' class='panel-button' data-type='exemple' data-numero='#{i}'>#{i}</button>" for i in [0..lambda_exemples.length-1]
-    $( "#draw" ).after "#{html}<br>"
-
-    html= ""
-    html += "<button id='#{key}' class='panel-button' data-type='fonction' data-lambda='#{value}'>#{key}</button>" for key,value of FUNCTION
-    $( "#panel-variable" ).after html
-    html= ""
-    #Préchargement des images
-    for color,index in color_tab
-      html+= "<div id='#{color}' class='color' style='background-color:#{color};' data-color='#{color}' data-variable='#{ALPHABET[index]}'>#{ALPHABET[index]}</div>"
-    $( "#items" ).before html
-
-    $( ".item" ).draggable
-      helper : "clone"
-      start:  (event, ui) -> $(ui.helper).addClass("ui-draggable-helper")
-      stop : (event, ui) ->  $(this).show()
-      #cursorAt : {top :  50, left : 150}
-
-    $("#game-container").dialog
-      show:  {effect: 'fade', duration: 2000}
-      hide: "size"
-      width : "100%"
-      draggable: false
-      height:  Math.floor(100 * $(window).height() / 100)
-      open: -> $("body").addClass("stop-scrolling")
-      close: -> $("body").removeClass("stop-scrolling")
-
-
+  ###########################################################################################################################################################
+  #Initialisation des items, dialog, couleurs et panels
+  ###########################################################################################################################################################
+  #items oeuf, croco, vieux croco draggable
+  $( ".item" ).draggable
+    helper : "clone"
+    start:  (event, ui) -> $(ui.helper).addClass("ui-draggable-helper")
+    stop : (event, ui) ->  $(this).show()
+    #cursorAt : {top :  50, left : 150}
+  #Conteneur de jeu
+  $("#game-container").dialog
+    show:  {effect: 'fade', duration: 2000}
+    hide: "size"
+    width : "100%"
+    draggable: false
+    height:  Math.floor(100 * $(window).height() / 100)
+    open: -> $("body").addClass("stop-scrolling")
+    close: -> $("body").removeClass("stop-scrolling")
   #Choix d'une couleur dans la palette
   $( ".color" ).on "click", ->
     [color, variable] = [$( this ).attr("data-color"),$( this ).attr("data-variable")]
@@ -132,7 +129,6 @@ $ ->
     $( ".color" ).removeClass("selected-color" )
     $( this ).addClass( "selected-color" )
   $( ".color:first" ).trigger 'click'
-
   #Gestion du panel
   $( ".panel-button" ).on "click", ->
     switch $( this ).attr("data-type")
@@ -179,8 +175,13 @@ $ ->
         speed = not speed
       when "read"
         $("#prompt").val get_lambda_from $("#root")
-
+   
+  $('#prompt').keypress (key) ->
+    insert_exp_into_div($( "#prompt").val(),$("#root")) if key.which is 13
+    return false
+  ###########################################################################################################################################################
   #Parser une expression
+  ###########################################################################################################################################################
   get_lambda_from = (root) ->
     exp = root.clone()
     exp.find("svg").remove()
@@ -191,13 +192,14 @@ $ ->
     exp = exp.replace /<div id="\d*" class="lambda dropped" data-variable="(\w+)" data-color="\w+"[ style="opacity: 1;"]*>/g, "λ$1.("
     exp = exp.replace /<div id="\d*" class="lambda priorite dropped" data-variable="\(" data-color="white"[ style="opacity: 1;"]*>/g, "("
     exp = exp.replace(/<\/div>/g , ") ")
-
+  ###########################################################################################################################################################
+  #Inserer une expression
+  ###########################################################################################################################################################
   insert_exp_into_div = (exp, root) ->
     expression = exp
     id = 0
     #make it easy to retrieve variables
     expression = expression.replace /([.( ])([a-z])/g, "$1woot$2" 
-    
     #lambdas
     local_debug = false
     while expression.match /λ/
@@ -246,9 +248,7 @@ $ ->
                 current_index += 1
               alert "I got this : #{expression.substring(λ_index,current_index)}" if local_debug
               expression = expression.replace expression.substring(λ_index,current_index), "<div id='' class='lambda dropped' data-variable='#{expression[λ_variable]}' data-color=''>#{expression.substring(λ_index+3,current_index)}</div>"
-              continue  
-            
-    #expression = expression.replace /λ(\w).([^)]*\s?\)*)/ , "<div id='' class='lambda dropped' data-variable='$1' data-color=''>$2</div>"
+              continue           
     #most outer parentheses
     expression = expression.replace /[ ]*\(([^)]*\s?\)*)\)[ ]*/g, "<div id='' class='lambda priorite dropped' data-variable='parenthese' data-color='white' >$1</div>"   
     expression = expression.replace /\(/g, "<div id='' class='lambda priorite dropped' data-variable='parenthese' data-color='white'>"
@@ -277,36 +277,10 @@ $ ->
         else
           $( "#open-svg").find(".skin").css("fill", $(this).attr "data-color")
           $( "#open-svg").clone().contents().prependTo  $(this)
- 
 
-  $('#prompt').keypress (key) ->
-    insert_exp_into_div($( "#prompt").val(),$("#root")) if key.which is 13
-    #eviter la propagation de la touche "entrée"
-
-  #inserer un draggable dans un droppable - construction par glisser/déposer
-  inserer_direct = (symbole, droppable,mode) ->
-    switch symbole
-      when "("
-        [color , type, classe] = ["white","lambda priorite", ".lambda.priorite"]
-        lambda = $('<div/>').html("<div id='#{id++}' class='#{type} dropped' data-variable='#{symbole}' data-color='#{color}' ></div>").contents()
-        $( "#vieux-svg").clone().contents().prependTo $(lambda)
-      else
-        if ALPHABET.indexOf(symbole) > -1
-          [color , type, classe] = ["#{var_tab[symbole[0]]}","variable", ".variable"]
-          $( "#egg-svg").find(".skin").css("fill",color)
-          lambda = $('<div/>').html("<div id='#{id++}' class='#{type} dropped' data-variable='#{symbole[0]}' data-color='#{color}' ></div>").contents()
-          $( "#egg-svg").clone().contents().prependTo $(lambda)
-        else
-          [color , type, classe] = ["#{var_tab[symbole[1]]}","lambda", ".lambda"]
-          $( "#open-svg").find(".skin").css("fill",color)
-          lambda = $('<div/>').html("<div id='#{id++}' class='#{type} dropped' data-variable='#{symbole[1]}' data-color='#{color}' ></div>").contents()
-          $( "#open-svg").clone().contents().prependTo $(lambda)
-    if mode is "definition"
-      droppable = droppable.append($(lambda)).children(classe).first()
-    else
-      droppable = droppable.after($(lambda)).next(classe)
-  
-  
+  ###########################################################################################################################################################
+  #Construction graphique
+  ###########################################################################################################################################################
   inserer = (draggable, droppable) ->
     if draggable.hasClass("vieux-croco")
       [variable, color] = ["(", "white"]
@@ -345,7 +319,9 @@ $ ->
         inserer ui.draggable, $(this)
         make_dropped_droppable()
   make_dropped_droppable()
+  ###########################################################################################################################################################
   #gestion d'une etape
+  ###########################################################################################################################################################  
   $( "#go" ).on "click", ->
     local_debug = false
     delta = if speed then 0 else 4000
@@ -355,17 +331,12 @@ $ ->
       id += 1
       $(this).attr "id", id
     # Top-left RULE
-    pointer = $("#root > .lambda:first")
+    pointer = $("#root").children(".lambda:first()")
     stay = true
-    decapsule = (pointer) ->
-      fragment = document.createDocumentFragment()
-      while (pointer[0].firstChild)
-        fragment.appendChild(pointer[0].firstChild)
-      pointer[0].parentNode.replaceChild(fragment, pointer[0])
-      pointer[0] = $(pointer).find( "svg" ).first().remove()[0]
     while stay
       alert "stay for a loop" if local_debug
       #On tombe sur un croco blanc
+      alert pointer.attr("data-variable") if local_debug
       if (pointer.hasClass "priorite")
         alert "Croco blanc !" if local_debug
         #il y a des crocos de couleurs dessous
@@ -375,13 +346,10 @@ $ ->
             pointer.find("svg").first().find("g#layer1").attr("transform", "rotate(180,140,65)")
             alert "Ce vieil alligator ne sert plus à rien !" if not speed
             pointer.find( "> svg").remove()
-            decapsule(pointer)
+            pointer.replaceWith pointer.contents()
             continue
           else
-            if pointer.find(".lambda").length > 0
-              pointer = pointer.find(".lambda").first()
-            else
-              pointer = pointer.next()
+            pointer = pointer.children(".lambda:first()")
             continue
       #On tombe sur un croco de couleur
       if (pointer.hasClass "lambda") and (not pointer.hasClass "priorite")
@@ -398,14 +366,8 @@ $ ->
               stay = false
               continue
           else
-            if (pointer.next().hasClass( "priorite" )) and (pointer.next().find(".lambda:not(.priorite)").next().length > 0)
-              pointer = pointer.next()
-              continue
-            else
-              #c'est bon action !
-              stay = false
-              continue
-    
+            stay = false
+            continue   
       # On tombe sur un oeuf
       if (pointer.hasClass "variable")      
         ahead_vars.push pointer.attr("data-variable")  
@@ -422,47 +384,32 @@ $ ->
       variable = pointer.attr("data-variable")
       # On recupere l'application, eventuellement on change de couleur et on la clone parce qu'elle va degager
       application = pointer.next()
-      do color_rule_check = (pointer, application) ->
-
-        closestCommonAncestor = (a, b) -> a.parents().has(b).first()
+      do color_rule_check = (pointer, application) ->  
         get_vars = (tree) ->
           palette = []
           tree.find( "[data-variable]" ).andSelf().filter("[data-variable]").not(".lambda.priorite").each -> 
-            if $( this ).data("variable") not in ahead_vars
-              palette.push $( this ).data("variable")
+            palette.push $( this ).data("variable")
           palette.unique()
-        find_tree = (element, racine_id) ->
+        find_tree = (element) -> 
           i = element.attr("id")
-          tree = $("##{racine_id}").find(".dropped").has( "##{i}" )
-        common_ancestor = closestCommonAncestor pointer, application
-        i = "##{pointer.attr('id')}"
-        j = "##{application.attr('id')}"
-        #alert "ahead_vars : " + ahead_vars
-        common_ancestor = common_ancestor.clone()
-        common_ancestor.find(i).remove()
-        common_ancestor.find(j).remove()
-        #alert "ancestor : #{common_ancestor.attr("id")} to_children : #{common_ancestor.find( "[data-variable]" ).andSelf().filter("[data-variable]").not(".lambda.priorite").length}"
-        if common_ancestor.attr("id") isnt "root"
-          common_ancestor.find( "[data-variable]" ).andSelf().filter("[data-variable]").not(".lambda.priorite").each -> 
-            ahead_vars.push $(this).attr "data-variable"
-        ahead_vars = ahead_vars.unique()
-        #alert "ahead_vars : " + ahead_vars
-        #On va lister les variables utilisées dans la definition de la fonction
-        function_vars = get_vars pointer
-        #Et on va lister toutes les couleurs de l'application
+          if (element.parent().is $("#root"))
+            tree =  element 
+          else 
+            tree = $("#root").children(".dropped").has( "##{i}" )
+          
+        function_vars = get_vars( find_tree pointer )
         application_vars = get_vars application
         #On regarde s'il y a des couleurs en commun
         intersect = (a,b) -> a.filter (n) -> b.indexOf(n) isnt -1
         intersection = intersect(application_vars, function_vars)
-
         #On verifie en suite que chacune des couleurs de la fonction ne se retrouve pas dans l'application
+        #alert "func_vars : #{function_vars} | app vars: #{application_vars} | ahead_vars: #{ahead_vars}  | intersect : #{intersection} | palette : #{palette}"
         if intersection.length
           # Aie ! On en a trouvé
           #Et on prend autant de couleurs dans la palette qu'il y en a dans l'intersection
-          used_vars = function_vars.concat(application_vars.concat(ahead_vars.concat)).unique()
-          palette = (item for item in ALPHABET when item not in used_vars)
+          palette = (item for item in ALPHABET when item not in function_vars.concat application_vars)
           palette = palette[0..intersection.length-1]   
-          #alert "app vars: #{application_vars} | func_vars : #{function_vars} | intersect : #{intersection} | palette : #{palette}"
+          #alert "func_vars : #{function_vars} | app vars: #{application_vars} | ahead_vars: #{ahead_vars}  | intersect : #{intersection} | palette : #{palette}"
           alert "Règle de la couleur !(Color rule)" if not speed
           #Pour chacune des couleurs de la fonction on va echanger dans l'application avec une couleur disponible de la palette
           for $var, index in intersection
@@ -495,7 +442,7 @@ $ ->
               $(this).after applicationClone.clone().css(opacity: 0).animate {opacity: 1}, delta, ->
                 if index is n-1
                   pointer.find("> svg").remove() 
-                  decapsule pointer
+                  pointer.replaceWith pointer.contents()
               $(this).animate { opacity: 0} , delta, ->
                 $(this).find("> svg").remove() 
                 $(this).remove()
@@ -503,10 +450,11 @@ $ ->
           else
             alert "Aucun oeuf !(no egg)" if not speed
             pointer.find("> svg").remove()
-            decapsule pointer
+            pointer.replaceWith pointer.contents()
       $("#root").children( "svg").remove()
-    
+  ###########################################################################################################################################################
   # Gestion du jeu
+  ###########################################################################################################################################################  
   $( "#console" ).toggle()     
   $( "#toggle-console" ).on "click", -> $( "#console" ).toggle()
   #Exercice
@@ -522,8 +470,7 @@ $ ->
       insert_exp_into_div(exo["contenu-eleve"], $("#root"))
     else
       $("#root" ).empty().append "<div id='root_definition' class='definition_drop'></div>"
-    insert_exp_into_div exo["contenu-exercice"], $( "#contenu-exercice" ) if exo["contenu-exercice"] isnt ""
-    
+    insert_exp_into_div exo["contenu-exercice"], $( "#contenu-exercice" ) if exo["contenu-exercice"] isnt "" 
     $( "#exercice").show().draggable()
   
   $( "#exercice > .check" ).on "click", ->
@@ -535,7 +482,6 @@ $ ->
     else
       alert "Raté ! Essaye encore, n'oublie pas de cliquer sur 'rejouer'"
       alert "[debug soluce : #{solution} ; eleve : #{resultat}]" if local_debug
-    
 
   #Pour l'article
   $("#play").on "click", -> $("#game-container").dialog("open")
