@@ -103,7 +103,7 @@
   ahead_vars = [];
 
   $(function() {
-    var application_eaten_by, change_application_colors, color_rule_check, find_action_pointer, get_lambda_from, go_one_step, help, initialize_html, inserer, insert_exp_into_div, make_dropped_droppable, regle_vieil_alligator_inutile, repeat_step;
+    var application_eaten_by, change_application_colors, color_rule_check, find_action_pointer, get_lambda_from, go_one_step, help, initialize_html, inserer, insert_exp_into_div, make_dropped_droppable, regle_vieil_alligator_inutile, repeat_step, step;
     (initialize_html = function() {
       var color, html, index, key, letter, s, value, _i, _j, _len, _len1, _ref1;
       for (key in EXERCICES) {
@@ -428,6 +428,7 @@
       });
     };
     make_dropped_droppable();
+    step = true;
     $("#go").on("click", function() {
       return go_one_step("#root");
     });
@@ -441,8 +442,10 @@
       } else {
         alert("Appuye sur une touche pour stopper la boucle !");
         $("#slider-range-max").slider("option", "disabled", true);
-        i = interval(delta + 1000, function() {
-          return go_one_step(root);
+        i = interval(delta, function() {
+          if (step) {
+            return go_one_step(root);
+          }
         });
         return document.onkeypress = function() {
           window.clearInterval(i);
@@ -652,7 +655,8 @@
               }, delta, function() {
                 if (index === n - 1) {
                   pointer.find("> svg").remove();
-                  return pointer.replaceWith(pointer.contents());
+                  pointer.replaceWith(pointer.contents());
+                  return step = true;
                 }
               }));
               return $(this).animate({
@@ -679,6 +683,7 @@
     go_one_step = function(root) {
       var action_croco, application_vars, function_vars, intersection, local_debug, _ref1;
       local_debug = false;
+      step = false;
       $(root + " .application_drop, " + root + " .definition_drop").remove();
       $(root).find(".dropped").each(function(i) {
         if (i == null) {
@@ -689,11 +694,13 @@
       ahead_vars = [];
       action_croco = find_action_pointer(root);
       if ((action_croco.hasClass("priorite")) && (action_croco.children(":not(svg)").length < 2)) {
-        return regle_vieil_alligator_inutile(action_croco);
+        regle_vieil_alligator_inutile(action_croco);
+        return step = true;
       } else {
         _ref1 = color_rule_check(action_croco), function_vars = _ref1[0], application_vars = _ref1[1], intersection = _ref1[2];
         if (intersection.length > 0) {
-          return change_application_colors(action_croco, function_vars, application_vars, intersection);
+          change_application_colors(action_croco, function_vars, application_vars, intersection);
+          return step = true;
         } else {
           return application_eaten_by(action_croco);
         }

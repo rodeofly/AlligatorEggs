@@ -344,7 +344,7 @@ $ ->
   ###########################################################################################################################################################
   #gestion d'une etape
   ###########################################################################################################################################################  
-  
+  step = true
   
      
   
@@ -353,12 +353,13 @@ $ ->
 
   repeat_step = (root) ->
     if infobox
-        alert "desactive l'infobox"
+        alert "Desactive l'infobox"
     else
-      alert "appuye sur une touche pour stopper la boucle !"
+      alert "Appuye sur une touche pour stopper la boucle !"
       $( "#slider-range-max" ).slider( "option", "disabled", true )
-      i = interval delta+1000, () ->
-        go_one_step(root) 
+      i = interval delta, () ->
+        if step
+          go_one_step(root) 
       document.onkeypress =  () -> 
         window.clearInterval i
         $( "#slider-range-max" ).slider( "option", "disabled", false )
@@ -485,6 +486,7 @@ $ ->
                 if index is n-1
                   pointer.find("> svg").remove() 
                   pointer.replaceWith pointer.contents()
+                  step = true
               $(this).animate { opacity: 0} , delta, ->
                 $(this).find("> svg").remove() 
                 $(this).remove()
@@ -500,6 +502,7 @@ $ ->
       
   go_one_step = (root) ->
     local_debug = false
+    step = false
     $( "#{root} .application_drop, #{root} .definition_drop" ).remove()
     $(root).find( ".dropped" ).each (i = 0) -> $(this).attr "id", id+=1
     ahead_vars=[]

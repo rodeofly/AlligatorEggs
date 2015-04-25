@@ -344,7 +344,7 @@ $ ->
   ###########################################################################################################################################################
   #gestion d'une etape
   ###########################################################################################################################################################  
-  
+  step = true
   
      
   
@@ -357,8 +357,9 @@ $ ->
     else
       alert "Appuye sur une touche pour stopper la boucle !"
       $( "#slider-range-max" ).slider( "option", "disabled", true )
-      i = interval delta+1000, () ->
-        go_one_step(root) 
+      i = interval delta, () ->
+        if step
+          go_one_step(root) 
       document.onkeypress =  () -> 
         window.clearInterval i
         $( "#slider-range-max" ).slider( "option", "disabled", false )
@@ -485,6 +486,7 @@ $ ->
                 if index is n-1
                   pointer.find("> svg").remove() 
                   pointer.replaceWith pointer.contents()
+                  step = true
               $(this).animate { opacity: 0} , delta, ->
                 $(this).find("> svg").remove() 
                 $(this).remove()
@@ -500,16 +502,19 @@ $ ->
       
   go_one_step = (root) ->
     local_debug = false
+    step = false
     $( "#{root} .application_drop, #{root} .definition_drop" ).remove()
     $(root).find( ".dropped" ).each (i = 0) -> $(this).attr "id", id+=1
     ahead_vars=[]
     action_croco = find_action_pointer root
     if (action_croco.hasClass "priorite") and (action_croco.children(":not(svg)").length < 2)
       regle_vieil_alligator_inutile(action_croco)
+      step =true
     else
       [function_vars, application_vars, intersection] = color_rule_check(action_croco)
       if intersection.length > 0
         change_application_colors(action_croco,function_vars, application_vars, intersection) 
+        step = true
       else
         application_eaten_by(action_croco)
     
