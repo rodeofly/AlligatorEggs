@@ -353,8 +353,9 @@ $ ->
 
   repeat_step = (root) ->
     if infobox
-        alert "desactive l'infobox"
+        alert "Desactive l'infobox"
     else
+      alert "Appuye sur une touche pour stopper la boucle !"
       $( "#slider-range-max" ).slider( "option", "disabled", true )
       i = interval delta+1000, () ->
         go_one_step(root) 

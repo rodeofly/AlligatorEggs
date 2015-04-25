@@ -352,10 +352,11 @@ $ ->
   $( "#repeat" ).on "click", -> repeat_step("#root")
 
   repeat_step = (root) ->
-    $( "#slider-range-max" ).slider( "option", "disabled", true )
     if infobox
         alert "desactive l'infobox"
     else
+      alert "appuye sur une touche pour stopper la boucle !"
+      $( "#slider-range-max" ).slider( "option", "disabled", true )
       i = interval delta+1000, () ->
         go_one_step(root) 
       document.onkeypress =  () -> 

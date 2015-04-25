@@ -437,8 +437,9 @@
     repeat_step = function(root) {
       var i;
       if (infobox) {
-        return alert("desactive l'infobox");
+        return alert("Desactive l'infobox");
       } else {
+        alert("Appuye sur une touche pour stopper la boucle !");
         $("#slider-range-max").slider("option", "disabled", true);
         i = interval(delta + 1000, function() {
           return go_one_step(root);
