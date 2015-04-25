@@ -72,7 +72,7 @@ EXERCICES =
     "solution"         : "λh.(λe.(λf.(e (h e ) f ) ) ) "
     "animation"        : "yes"
 ALPHABET = "abcdefghijklmnopqrstuvwxyz"
-[color_tab, var_tab, debug, speed, id, parentheses, delta] = [ [], {}, false, true, 0, 0, 0 ]
+[color_tab, var_tab, debug, infobox, id, parentheses, delta] = [ [], {}, false, true, 0, 0, 2000 ]
 ahead_vars = []
 $ ->
   ###########################################################################################################################################################
@@ -113,6 +113,22 @@ $ ->
   #Initialisation des items, dialog, couleurs et panels
   ###########################################################################################################################################################
   #items oeuf, croco, vieux croco draggable
+  $( "#infobox" ).on "click", -> 
+    infobox = this.checked
+    $(this).val(this.checked ? 1 : 0)
+    
+  $( "#slider-range-max" ).slider
+    range: "max",
+    min: 0,
+    max: 10000,
+    value: 2000,
+    slide: ( event, ui ) -> 
+      $( "#amount" ).val( ui.value )
+      delta = ui.value
+  $( "#amount" ).val( $( "#slider-range-max" ).slider( "value" ) )
+  
+  $( "#command-panel" ).draggable()
+  
   $( ".item" ).draggable
     helper : "clone"
     start:  (event, ui) -> $(ui.helper).addClass("ui-draggable-helper")
@@ -179,9 +195,6 @@ $ ->
           while parentheses > 0
             $( "#prompt").val($( "#prompt").val() + ")")
             parentheses -= 1
-      when "speed"
-        $(this).html( if speed then "slow" else "fast" )
-        speed = not speed
       when "read"
         $("#prompt").val get_lambda_from $("#root")
    
@@ -339,18 +352,27 @@ $ ->
   $( "#repeat" ).on "click", -> repeat_step("#root")
 
   repeat_step = (root) ->
-    i = interval 250, () ->
-       go_one_step(root) if speed
-    document.onkeypress =  () -> 
-      window.clearInterval i
+    if infobox
+        alert "desactive l'infobox"
+    else
+      $( "#slider-range-max" ).slider( "option", "disabled", true )
+      i = interval delta+1000, () ->
+        go_one_step(root) 
+      document.onkeypress =  () -> 
+        window.clearInterval i
+        $( "#slider-range-max" ).slider( "option", "disabled", false )
+        
   $( "#help" ).dialog
-    autoOpen : false
-    width : "auto"
+    autoOpen    : false
+    dialogClass : "noTitleStuff"
+    width       : "auto"
+    minHeight   : 0
+    open        : -> delay delta, -> $( "#help" ).dialog( "close" )
     autoResize: true
   help = (message, element) ->
     $( "#help" ).dialog "option",
       position :
-        my: "center bottom"
+        my: "left bottom"
         at: "center top"
         of: "##{element}"
     $( "#help" ).html message
@@ -363,47 +385,34 @@ $ ->
     pointer = $(root).children(".lambda:first()")
     stay = true
     # Top-left RULE
-    while stay
-      alert "stay for a loop" if local_debug
+    while stay and pointer.length
+      alert "stay for a loop with #{pointer.attr('data-variable')}" if local_debug
       #On tombe sur un croco blanc
-      alert pointer.attr("data-variable") if local_debug
       if (pointer.hasClass "priorite")
         alert "Croco blanc !" if local_debug
         #il y a des crocos de couleurs dessous
-        switch pointer.children(":not(svg)").length
+        if pointer.children(":not(svg)").length is 1
           #il n'y en a qu'un -> ce croco blanc ne sert à rien
-          when 1
-            stay = false
-            continue
-          else
-            pointer = pointer.children(".lambda:first()")
-            continue
+          stay = false
+        else
+          pointer = pointer.children(".lambda:first()")
+        continue
       #On tombe sur un croco de couleur
       if (pointer.hasClass "lambda") and (not pointer.hasClass "priorite")
         alert "Croco #{pointer.attr('data-variable')} !" if local_debug
         ahead_vars.push pointer.attr("data-variable")
-        switch pointer.next().length
-          when 0
-            alert "has nothing to eat...go deeper" if local_debug
-            if pointer.find(".lambda").length > 0
+        if pointer.next().length > 0
+          stay = false
+        else
+          if pointer.find(".lambda").length > 0
               pointer = pointer.find(".lambda").first()
-              continue
-            else
-              "nothing to eat, no deeper lambda...over !" if local_debug
-              stay = false
-              continue
-          else
-            stay = false
-            continue   
+        continue
       # On tombe sur un oeuf
       if (pointer.hasClass "variable")      
-        ahead_vars.push pointer.attr("data-variable")  
         alert "Oeuf #{pointer.attr('data-variable')} !" if local_debug
+        ahead_vars.push pointer.attr("data-variable")  
         pointer = pointer.next()
         continue
-      #rien ne va plus
-      alert "no if detected. breakin' !" if local_debug
-      stay = false
     return pointer
   
   color_rule_check = (pointer) ->
@@ -426,18 +435,18 @@ $ ->
     return [function_vars, application_vars, intersection]
     
   change_application_colors = (pointer,function_vars, application_vars, intersection) ->
-    help( "Règle de la couleur", pointer.attr "id") if not speed
+    help( "Règle de la couleur", pointer.attr "id") if infobox
     application = pointer.next()
     palette = (item for item in ALPHABET when item not in function_vars.concat application_vars)
     palette = palette[0..intersection.length-1]    
     #Pour chacune des couleurs de la fonction on va echanger dans l'application avec une couleur disponible de la palette
     for $var, index in intersection
-      application.find( "[data-variable='#{$var}']").andSelf().filter("[data-variable='#{$var}']").each ->
-        $( this ).attr("data-variable", palette[index])
-        $( this ).find("> svg").find(".skin").css("fill", var_tab[palette[index]])  
+      application.find( "[data-variable='#{$var}']").andSelf().filter("[data-variable='#{$var}']")
+        .attr("data-variable", palette[index])
+        .find("> svg").find(".skin").css("fill", var_tab[palette[index]])  
 
   regle_vieil_alligator_inutile = (pointer) ->
-    help( "Ce vieil alligator ne sert plus à rien !", pointer.attr "id") if not speed
+    help( "Ce vieil alligator ne sert plus à rien !", pointer.attr "id") if infobox
     pointer.find("svg").first().find("g#layer1").attr("transform", "rotate(180,140,65)").animate {opacity : 0 }, delta, ->
       $(this).closest(".lambda.priorite").replaceWith $(this).closest(".lambda.priorite").contents()
       $(this).closest("svg").remove()  
@@ -450,7 +459,7 @@ $ ->
       variable = pointer.attr("data-variable")
       [application, applicationClone] = [pointer.next(), pointer.next().clone()]
       do bust_a_move = (p=pointer,timer=delta ,j=0) ->
-        help("Manger & partir", pointer.attr "id") if not speed
+        help("Manger & partir", pointer.attr "id") if infobox
         bustit = interval 50, -> p.children("svg").css("z-index":"9000").find("#jaw").attr("transform", "rotate(#{-10+Math.floor 6*Math.cos(j++)}) translate(-100,20)")
         delay timer, ->
           clearInterval bustit
@@ -466,7 +475,7 @@ $ ->
           application.find("> svg").remove() 
           application.remove()
           #On va faire reapparaitre l'application à chaque oeuf
-          help("éclosion", pointer.attr "id") if not speed
+          help("éclosion", pointer.attr "id") if infobox
           eggs = pointer.find( ".variable[data-variable=#{variable}]"  )
           n = eggs.length;
           if n>0
@@ -480,7 +489,7 @@ $ ->
                 $(this).remove()
                 
           else
-            help( "Aucun oeuf", pointer.attr "id") if not speed
+            help( "Aucun oeuf", pointer.attr "id") if infobox
             pointer.find("> svg").remove()
             pointer.replaceWith pointer.contents()
       $(root).children( "svg").remove()
@@ -490,7 +499,6 @@ $ ->
       
   go_one_step = (root) ->
     local_debug = false
-    delta = if speed then 0 else 6000
     $( "#{root} .application_drop, #{root} .definition_drop" ).remove()
     $(root).find( ".dropped" ).each (i = 0) -> $(this).attr "id", id+=1
     ahead_vars=[]
@@ -514,21 +522,20 @@ $ ->
   $( ".exercice").on "click", () ->
     i = $( this ).attr( "data-id" )
     exo = EXERCICES[i]
-    $( "#exercice > .panel-button.exercice").attr "data-id", i
+    $( "#exercice").find(" > .panel-button.exercice").attr "data-id", i
     $( "#exercice").attr "data-solution", exo["solution"]
-    $( "#exercice > .titre" ).html("<h1>#{exo['titre']}</h1>")
-    $( "#exercice > .texte" ).html("<p>#{exo['texte']}</p>")
+    $( "#exercice").find("> .titre" ).html("<h1>#{exo['titre']}</h1>")
+    $( "#exercice").find(" > .texte" ).html("<p>#{exo['texte']}</p>")
     if exo["contenu-eleve"] isnt ""
       insert_exp_into_div(exo["contenu-eleve"], $("#root"))
     else
       $("#root" ).empty().append "<div id='root_definition' class='definition_drop'></div>"
     insert_exp_into_div exo["contenu-exercice"], $( "#contenu-exercice" ) if exo["contenu-exercice"] isnt "" 
-    $( "#exercice" ).append '<button class="panel-button" id="animation">Animer</button>' if exo["animation"] is "yes"
+    if exo["animation"] is "yes" then $( "#animation").show() else $( "#animation").hide()
+  
     $( "#exercice").show().draggable()
   
-    $( "#animation" ).on "click", -> 
-      speed = false
-      go_one_step( "#contenu-exercice" )
+    $( "#animation" ).on "click", -> go_one_step( "#contenu-exercice" )
        
   $( "#exercice > .check" ).on "click", ->
     local_debug = true

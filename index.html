@@ -65,9 +65,16 @@
               <div id="command-panel">
                   <button class="panel-button" id="go">Go</button>
                   <button class="panel-button" id="repeat">Repeat</button>
-                  <button class="panel-button" data-type="speed" >fast</button>
                   <button class="panel-button" data-type="read"  >Lire</button>
                   <button class="panel-button" data-type="clear" >Effacer</button>
+                  <p>
+                    <label for="amount" style="color:white;">animation (ms)</label>
+                    <input type="text" id="amount" readonly size="4" style="border:0; color:#f6931f; font-weight:bold;">
+                    <label for="infobox" style="color:white;">infobox</label>
+                    <input type="checkbox" id="infobox" checked/>
+
+                  </p>
+                  <div id="slider-range-max"></div>
               </div>
               <div id="exercice" data-id="" data-solution="">
                   <div class="titre"></div>
@@ -75,6 +82,7 @@
                   <div id="contenu-exercice" ></div>
                   <button class="panel-button check">Check !</button>
                   <button class="panel-button exercice"  data-id="">Rejouer</button>
+                  <button class="panel-button" id="animation">Animer</button>
               </div>    
         </div>
 
