@@ -153,6 +153,10 @@ nav a:hover {
 /* ==========================================================================
    Author's custom styles
    ========================================================================== */
+.noTitleStuff .ui-dialog-titlebar {
+  display:none
+  }
+
 #game-container {
   position : relative;
   width:100%;
@@ -194,10 +198,12 @@ nav a:hover {
   z-index : 1000;
   position:relative;
   width : 100%;
-  min-height : 50vh;
+  height : 100vh;
   display : inline-block;
   border : 0.2vw solid black;
   background-color : rgba(255,255,255,0.8);
+  overflow-x:scroll;
+  overflow-y:scroll;
 }
 
 #exercices {
