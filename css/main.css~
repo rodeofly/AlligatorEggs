@@ -180,13 +180,14 @@ nav a:hover {
   margin-bottom : 0.5vw;
 }
 #command-panel {
-  z-index: 1500;
+  z-index: 6500;
   position : fixed;
-  top : 2vw;
-  left : 40vw;
+  top : 50vh;
+  left : 50vw;
   padding : 1vw;
   border-radius : 0.5vw;
-  background-color : rgba(0,0,0,0.5)
+  background-color : rgba(0,0,0,0.5);
+  text-align : center;
 }
 .stop-scrolling {
   height: 100%;
@@ -198,7 +199,7 @@ nav a:hover {
   z-index : 1000;
   position:relative;
   width : 100%;
-  min-height : 50vh;
+  height : 100vh;
   display : inline-block;
   border : 0.2vw solid black;
   background-color : rgba(255,255,255,0.8);
@@ -211,7 +212,7 @@ nav a:hover {
 }
 #exercice {
   position : absolute;
-  z-index : 40000 !important;
+  z-index : 4000 !important;
   padding : 1vw;
   bottom : 0%;
   right : 0%;
@@ -222,6 +223,9 @@ nav a:hover {
   background-size : 100% 100%;
   border : solid black 0.25vw;
   overflow-y:scroll;
+}
+#contenu-exercice {
+  padding 2vw;
 }
 
 

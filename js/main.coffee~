@@ -74,10 +74,10 @@ EXERCICES =
 
   "5" :
     "titre"            : 'Manger'
-    "texte"            : "<p>Attention, ça va se compliquer !</p><p>Voici deux familles, l'une à coté de l'autre. L'alligator vert est affamé, c'est sur et il y a cette famille jaune juste en face de lui... Comme elle semble appétissante ! La suite, tu la connais ?! Appuye sur le bouton 'Animer'.</p>"
+    "texte"            : "<p>Attention, ça va se compliquer !</p><p>Voici deux familles, l'une à coté de l'autre. L'alligator vert est affamé, et il y a cette famille jaune juste en face de lui... Comme elle semble appétissante! La suite, tu la connais ?! Appuye sur le bouton (&#9658;).</p><p>Malheureusement , les yeux du crocodile vert étaient plus grands que son ventre. Il trop a mangé ! En mourant, il s'en va au paradis des alligator (ouf !). Mais, l'histoire ne se arrête pas là ; parce qu'une fois l'alligator vert mort, l'oeuf vert commence à éclore... Et étonnamment, il éclot exactement en ce que l'alligator vert avait mangé. C'est le miracle de la vie ! Maintenant, nous avons une nouvelle famille: un crocodile rouge gardant un alligator jaune et un oeuf rouge, et l'alligator jaune qui garde son œuf jaune. Mais cet alligator jaune à faim , et il y a un bel œuf rouge en face de lui. On y va encore une fois (&#9658;).</p><p>Pauvre alligator. Même un seul œuf est trop gros pour son estomac! L'alligator jaune meurt... mais encore une fois , l'œuf jaune commence à éclore ...Et il éclot dans exactement ce que l'alligator jaune avait mangé !</p><p>Maintenant, il n'y a plus rien pour quiconque à manger, donc nous pouvons arrêter là.</p>"
     "contenu-exercice" : "λe.(λf.(e f ) ) λh.(h ) "
     "contenu-eleve"    : ""
-    "solution"         : "λe.(e ) "
+    "solution"         : "λf.(f ) "
     "animation"        : "yes"
 ALPHABET = "abcdefghijklmnopqrstuvwxyz"
 [color_tab, var_tab, debug, infobox, id, parentheses, delta] = [ [], {}, false, true, 0, 0, 500 ]
@@ -223,6 +223,7 @@ $ ->
     exp = exp.replace /<div id="\d*" class="lambda dropped" data-variable="(\w+)" data-color="\w+"[ style="opacity: 1;"]*>/g, "λ$1.("
     exp = exp.replace /<div id="\d*" class="lambda priorite dropped" data-variable="\(" data-color="white"[ style="opacity: 1;"]*>/g, "("
     exp = exp.replace(/<\/div>/g , ") ")
+    exp = exp.replace(/\s{2,}/g, " ")
   ###########################################################################################################################################################
   #Inserer une expression
   ###########################################################################################################################################################
@@ -357,16 +358,25 @@ $ ->
   promises = []  
 
   looping = false
- 
-  $( "#go" ).on "click", -> 
+  $( "#animation" ).on "click", (event) ->
+    event.stopPropagation()
+    event.preventDefault()
+    go_one_step( "#contenu-exercice" )
+      
+  $( "#go" ).on "click", (event) ->
+    event.stopPropagation()
+    event.preventDefault()
+    $( ".animation" ).prop("disabled",true)
     looping = false
     go_one_step("#root")
   
   $( "#repeat" ).on "click", ->
+    $( ".animation" ).prop("disabled",true)
     looping = true
     go_one_step("#root")
   
-  $("#stop").click () ->   
+  $("#stop").click () -> 
+    $( ".animation" ).prop("disabled",false)  
     looping = false
     $( "#slider-range-max" ).slider( "option", "disabled", false )    
         
@@ -377,7 +387,7 @@ $ ->
     dialogClass : "noTitleStuff"
     width       : "auto"
     minHeight   : 0
-    open        : -> delay Math.floor (delta/2), -> $( "#help" ).dialog( "close" )
+    open        : (event, ui) -> delay 1000, -> $( "#help" ).dialog( "close" )
     autoResize: true
   help = (message, element) ->
     $( "#help" ).dialog "option",
@@ -415,10 +425,7 @@ $ ->
           ahead_vars.pop()
           stay = false
         else
-          if pointer.find(".lambda").length > 0
-            pointer = pointer.find(".lambda").first()
-          else
-            stay = false
+          pointer = pointer.find(".lambda").first()
         continue
       # On tombe sur un oeuf
       if (pointer.hasClass "variable")      
@@ -445,11 +452,12 @@ $ ->
     #alert "[#{function_vars}], [#{application_vars}], [#{intersection}]"
     return [function_vars, application_vars, intersection]
     
-  go_one_step = (root) ->
-    root = "#root"
-    local_debug = false 
+  go_one_step = (root, button) ->
+    local_debug = false
+    $( ".animation" ).prop("disabled",true)
     $( "#{root} .application_drop, #{root} .definition_drop" ).remove()
     $(root).find( ".dropped" ).each (i = 0) -> $(this).attr "id", id+=1
+    
     
     step1 = $.Deferred()
     step2 = $.Deferred()
@@ -516,7 +524,10 @@ $ ->
               $(this).closest("svg").remove()
               step4.resolve(pointer, applicationClone)
       else
-        go_one_step(root) if looping
+        if looping
+          go_one_step(root)
+        else 
+          $( ".animation" ).prop("disabled",false)
       
     
     #STEP 5 : regle de l'eclosion des oeufs
@@ -541,19 +552,26 @@ $ ->
               pointer.replaceWith pointer.contents()
               def_clone.resolve()
           
-        $.when(def_egg,def_clone).done -> go_one_step(root) if looping
+        $.when(def_egg,def_clone).done -> 
+          if looping
+            go_one_step(root)
+          else 
+            $( ".animation" ).prop("disabled",false)
       else
         help( "Aucun oeuf", pointer.attr "id") if infobox
         pointer.find("> svg").remove()
         pointer.replaceWith pointer.contents()
-        go_one_step(root) if looping
+        if looping
+          go_one_step(root)
+        else 
+          $( ".animation" ).prop("disabled",false)
 
     #STEP 1 : 
     action_croco = find_action_pointer root
     if action_croco.length > 0
       step1.resolve(action_croco)
     else
-      alert "over"
+      alert "Plus rien à faire !"
     
       
       ###########################################################################################################################################################
@@ -561,9 +579,11 @@ $ ->
   ###########################################################################################################################################################  
   $( "#console" ).toggle()     
   $( "#toggle-console" ).on "click", -> $( "#console" ).toggle()
+  
   #Exercice
   $( "#exercice").hide()
   $( ".exercice").on "click", () ->
+    $( ".animation" ).prop("disabled",false)
     i = $( this ).attr( "data-id" )
     exo = EXERCICES[i]
     $( "#exercice").find(" > .panel-button.exercice").attr "data-id", i
@@ -576,11 +596,8 @@ $ ->
       $("#root" ).empty().append "<div id='root_definition' class='definition_drop'></div>"
     insert_exp_into_div exo["contenu-exercice"], $( "#contenu-exercice" ) if exo["contenu-exercice"] isnt "" 
     if exo["animation"] is "yes" then $( "#animation").show() else $( "#animation").hide()
-  
     $( "#exercice").show().draggable()
-  
-    $( "#animation" ).on "click", -> go_one_step( "#contenu-exercice" )
-       
+  $("#close-exercice").on "click", ->  $("#exercice").hide()  
   $( "#exercice > .check" ).on "click", ->
     local_debug = true
     solution = $( "#exercice" ).attr("data-solution")

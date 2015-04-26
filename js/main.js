@@ -94,12 +94,12 @@
       "solution": "λe.(e ) ",
       "animation": "yes"
     },
-    "5": {
+    "6": {
       "titre": 'Manger',
-      "texte": "<p>Attention, ça va se compliquer !</p><p>Voici deux familles, l'une à coté de l'autre. L'alligator vert est affamé, c'est sur et il y a cette famille jaune juste en face de lui... Comme elle semble appétissante ! La suite, tu la connais ?! Appuye sur le bouton 'Animer'.</p>",
+      "texte": "<p>Attention, ça va se compliquer !</p><p>Voici deux familles, l'une à coté de l'autre. L'alligator vert est affamé, et il y a cette famille jaune juste en face de lui... Comme elle semble appétissante! La suite, tu la connais ?! Appuye sur le bouton (&#9658;).</p><p>Malheureusement , les yeux du crocodile vert étaient plus grands que son ventre. Il trop a mangé ! En mourant, il s'en va au paradis des alligator (ouf !). Mais, l'histoire ne se arrête pas là ; parce qu'une fois l'alligator vert mort, l'oeuf vert commence à éclore... Et étonnamment, il éclot exactement en ce que l'alligator vert avait mangé. C'est le miracle de la vie ! Maintenant, nous avons une nouvelle famille: un crocodile rouge gardant un alligator jaune et un oeuf rouge, et l'alligator jaune qui garde son œuf jaune. Mais cet alligator jaune à faim , et il y a un bel œuf rouge en face de lui. On y va encore une fois (&#9658;).</p><p>Pauvre alligator. Même un seul œuf est trop gros pour son estomac! L'alligator jaune meurt... mais encore une fois , l'œuf jaune commence à éclore ...Et il éclot dans exactement ce que l'alligator jaune avait mangé !</p><p>Maintenant, il n'y a plus rien pour quiconque à manger, donc nous pouvons arrêter là.</p>",
       "contenu-exercice": "λe.(λf.(e f ) ) λh.(h ) ",
       "contenu-eleve": "",
-      "solution": "λe.(e ) ",
+      "solution": "λf.(f ) ",
       "animation": "yes"
     }
   };
@@ -282,7 +282,8 @@
       exp = exp.replace(/<div id="\d*" class="variable dropped" data-variable="(\w+)" data-color="\w+"[ style="opacity: 1;"]*>\s*<\/div>/g, "$1 ");
       exp = exp.replace(/<div id="\d*" class="lambda dropped" data-variable="(\w+)" data-color="\w+"[ style="opacity: 1;"]*>/g, "λ$1.(");
       exp = exp.replace(/<div id="\d*" class="lambda priorite dropped" data-variable="\(" data-color="white"[ style="opacity: 1;"]*>/g, "(");
-      return exp = exp.replace(/<\/div>/g, ") ");
+      exp = exp.replace(/<\/div>/g, ") ");
+      return exp = exp.replace(/\s{2,}/g, " ");
     };
     insert_exp_into_div = function(exp, root) {
       var current_index, expression, local_debug, reg, λ_index, λ_variable;
@@ -439,15 +440,25 @@
     make_dropped_droppable();
     promises = [];
     looping = false;
-    $("#go").on("click", function() {
+    $("#animation").on("click", function(event) {
+      event.stopPropagation();
+      event.preventDefault();
+      return go_one_step("#contenu-exercice");
+    });
+    $("#go").on("click", function(event) {
+      event.stopPropagation();
+      event.preventDefault();
+      $(".animation").prop("disabled", true);
       looping = false;
       return go_one_step("#root");
     });
     $("#repeat").on("click", function() {
+      $(".animation").prop("disabled", true);
       looping = true;
       return go_one_step("#root");
     });
     $("#stop").click(function() {
+      $(".animation").prop("disabled", false);
       looping = false;
       return $("#slider-range-max").slider("option", "disabled", false);
     });
@@ -456,10 +467,10 @@
       dialogClass: "noTitleStuff",
       width: "auto",
       minHeight: 0,
-      open: function() {
-        return delay(Math.floor(delta / 2, function() {
+      open: function(event, ui) {
+        return delay(1000, function() {
           return $("#help").dialog("close");
-        }));
+        });
       },
       autoResize: true
     });
@@ -550,10 +561,10 @@
       })();
       return [function_vars, application_vars, intersection];
     };
-    go_one_step = function(root) {
+    go_one_step = function(root, button) {
       var action_croco, local_debug, step1, step2, step3, step4;
-      root = "#root";
       local_debug = false;
+      $(".animation").prop("disabled", true);
       $(root + " .application_drop, " + root + " .definition_drop").remove();
       $(root).find(".dropped").each(function(i) {
         if (i == null) {
@@ -676,6 +687,8 @@
         } else {
           if (looping) {
             return go_one_step(root);
+          } else {
+            return $(".animation").prop("disabled", false);
           }
         }
       });
@@ -715,6 +728,8 @@
           return $.when(def_egg, def_clone).done(function() {
             if (looping) {
               return go_one_step(root);
+            } else {
+              return $(".animation").prop("disabled", false);
             }
           });
         } else {
@@ -725,6 +740,8 @@
           pointer.replaceWith(pointer.contents());
           if (looping) {
             return go_one_step(root);
+          } else {
+            return $(".animation").prop("disabled", false);
           }
         }
       });
@@ -732,7 +749,7 @@
       if (action_croco.length > 0) {
         return step1.resolve(action_croco);
       } else {
-        return alert("over");
+        return alert("Plus rien à faire !");
       }
     };
     $("#console").toggle();
@@ -742,6 +759,7 @@
     $("#exercice").hide();
     $(".exercice").on("click", function() {
       var exo, i;
+      $(".animation").prop("disabled", false);
       i = $(this).attr("data-id");
       exo = EXERCICES[i];
       $("#exercice").find(" > .panel-button.exercice").attr("data-id", i);
@@ -761,10 +779,10 @@
       } else {
         $("#animation").hide();
       }
-      $("#exercice").show().draggable();
-      return $("#animation").on("click", function() {
-        return go_one_step("#contenu-exercice");
-      });
+      return $("#exercice").show().draggable();
+    });
+    $("#close-exercice").on("click", function() {
+      return $("#exercice").hide();
     });
     $("#exercice > .check").on("click", function() {
       var local_debug, resultat, solution;
