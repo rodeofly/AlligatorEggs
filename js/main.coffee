@@ -66,14 +66,6 @@ EXERCICES =
 
   "5" :
     "titre"            : 'Manger'
-    "texte"            : "<p>Attention, ça va se compliquer !</p><p>Voici deux familles, l'une à coté de l'autre. L'alligator vert est affamé, c'est sr et il y a cette famille jaune juste en face de lui... Comme elle semble appétissante ! La suite, tu la connais ?! Appuye sur le bouton 'Animer'.</p>"
-    "contenu-exercice" : "(λh.λe.h e) (λa.a)"
-    "contenu-eleve"    : ""
-    "solution"         : "λe.(e ) "
-    "animation"        : "yes"
-
-  "6" :
-    "titre"            : 'Manger'
     "texte"            : "<p>Attention, ça va se compliquer !</p><p>Voici deux familles, l'une à coté de l'autre. L'alligator vert est affamé, et il y a cette famille jaune juste en face de lui... Comme elle semble appétissante! La suite, tu la connais ?! Appuye sur le bouton (&#9658;).</p><p>Malheureusement , les yeux du crocodile vert étaient plus grands que son ventre. Il trop a mangé ! En mourant, il s'en va au paradis des alligator (ouf !). Mais, l'histoire ne se arrête pas là ; parce qu'une fois l'alligator vert mort, l'oeuf vert commence à éclore... Et étonnamment, il éclot exactement en ce que l'alligator vert avait mangé. C'est le miracle de la vie ! Maintenant, nous avons une nouvelle famille: un crocodile rouge gardant un alligator jaune et un oeuf rouge, et l'alligator jaune qui garde son œuf jaune. Mais cet alligator jaune à faim , et il y a un bel œuf rouge en face de lui. On y va encore une fois (&#9658;).</p><p>Pauvre alligator. Même un seul œuf est trop gros pour son estomac! L'alligator jaune meurt... mais encore une fois , l'œuf jaune commence à éclore ...Et il éclot dans exactement ce que l'alligator jaune avait mangé !</p><p>Maintenant, il n'y a plus rien pour quiconque à manger, donc nous pouvons arrêter là.</p>"
     "contenu-exercice" : "λe.(λf.(e f ) ) λh.(h ) "
     "contenu-eleve"    : ""
