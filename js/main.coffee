@@ -69,10 +69,18 @@ EXERCICES =
     "texte"            : "<p>Attention, ça va se compliquer !</p><p>Voici deux familles, l'une à coté de l'autre. L'alligator vert est affamé, c'est sur et il y a cette famille jaune juste en face de lui... Comme elle semble appétissante ! La suite, tu la connais ?! Appuye sur le bouton 'Animer'.</p>"
     "contenu-exercice" : "(λh.λe.h e) (λa.a)"
     "contenu-eleve"    : ""
-    "solution"         : "λh.(λe.(λf.(e (h e ) f ) ) ) "
+    "solution"         : "λe.(e ) "
+    "animation"        : "yes"
+
+  "5" :
+    "titre"            : 'Manger'
+    "texte"            : "<p>Attention, ça va se compliquer !</p><p>Voici deux familles, l'une à coté de l'autre. L'alligator vert est affamé, c'est sur et il y a cette famille jaune juste en face de lui... Comme elle semble appétissante ! La suite, tu la connais ?! Appuye sur le bouton 'Animer'.</p>"
+    "contenu-exercice" : "λe.(λf.(e f ) ) λh.(h ) "
+    "contenu-eleve"    : ""
+    "solution"         : "λe.(e ) "
     "animation"        : "yes"
 ALPHABET = "abcdefghijklmnopqrstuvwxyz"
-[color_tab, var_tab, debug, infobox, id, parentheses, delta] = [ [], {}, false, true, 0, 0, 2000 ]
+[color_tab, var_tab, debug, infobox, id, parentheses, delta] = [ [], {}, false, true, 0, 0, 500 ]
 ahead_vars = []
 $ ->
   ###########################################################################################################################################################
@@ -119,8 +127,9 @@ $ ->
     
   $( "#slider-range-max" ).slider
     range: "max",
-    min: 0,
-    max: 10000,
+    min: 50,
+    max: 6000,
+    step: 500,
     value: 2000,
     slide: ( event, ui ) -> 
       $( "#amount" ).val( ui.value )
@@ -344,32 +353,31 @@ $ ->
   ###########################################################################################################################################################
   #gestion d'une etape
   ###########################################################################################################################################################  
-  step = true
   
-     
-  
-  $( "#go" ).on "click", -> go_one_step("#root")
-  $( "#repeat" ).on "click", -> repeat_step("#root")
+  promises = []  
 
-  repeat_step = (root) ->
-    if infobox
-        alert "Desactive l'infobox"
-    else
-      alert "Appuye sur une touche pour stopper la boucle !"
-      $( "#slider-range-max" ).slider( "option", "disabled", true )
-      i = interval delta, () ->
-        if step
-          go_one_step(root) 
-      document.onkeypress =  () -> 
-        window.clearInterval i
-        $( "#slider-range-max" ).slider( "option", "disabled", false )
+  looping = false
+ 
+  $( "#go" ).on "click", -> 
+    looping = false
+    go_one_step("#root")
+  
+  $( "#repeat" ).on "click", ->
+    looping = true
+    go_one_step("#root")
+  
+  $("#stop").click () ->   
+    looping = false
+    $( "#slider-range-max" ).slider( "option", "disabled", false )    
+        
+  
         
   $( "#help" ).dialog
     autoOpen    : false
     dialogClass : "noTitleStuff"
     width       : "auto"
     minHeight   : 0
-    open        : -> delay delta, -> $( "#help" ).dialog( "close" )
+    open        : -> delay Math.floor (delta/2), -> $( "#help" ).dialog( "close" )
     autoResize: true
   help = (message, element) ->
     $( "#help" ).dialog "option",
@@ -387,7 +395,7 @@ $ ->
     pointer = $(root).children(".lambda:first()")
     stay = true
     # Top-left RULE
-    while stay and pointer.length
+    while ((stay) and (pointer.length))
       alert "stay for a loop with #{pointer.attr('data-variable')}" if local_debug
       #On tombe sur un croco blanc
       if (pointer.hasClass "priorite")
@@ -404,6 +412,7 @@ $ ->
         alert "Croco #{pointer.attr('data-variable')} !" if local_debug
         ahead_vars.push pointer.attr("data-variable")
         if pointer.next().length > 0
+          ahead_vars.pop()
           stay = false
         else
           if pointer.find(".lambda").length > 0
@@ -424,101 +433,128 @@ $ ->
       tree.find( "[data-variable]" ).andSelf().filter("[data-variable]").not(".lambda.priorite").each -> 
         palette.push $( this ).attr("data-variable")
       palette.unique()
-    find_tree = (element) -> 
-      i = element.attr("id")
-      tree = if (element.parent().is $(root)) then element else $(root).children(".dropped").has( "##{i}" )
-    [function_vars, application_vars] = [get_vars( pointer ), get_vars application]
+    [function_vars, application_vars] = [get_vars( pointer ), get_vars( application )]
     #On regarde s'il y a des couleurs en commun
     intersect = (a,b) -> a.filter (n) -> b.indexOf(n) isnt -1
     intersection = intersect(application_vars, function_vars)
+    
     #Mais on ne doit pas prendre celle qui se trouvaient au dessus dans la fonction
     intersection = (item for item in intersection when item not in ahead_vars)  
     #alert "[#{function_vars}], [#{application_vars}], [#{intersection}]"
     return [function_vars, application_vars, intersection]
     
-  change_application_colors = (pointer,function_vars, application_vars, intersection) ->
-    help( "Règle de la couleur", pointer.attr "id") if infobox
-    application = pointer.next()
-    palette = (item for item in ALPHABET when item not in function_vars.concat application_vars)
-    palette = palette[0..intersection.length-1]    
-    #Pour chacune des couleurs de la fonction on va echanger dans l'application avec une couleur disponible de la palette
-    for $var, index in intersection
-      application.find( "[data-variable='#{$var}']").andSelf().filter("[data-variable='#{$var}']")
-        .attr("data-variable", palette[index])
-        .find("> svg").find(".skin").css("fill", var_tab[palette[index]])  
-
-  regle_vieil_alligator_inutile = (pointer) ->
-    help( "Ce vieil alligator ne sert plus à rien !", pointer.attr "id") if infobox
-    pointer.find("svg").first().find("g#layer1").attr("transform", "rotate(180,140,65)").animate {opacity : 0 }, delta, ->
-      $(this).closest(".lambda.priorite").replaceWith $(this).closest(".lambda.priorite").contents()
-      $(this).closest("svg").remove()  
-    delay( delta + 100 , ->)
-
-  application_eaten_by = (pointer) ->
-    if (pointer.hasClass "lambda") and (pointer.attr("data-color") isnt "white") and (pointer.next().length > 0)
-      #on retire la variable courante des variables precedemment rencontrées
-      ahead_vars.pop()
-      variable = pointer.attr("data-variable")
-      [application, applicationClone] = [pointer.next(), pointer.next().clone()]
-      do bust_a_move = (p=pointer,timer=delta ,j=0) ->
-        help("Manger & partir", pointer.attr "id") if infobox
-        bustit = interval 50, -> p.children("svg").css("z-index":"9000").find("#jaw").attr("transform", "rotate(#{-10+Math.floor 6*Math.cos(j++)}) translate(-100,20)")
-        delay timer, ->
-          clearInterval bustit
-          pointer.children("svg").find("g#layer1").attr("transform", "rotate(180 125 75)")
-          pointer.children("svg").animate {"opacity" : 0}, delta, -> $(this).closest("svg").remove()
-      application.css('visibility','hidden')
-        .clone().prependTo(pointer)
-        .css({"z-index" : "-1",border:"dashed black 1px",visibility:"visible",position:"absolute",top:"0px",left:"100%"})
-        .animate {"min-width":"0px",padding:"0px", height: '1vw', width: "1vw", top:"0", left:"60%"} , delta, ->
-          #On fait disparaitre l'application et son clone
-          $(this).find("> svg").remove() 
-          $(this).remove() 
-          application.find("> svg").remove() 
-          application.remove()
-          #On va faire reapparaitre l'application à chaque oeuf
-          help("éclosion", pointer.attr "id") if infobox
-          eggs = pointer.find( ".variable[data-variable=#{variable}]"  )
-          n = eggs.length;
-          if n>0
-            eggs.each (index, element) ->
-              $(this).after applicationClone.clone().css(opacity: 0).animate {opacity: 1}, delta, ->
-                if index is n-1
-                  pointer.find("> svg").remove() 
-                  pointer.replaceWith pointer.contents()
-                  step = true
-              $(this).animate { opacity: 0} , delta, ->
-                $(this).find("> svg").remove() 
-                $(this).remove()
-                
-          else
-            help( "Aucun oeuf", pointer.attr "id") if infobox
-            pointer.find("> svg").remove()
-            pointer.replaceWith pointer.contents()
-      $(root).children( "svg").remove()
-      return true
-    else
-      return false
-      
   go_one_step = (root) ->
-    local_debug = false
-    step = false
+    root = "#root"
+    local_debug = false 
     $( "#{root} .application_drop, #{root} .definition_drop" ).remove()
     $(root).find( ".dropped" ).each (i = 0) -> $(this).attr "id", id+=1
-    ahead_vars=[]
-    action_croco = find_action_pointer root
-    if (action_croco.hasClass "priorite") and (action_croco.children(":not(svg)").length < 2)
-      regle_vieil_alligator_inutile(action_croco)
-      step =true
-    else
-      [function_vars, application_vars, intersection] = color_rule_check(action_croco)
-      if intersection.length > 0
-        change_application_colors(action_croco,function_vars, application_vars, intersection) 
-        step = true
-      else
-        application_eaten_by(action_croco)
     
-  ###########################################################################################################################################################
+    step1 = $.Deferred()
+    step2 = $.Deferred()
+    step3 = $.Deferred()
+    step4 = $.Deferred()
+    
+    #STEP 2 : regle du vieil alligator inutile
+    step1.done (pointer) ->  
+      if (pointer.hasClass "priorite") and (pointer.children(":not(svg)").length < 2)
+        help( "Ce vieil alligator ne sert plus à rien !", pointer.attr "id") if infobox
+        pointer.find("svg").first().find("g#layer1").attr("transform", "rotate(180,140,65)").animate {opacity : 0 }, delta, ->
+          $(this).closest(".lambda.priorite").replaceWith $(this).closest(".lambda.priorite").contents()
+          $(this).closest("svg").remove()
+          step2.resolve(pointer)
+      else
+        step2.resolve(pointer)
+
+    
+    #STEP 3 : regle de la couleur
+    step2.done (pointer) ->
+      [function_vars, application_vars, intersection] = color_rule_check(pointer)
+      if intersection.length > 0
+        application = pointer.next()
+        palette = (item for item in ALPHABET when item not in function_vars.concat application_vars)
+        palette = palette[0..intersection.length-1]    
+        #Pour chacune des couleurs de la fonction on va echanger dans l'application avec une couleur disponible de la palette
+        for $var, index in intersection
+          found = application.find( "[data-variable='#{$var}']").andSelf().filter("[data-variable='#{$var}']")
+          n = found.length
+          found.attr("data-variable", palette[index])
+          found.find("> svg").each ( index2 ) ->
+            help( "Règle de la couleur", $(this).closest(".dropped").attr("id") ) if infobox
+            $(this).hide().show "slow", ->
+              step3.resolve(pointer) if index2 is n-1 
+            $(this).find(".skin").css("fill", var_tab[palette[index]]) 
+      else
+        step3.resolve(pointer)
+    #STEP 4 : regle du mangeage d'application
+    step3.done (pointer) ->
+      if (pointer.hasClass "lambda") and (pointer.attr("data-color") isnt "white") and (pointer.next().length > 0)
+        #on retire la variable courante des variables precedemment rencontrées
+        ahead_vars.pop()
+        variable = pointer.attr("data-variable")
+        application = pointer.next()
+        applicationClone = application.clone()
+        help("Manger", pointer.attr "id") if infobox
+        j = 0
+        if delta > 0
+          bust_a_move = interval 50, -> pointer.children("svg").css("z-index":"9000").find("#jaw").attr("transform", "rotate(#{-10+Math.floor 6*Math.cos(j++)}) translate(-100,20)")
+        application = pointer.next()
+        application.css('visibility','hidden')
+          .clone().prependTo(pointer)
+          .css({"z-index" : "-1",border:"dashed black 1px",visibility:"visible",position:"absolute",top:"0px",left:"100%"})
+          .animate {"min-width":"0px",padding:"0px", height: '1vw', width: "1vw", top:"0", left:"60%"} , delta, ->
+            #On fait disparaitre l'application et son clone
+            $(this).find("> svg").remove() 
+            $(this).remove() 
+            application.find("> svg").remove() 
+            application.remove()
+            clearInterval bust_a_move if delta > 0
+            pointer.children("svg").find("g#layer1").attr("transform", "rotate(180 125 75)")
+            help("Partir", pointer.attr "id") if infobox
+            pointer.children("svg").animate {"opacity" : 0}, delta, ->
+              $(this).closest("svg").remove()
+              step4.resolve(pointer, applicationClone)
+      else
+        go_one_step(root) if looping
+      
+    
+    #STEP 5 : regle de l'eclosion des oeufs
+    step4.done (pointer, application) ->
+      #On va faire reapparaitre l'application à chaque oeuf
+      variable = pointer.attr "data-variable"
+      help("éclosion", pointer.attr "id") if infobox
+      eggs = pointer.find( ".variable[data-variable=#{variable}]"  )
+      n = eggs.length
+      if n>0
+        def_clone = $.Deferred()
+        def_egg = $.Deferred()
+        eggs.each (index, element) ->
+          $(this).animate { opacity: 0} , delta, ->
+            $(this).find("> svg").remove() 
+            $(this).remove()
+            if index is n-1
+              def_egg.resolve()  
+          $(this).after application.clone().css(opacity: 0).animate {opacity: 1}, delta, ->
+            if index is n-1
+              pointer.find("> svg").remove() 
+              pointer.replaceWith pointer.contents()
+              def_clone.resolve()
+          
+        $.when(def_egg,def_clone).done -> go_one_step(root) if looping
+      else
+        help( "Aucun oeuf", pointer.attr "id") if infobox
+        pointer.find("> svg").remove()
+        pointer.replaceWith pointer.contents()
+        go_one_step(root) if looping
+
+    #STEP 1 : 
+    action_croco = find_action_pointer root
+    if action_croco.length > 0
+      step1.resolve(action_croco)
+    else
+      alert "over"
+    
+      
+      ###########################################################################################################################################################
   # Gestion du jeu
   ###########################################################################################################################################################  
   $( "#console" ).toggle()     

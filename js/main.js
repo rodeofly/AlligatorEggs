@@ -91,19 +91,27 @@
       "texte": "<p>Attention, ça va se compliquer !</p><p>Voici deux familles, l'une à coté de l'autre. L'alligator vert est affamé, c'est sur et il y a cette famille jaune juste en face de lui... Comme elle semble appétissante ! La suite, tu la connais ?! Appuye sur le bouton 'Animer'.</p>",
       "contenu-exercice": "(λh.λe.h e) (λa.a)",
       "contenu-eleve": "",
-      "solution": "λh.(λe.(λf.(e (h e ) f ) ) ) ",
+      "solution": "λe.(e ) ",
+      "animation": "yes"
+    },
+    "5": {
+      "titre": 'Manger',
+      "texte": "<p>Attention, ça va se compliquer !</p><p>Voici deux familles, l'une à coté de l'autre. L'alligator vert est affamé, c'est sur et il y a cette famille jaune juste en face de lui... Comme elle semble appétissante ! La suite, tu la connais ?! Appuye sur le bouton 'Animer'.</p>",
+      "contenu-exercice": "λe.(λf.(e f ) ) λh.(h ) ",
+      "contenu-eleve": "",
+      "solution": "λe.(e ) ",
       "animation": "yes"
     }
   };
 
   ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
-  _ref = [[], {}, false, true, 0, 0, 2000], color_tab = _ref[0], var_tab = _ref[1], debug = _ref[2], infobox = _ref[3], id = _ref[4], parentheses = _ref[5], delta = _ref[6];
+  _ref = [[], {}, false, true, 0, 0, 500], color_tab = _ref[0], var_tab = _ref[1], debug = _ref[2], infobox = _ref[3], id = _ref[4], parentheses = _ref[5], delta = _ref[6];
 
   ahead_vars = [];
 
   $(function() {
-    var application_eaten_by, change_application_colors, color_rule_check, find_action_pointer, get_lambda_from, go_one_step, help, initialize_html, inserer, insert_exp_into_div, make_dropped_droppable, regle_vieil_alligator_inutile, repeat_step, step;
+    var color_rule_check, find_action_pointer, get_lambda_from, go_one_step, help, initialize_html, inserer, insert_exp_into_div, looping, make_dropped_droppable, promises;
     (initialize_html = function() {
       var color, html, index, key, letter, s, value, _i, _j, _len, _len1, _ref1;
       for (key in EXERCICES) {
@@ -156,8 +164,9 @@
     });
     $("#slider-range-max").slider({
       range: "max",
-      min: 0,
-      max: 10000,
+      min: 50,
+      max: 6000,
+      step: 500,
       value: 2000,
       slide: function(event, ui) {
         $("#amount").val(ui.value);
@@ -428,40 +437,29 @@
       });
     };
     make_dropped_droppable();
-    step = true;
+    promises = [];
+    looping = false;
     $("#go").on("click", function() {
+      looping = false;
       return go_one_step("#root");
     });
     $("#repeat").on("click", function() {
-      return repeat_step("#root");
+      looping = true;
+      return go_one_step("#root");
     });
-    repeat_step = function(root) {
-      var i;
-      if (infobox) {
-        return alert("Desactive l'infobox");
-      } else {
-        alert("Appuye sur une touche pour stopper la boucle !");
-        $("#slider-range-max").slider("option", "disabled", true);
-        i = interval(delta, function() {
-          if (step) {
-            return go_one_step(root);
-          }
-        });
-        return document.onkeypress = function() {
-          window.clearInterval(i);
-          return $("#slider-range-max").slider("option", "disabled", false);
-        };
-      }
-    };
+    $("#stop").click(function() {
+      looping = false;
+      return $("#slider-range-max").slider("option", "disabled", false);
+    });
     $("#help").dialog({
       autoOpen: false,
       dialogClass: "noTitleStuff",
       width: "auto",
       minHeight: 0,
       open: function() {
-        return delay(delta, function() {
+        return delay(Math.floor(delta / 2, function() {
           return $("#help").dialog("close");
-        });
+        }));
       },
       autoResize: true
     });
@@ -503,6 +501,7 @@
           }
           ahead_vars.push(pointer.attr("data-variable"));
           if (pointer.next().length > 0) {
+            ahead_vars.pop();
             stay = false;
           } else {
             if (pointer.find(".lambda").length > 0) {
@@ -523,7 +522,7 @@
       return pointer;
     };
     color_rule_check = function(pointer) {
-      var application, application_vars, find_tree, function_vars, get_vars, intersect, intersection, item, _ref1;
+      var application, application_vars, function_vars, get_vars, intersect, intersection, item, _ref1;
       application = pointer.next();
       get_vars = function(tree) {
         var palette;
@@ -532,11 +531,6 @@
           return palette.push($(this).attr("data-variable"));
         });
         return palette.unique();
-      };
-      find_tree = function(element) {
-        var i, tree;
-        i = element.attr("id");
-        return tree = element.parent().is($(root)) ? element : $(root).children(".dropped").has("#" + i);
       };
       _ref1 = [get_vars(pointer), get_vars(application)], function_vars = _ref1[0], application_vars = _ref1[1];
       intersect = function(a, b) {
@@ -558,132 +552,10 @@
       })();
       return [function_vars, application_vars, intersection];
     };
-    change_application_colors = function(pointer, function_vars, application_vars, intersection) {
-      var $var, application, index, item, palette, _i, _len, _results;
-      if (infobox) {
-        help("Règle de la couleur", pointer.attr("id"));
-      }
-      application = pointer.next();
-      palette = (function() {
-        var _i, _len, _results;
-        _results = [];
-        for (_i = 0, _len = ALPHABET.length; _i < _len; _i++) {
-          item = ALPHABET[_i];
-          if (__indexOf.call(function_vars.concat(application_vars), item) < 0) {
-            _results.push(item);
-          }
-        }
-        return _results;
-      })();
-      palette = palette.slice(0, +(intersection.length - 1) + 1 || 9e9);
-      _results = [];
-      for (index = _i = 0, _len = intersection.length; _i < _len; index = ++_i) {
-        $var = intersection[index];
-        _results.push(application.find("[data-variable='" + $var + "']").andSelf().filter("[data-variable='" + $var + "']").attr("data-variable", palette[index]).find("> svg").find(".skin").css("fill", var_tab[palette[index]]));
-      }
-      return _results;
-    };
-    regle_vieil_alligator_inutile = function(pointer) {
-      if (infobox) {
-        help("Ce vieil alligator ne sert plus à rien !", pointer.attr("id"));
-      }
-      pointer.find("svg").first().find("g#layer1").attr("transform", "rotate(180,140,65)").animate({
-        opacity: 0
-      }, delta, function() {
-        $(this).closest(".lambda.priorite").replaceWith($(this).closest(".lambda.priorite").contents());
-        return $(this).closest("svg").remove();
-      });
-      return delay(delta + 100, function() {});
-    };
-    application_eaten_by = function(pointer) {
-      var application, applicationClone, bust_a_move, variable, _ref1;
-      if ((pointer.hasClass("lambda")) && (pointer.attr("data-color") !== "white") && (pointer.next().length > 0)) {
-        ahead_vars.pop();
-        variable = pointer.attr("data-variable");
-        _ref1 = [pointer.next(), pointer.next().clone()], application = _ref1[0], applicationClone = _ref1[1];
-        (bust_a_move = function(p, timer, j) {
-          var bustit;
-          if (infobox) {
-            help("Manger & partir", pointer.attr("id"));
-          }
-          bustit = interval(50, function() {
-            return p.children("svg").css({
-              "z-index": "9000"
-            }).find("#jaw").attr("transform", "rotate(" + (-10 + Math.floor(6 * Math.cos(j++))) + ") translate(-100,20)");
-          });
-          return delay(timer, function() {
-            clearInterval(bustit);
-            pointer.children("svg").find("g#layer1").attr("transform", "rotate(180 125 75)");
-            return pointer.children("svg").animate({
-              "opacity": 0
-            }, delta, function() {
-              return $(this).closest("svg").remove();
-            });
-          });
-        })(pointer, delta, 0);
-        application.css('visibility', 'hidden').clone().prependTo(pointer).css({
-          "z-index": "-1",
-          border: "dashed black 1px",
-          visibility: "visible",
-          position: "absolute",
-          top: "0px",
-          left: "100%"
-        }).animate({
-          "min-width": "0px",
-          padding: "0px",
-          height: '1vw',
-          width: "1vw",
-          top: "0",
-          left: "60%"
-        }, delta, function() {
-          var eggs, n;
-          $(this).find("> svg").remove();
-          $(this).remove();
-          application.find("> svg").remove();
-          application.remove();
-          if (infobox) {
-            help("éclosion", pointer.attr("id"));
-          }
-          eggs = pointer.find(".variable[data-variable=" + variable + "]");
-          n = eggs.length;
-          if (n > 0) {
-            return eggs.each(function(index, element) {
-              $(this).after(applicationClone.clone().css({
-                opacity: 0
-              }).animate({
-                opacity: 1
-              }, delta, function() {
-                if (index === n - 1) {
-                  pointer.find("> svg").remove();
-                  pointer.replaceWith(pointer.contents());
-                  return step = true;
-                }
-              }));
-              return $(this).animate({
-                opacity: 0
-              }, delta, function() {
-                $(this).find("> svg").remove();
-                return $(this).remove();
-              });
-            });
-          } else {
-            if (infobox) {
-              help("Aucun oeuf", pointer.attr("id"));
-            }
-            pointer.find("> svg").remove();
-            return pointer.replaceWith(pointer.contents());
-          }
-        });
-        $(root).children("svg").remove();
-        return true;
-      } else {
-        return false;
-      }
-    };
     go_one_step = function(root) {
-      var action_croco, application_vars, function_vars, intersection, local_debug, _ref1;
+      var action_croco, local_debug, step1, step2, step3, step4;
+      root = "#root";
       local_debug = false;
-      step = false;
       $(root + " .application_drop, " + root + " .definition_drop").remove();
       $(root).find(".dropped").each(function(i) {
         if (i == null) {
@@ -691,19 +563,178 @@
         }
         return $(this).attr("id", id += 1);
       });
-      ahead_vars = [];
-      action_croco = find_action_pointer(root);
-      if ((action_croco.hasClass("priorite")) && (action_croco.children(":not(svg)").length < 2)) {
-        regle_vieil_alligator_inutile(action_croco);
-        return step = true;
-      } else {
-        _ref1 = color_rule_check(action_croco), function_vars = _ref1[0], application_vars = _ref1[1], intersection = _ref1[2];
-        if (intersection.length > 0) {
-          change_application_colors(action_croco, function_vars, application_vars, intersection);
-          return step = true;
+      step1 = $.Deferred();
+      step2 = $.Deferred();
+      step3 = $.Deferred();
+      step4 = $.Deferred();
+      step1.done(function(pointer) {
+        if ((pointer.hasClass("priorite")) && (pointer.children(":not(svg)").length < 2)) {
+          if (infobox) {
+            help("Ce vieil alligator ne sert plus à rien !", pointer.attr("id"));
+          }
+          return pointer.find("svg").first().find("g#layer1").attr("transform", "rotate(180,140,65)").animate({
+            opacity: 0
+          }, delta, function() {
+            $(this).closest(".lambda.priorite").replaceWith($(this).closest(".lambda.priorite").contents());
+            $(this).closest("svg").remove();
+            return step2.resolve(pointer);
+          });
         } else {
-          return application_eaten_by(action_croco);
+          return step2.resolve(pointer);
         }
+      });
+      step2.done(function(pointer) {
+        var $var, application, application_vars, found, function_vars, index, intersection, item, n, palette, _i, _len, _ref1, _results;
+        _ref1 = color_rule_check(pointer), function_vars = _ref1[0], application_vars = _ref1[1], intersection = _ref1[2];
+        if (intersection.length > 0) {
+          application = pointer.next();
+          palette = (function() {
+            var _i, _len, _results;
+            _results = [];
+            for (_i = 0, _len = ALPHABET.length; _i < _len; _i++) {
+              item = ALPHABET[_i];
+              if (__indexOf.call(function_vars.concat(application_vars), item) < 0) {
+                _results.push(item);
+              }
+            }
+            return _results;
+          })();
+          palette = palette.slice(0, +(intersection.length - 1) + 1 || 9e9);
+          _results = [];
+          for (index = _i = 0, _len = intersection.length; _i < _len; index = ++_i) {
+            $var = intersection[index];
+            found = application.find("[data-variable='" + $var + "']").andSelf().filter("[data-variable='" + $var + "']");
+            n = found.length;
+            found.attr("data-variable", palette[index]);
+            _results.push(found.find("> svg").each(function(index2) {
+              if (infobox) {
+                help("Règle de la couleur", $(this).closest(".dropped").attr("id"));
+              }
+              $(this).hide().show("slow", function() {
+                if (index2 === n - 1) {
+                  return step3.resolve(pointer);
+                }
+              });
+              return $(this).find(".skin").css("fill", var_tab[palette[index]]);
+            }));
+          }
+          return _results;
+        } else {
+          return step3.resolve(pointer);
+        }
+      });
+      step3.done(function(pointer) {
+        var application, applicationClone, bust_a_move, j, variable;
+        if ((pointer.hasClass("lambda")) && (pointer.attr("data-color") !== "white") && (pointer.next().length > 0)) {
+          ahead_vars.pop();
+          variable = pointer.attr("data-variable");
+          application = pointer.next();
+          applicationClone = application.clone();
+          if (infobox) {
+            help("Manger", pointer.attr("id"));
+          }
+          j = 0;
+          if (delta > 0) {
+            bust_a_move = interval(50, function() {
+              return pointer.children("svg").css({
+                "z-index": "9000"
+              }).find("#jaw").attr("transform", "rotate(" + (-10 + Math.floor(6 * Math.cos(j++))) + ") translate(-100,20)");
+            });
+          }
+          application = pointer.next();
+          return application.css('visibility', 'hidden').clone().prependTo(pointer).css({
+            "z-index": "-1",
+            border: "dashed black 1px",
+            visibility: "visible",
+            position: "absolute",
+            top: "0px",
+            left: "100%"
+          }).animate({
+            "min-width": "0px",
+            padding: "0px",
+            height: '1vw',
+            width: "1vw",
+            top: "0",
+            left: "60%"
+          }, delta, function() {
+            $(this).find("> svg").remove();
+            $(this).remove();
+            application.find("> svg").remove();
+            application.remove();
+            if (delta > 0) {
+              clearInterval(bust_a_move);
+            }
+            pointer.children("svg").find("g#layer1").attr("transform", "rotate(180 125 75)");
+            if (infobox) {
+              help("Partir", pointer.attr("id"));
+            }
+            return pointer.children("svg").animate({
+              "opacity": 0
+            }, delta, function() {
+              $(this).closest("svg").remove();
+              return step4.resolve(pointer, applicationClone);
+            });
+          });
+        } else {
+          if (looping) {
+            return go_one_step(root);
+          }
+        }
+      });
+      step4.done(function(pointer, application) {
+        var def_clone, def_egg, eggs, n, variable;
+        variable = pointer.attr("data-variable");
+        if (infobox) {
+          help("éclosion", pointer.attr("id"));
+        }
+        eggs = pointer.find(".variable[data-variable=" + variable + "]");
+        n = eggs.length;
+        if (n > 0) {
+          def_clone = $.Deferred();
+          def_egg = $.Deferred();
+          eggs.each(function(index, element) {
+            $(this).animate({
+              opacity: 0
+            }, delta, function() {
+              $(this).find("> svg").remove();
+              $(this).remove();
+              if (index === n - 1) {
+                return def_egg.resolve();
+              }
+            });
+            return $(this).after(application.clone().css({
+              opacity: 0
+            }).animate({
+              opacity: 1
+            }, delta, function() {
+              if (index === n - 1) {
+                pointer.find("> svg").remove();
+                pointer.replaceWith(pointer.contents());
+                return def_clone.resolve();
+              }
+            }));
+          });
+          return $.when(def_egg, def_clone).done(function() {
+            if (looping) {
+              return go_one_step(root);
+            }
+          });
+        } else {
+          if (infobox) {
+            help("Aucun oeuf", pointer.attr("id"));
+          }
+          pointer.find("> svg").remove();
+          pointer.replaceWith(pointer.contents());
+          if (looping) {
+            return go_one_step(root);
+          }
+        }
+      });
+      action_croco = find_action_pointer(root);
+      if (action_croco.length > 0) {
+        return step1.resolve(action_croco);
+      } else {
+        return alert("over");
       }
     };
     $("#console").toggle();
