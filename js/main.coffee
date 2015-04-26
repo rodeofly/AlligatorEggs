@@ -60,9 +60,9 @@ EXERCICES =
   "4" :
     "titre"            : 'Les familles (3)'
     "texte"            : "<p>Voici une grande famille ! Nous avons un alligator jaune, un vert et un rose qui gardent cette famille. Ils gardent trois choses : un œuf vert, un vieux crocodile , et un œuf rose. Le vieil alligator, lui, garde un œuf jaune et un œuf vert.</p><p>Note bien que les œufs n'utilisent que les couleurs des alligators qui les surveillent . On ne peut pas avoir un œuf bleu sans qu'il y ait un alligator bleu au-dessus pour le garder.</p><p>Peux recréer cette famille ?</p>"
-    "contenu-exercice" : "λh.λe.λf.(e (h e) f)"
+    "contenu-exercice" : "λh.λe.λg.(e (h e) g)"
     "contenu-eleve"    : ""
-    "solution"         : "λh.(λe.(λf.(e (h e ) f ) ) ) "
+    "solution"         : "λh.(λe.(λg.(e (h e ) g ) ) ) "
 
   "5" :
     "titre"            : 'Manger'
