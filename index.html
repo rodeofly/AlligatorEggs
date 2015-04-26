@@ -52,7 +52,7 @@
                   <button class="panel-button" data-type="autoclose" >auto-close</button>
                   <button id="panel-lambda"   class="panel-button" data-type="lambda"   data-variable="a">λa</button>
                   <button id="panel-variable" class="panel-button" data-type="variable" data-variable="a">a</button>            
-                 <input id="prompt" type="text" value="" />
+                  <input  type="text" id="prompt"  size="100" value="a">
               </div>
               <div id="top-panel">
                   <div id="items">
@@ -81,8 +81,9 @@
               </div>
               <div id="exercice" data-id="" data-solution="">
                   <div class="titre"></div>
-                  <div class="texte"></div>
+                  <div id="exercice-texte" class="texte"></div>
                   <div id="contenu-exercice" ></div>
+                  <div id="compte-rendu" ></div>
                   <button class="panel-button check">Check !</button>
                   <button class="panel-button exercice"  id="replay">Rejouer</button>
                   <button class="panel-button animation" id="animation">&#9658;</button>

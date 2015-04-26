@@ -40,7 +40,9 @@
         <div id="game-container">
               <div id="help"></div>
               <button id="toggle-console">Toggle Console</button>
-              <div id="exercices"></div>
+              <div id="exercices">
+                   <button class="panel-button" id="close-exercice" >Fermer</button>
+              </div>
               <div id="console">            
                   <button class="panel-button" data-type="clear" >Effacer</button>
                   <button id="draw" class="panel-button" data-type="draw" >Inserer</button>
@@ -50,7 +52,7 @@
                   <button class="panel-button" data-type="autoclose" >auto-close</button>
                   <button id="panel-lambda"   class="panel-button" data-type="lambda"   data-variable="a">λa</button>
                   <button id="panel-variable" class="panel-button" data-type="variable" data-variable="a">a</button>            
-                 <input id="prompt" type="text" value="" />
+                  <input  type="text" id="prompt"  size="100" value="a">
               </div>
               <div id="top-panel">
                   <div id="items">
@@ -79,7 +81,7 @@
               </div>
               <div id="exercice" data-id="" data-solution="">
                   <div class="titre"></div>
-                  <div class="texte"></div>
+                  <div id="exercice-texte" class="texte"></div>
                   <div id="contenu-exercice" ></div>
                   <button class="panel-button check">Check !</button>
                   <button class="panel-button exercice"  id="replay">Rejouer</button>

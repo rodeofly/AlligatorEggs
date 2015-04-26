@@ -225,9 +225,24 @@ nav a:hover {
   overflow-y:scroll;
 }
 #contenu-exercice {
-  padding 2vw;
+  padding: 2vw;
 }
 
+#compte-rendu{
+  position:relative;
+  margin: 0 auto;
+  background-color : rgba(0,0,0,0.5);
+  text-align:center;
+  text-align:center;
+  position:relative;
+  min-height : 4vw;
+  padding : 2vw;
+}
+
+#compte-rendu > [data-variable='?']{
+  width:100%;
+  height:100%;
+}
 
 button {
   min-width : 3.5vw;
@@ -254,8 +269,9 @@ pre.code{
   height : 3vw;
 }
 #prompt {
-  font-size : 1vw;
-  width : 99%;
+  position : relative;
+  z-index : 10000;
+ 
 }
 
 .selected-color {

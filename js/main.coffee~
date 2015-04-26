@@ -34,13 +34,15 @@ EXERCICES =
     "texte"            : "<p>Voilà un vieil alligator avec des œufs ! Le vieil alligator n'a plus faim, il a assez mangé.</p><p>Tous ce qu'il fait, c'est prendre soin de sa famille : ici ce sont des œufs !</p><p>Les œufs vont éclore et donner de nouvelles familles d'alligators.</p><p>Fais glisser un vieil alligator dans le panel, puis fais glisser le premier œuf sur le bout de la queue. Enfin, un à un, glisse des œufs les uns sur les autres pour les ajouter !</p>"
     "contenu-exercice" : "(f g h i i )"
     "contenu-eleve"    : ""
-    "solution"         : "(f g h i i ) " 
+    "compte-rendu"     : "?"
+    "solution"         : "(f g h i i ) "
 
   "1" :
     "titre"            : 'Les items (2) : "Les alligators affamés"'
     "texte"            : "<p>Voilà des alligators affamés...Les alligators affamés sont voraces. Ils vont manger tout ce qui est en devant eux (au point de mourir d'indigestion)! Mais ils sont aussi des alligators responsables, et comme les vieux alligators, ils gardent leurs familles.</p><p>Allez fais glisser !</p>"
     "contenu-exercice" : "λx.(λy.(λz.() ) ) "
-    "contenu-eleve"    : ""
+    "contenu-eleve"    : "λx.()"
+    "compte-rendu"     : "?"
     "solution"         : "λx.(λy.(λz.() ) ) "
 
   "2" :
@@ -48,6 +50,7 @@ EXERCICES =
     "texte"            : "<p>Voici une petite famille : un alligator garde son œuf !</p><p>Peux tu la recréer ?</p>"
     "contenu-exercice" : "λe.e"
     "contenu-eleve"    : ""
+    "compte-rendu"     : "?"
     "solution"         : "λe.(e ) "
 
   "3" :
@@ -55,13 +58,15 @@ EXERCICES =
     "texte"            : "<p>Voici une petite famille un peu plus grande.</p><p>Un alligator garde un autre alligator qui garde deux œufs. Ou on peut dire qu'un alligator garde un autre alligator qui est gardien des deux œufs.</p><p>Peux tu la recréer ?</p>"
     "contenu-exercice" : "λe.λf.e f"
     "contenu-eleve"    : ""
+    "compte-rendu"     : "?"
     "solution"         : "λe.(λf.(e f ) ) "
     
   "4" :
     "titre"            : 'Les familles (3)'
     "texte"            : "<p>Voici une grande famille ! Nous avons un alligator jaune, un vert et un rose qui gardent cette famille. Ils gardent trois choses : un œuf vert, un vieux crocodile , et un œuf rose. Le vieil alligator, lui, garde un œuf jaune et un œuf vert.</p><p>Note bien que les œufs n'utilisent que les couleurs des alligators qui les surveillent . On ne peut pas avoir un œuf bleu sans qu'il y ait un alligator bleu au-dessus pour le garder.</p><p>Peux recréer cette famille ?</p>"
     "contenu-exercice" : "λh.λe.λg.(e (h e) g)"
-    "contenu-eleve"    : ""
+    "contenu-eleve"    : "λh.λe.λg.(e (h e) g)"
+    "compte-rendu"     : "?"
     "solution"         : "λh.(λe.(λg.(e (h e ) g ) ) ) "
 
   "5" :
@@ -72,13 +77,34 @@ EXERCICES =
     "solution"         : "λf.(f ) "
     "animation"        : "yes"
 
-  "5" :
-    "titre"            : 'Manger'
-    "texte"            : "<p>En continuant avec l'exemple ci-dessus , l'alligator orange, mange la famille jaune. Ensuite, l'alligator vert en haut à gauche veut manger la famille à sa droite. Mais avant qu'elle ne puisse le faire , nous devons nous pencher sur la règle de couleur !</p><p>La règle de couleur dit que si un alligator est sur ​​le point de manger une famille, et que s'il y a une couleur qui apparaît dans les deux familles, nous devons changer cette couleur dans une famille avec une autre couleur. Ici, vert et rouge apparaissent à la fois la première et la seconde famille. Le changement de couleur est automatique. Une fois qu'ils ne partagent plus les mêmes couleurs, nous pouvons manger! Et manger!Et manger! Et manger, jusqu'à ce qu'il n'y ai rien de plus qui puisse être mangé .</p>"
-    "contenu-exercice" : "λz.(λe.(z z ) ) λe.(λf.(e f ) ) λh.(h ) "
+  "6" :
+    "titre"            : 'La règle du "je te mange"'
+    "texte"            : "<p>La règle de l'alimentation dit que s'il y a des familles côte-à-côté, l'alligator le plus en haut à gauche de la famille mange à sa droite.Puis , ce crocodile meurt . Mais si il gardait des oeufs de la même couleur que lui, chacun de ces oeufs va éclorent en ce qu'il a mangé</p>.<p>En continuant, l'alligator orange, mange la famille jaune. Ensuite, l'alligator vert en haut à gauche veut manger la famille à sa droite. Mais avant qu'elle ne puisse le faire , nous devons nous pencher sur la règle de couleur !</p><p>La règle de couleur dit que si un alligator est sur ​​le point de manger une famille, et que s'il y a une couleur qui apparaît dans les deux familles, nous devons changer cette couleur dans une famille avec une autre couleur. Ici, vert et rouge apparaissent à la fois la première et la seconde famille. Le changement de couleur est automatique. Une fois qu'ils ne partagent plus les mêmes couleurs, nous pouvons manger! Et manger!Et manger! Et manger, jusqu'à ce qu'il n'y ai rien de plus qui puisse être mangé .</p>"
+    "contenu-exercice" : "λz.(λe.(z z e ) ) λe.(λf.(e f ) ) λh.(h ) "
     "contenu-eleve"    : ""
-    "solution"         : "λf.(λc.(f c ) ) "
+    "solution"         : "λc.(c ) "
     "animation"        : "yes"
+
+  "7" :
+    "titre"            : 'La règle du vieil alligator'
+    "texte"            : "<p>Il ne reste plus qu'une seule règle dans ce jeu, et elle est en lien avec les vieux alligators :</p>
+<p>L'alligator supérieur gauche ici n'a pas faim. Il ne va rien manger du tout. Tout ce dont il se soucie est sa famille. Alors, comment meurt-il?</p>
+<p>Il meurt quand il garde seulement une seule chose. À l'heure actuelle, Il est à la fois gardien d'une famille verte et d'une famille rouge. Ils ont besoin de lui pour prendre soin d'eux. Mais l'alligator vert a faim: il mange la famille rouge ...</p>
+<p>Maintenant , le vieux crocodile ne garde plus qu'une seule famille. Cette famille peut prendre soin d'elle-même. Il n'est par conséquent plus nécessaire. Donc , il vieillit et meurt: C'est la vieille règle de l'âge!</p>
+<p>Lorsque un vieux crocodile est juste gardait une seule chose , il meurt.</p><p>Pour finir, l'alligator rouge mange la famille jaune, et il ne reste plus rien qui puisse être mangé.</p>"
+    "contenu-exercice" : "(λe.(e ) λf.(f ) ) λe.(e ) "
+    "contenu-eleve"    : ""
+    "solution"         : "λe.(e ) "
+    "animation"        : "yes"
+
+  "8" :
+    "titre"            : 'Challenge !'
+    "texte"            : "<p>Voici deux familles. Elles s'appellent «Vrai» et «Faux» :</p><insert λe.(λf.(e ) ) λe.(λf.(f ) ) ><p>Et ici, une famille appelée «Non» : <insert λh.(h λe.(λf.( ? ) ) λe.(λf.( ? ) ) ) ></p><p>Lorsque «Non» mange «Vrai», il produit «Faux». Et lorsque «Non» mange «Faux», il produit «Vrai». De quelles couleurs devraient être les deux œufs?</p>"
+    "contenu-exercice" : ""
+    "contenu-eleve"    : "λh.(h λe.(λf.( ? ) ) λe.(λf.( ? ) ) ) (λe.λf.e) "
+    "compte-rendu"     : "λh.(h λe.(λf.( ? ) ) λe.(λf.( ? ) ) ) (λe.λf.e) "
+    "solution"         : "λh.(h λe.(λf.( f ) ) λe.(λf.( e ) ) ) "
+    "parse"            : "yes"
 ALPHABET = "abcdefghijklmnopqrstuvwxyz"
 [color_tab, var_tab, debug, infobox, id, parentheses, delta] = [ [], {}, false, true, 0, 0, 500 ]
 ahead_vars = []
@@ -158,7 +184,7 @@ $ ->
     $( "#choose-color" ).attr("data-variable", variable)
     $( "#choose-color" ).attr("data-color", color)
     $( "#panel-lambda" ).attr("data-variable", variable).html("λ#{variable}")
-    $("#panel-variable").attr("data-variable", variable).html("#{variable}")
+    $( "#panel-variable").attr("data-variable", variable).html("#{variable}")
     $( "#egg-svg, #open-svg" ).find(".skin").css("fill", color)
     $( ".color" ).removeClass("selected-color" )
     $(this).addClass( "selected-color" )
@@ -230,68 +256,69 @@ $ ->
   insert_exp_into_div = (exp, root) ->
     expression = exp
     id = 0
-    #make it easy to retrieve variables
-    expression = expression.replace /([.( ])([a-z])/g, "$1woot$2" 
-    #lambdas
-    local_debug = false
-    while expression.match /λ/
-      λ_index = 0
-      while expression[λ_index] isnt "λ"
-        λ_index += 1  
-      λ_variable = λ_index+1
-      current_index = λ_index+3
-      switch expression[λ_index-1]     
-        when "("
-          alert "prototype : (λx. lambda ) = #{expression}" if local_debug
-          parentheses = 1
-          while ((parentheses > 0) and (current_index < expression.length) and (expression[current_index] isnt "<"))
+    if expression isnt "?"
+      #make it easy to retrieve variables
+      expression = expression.replace /([.( ])([a-z])/g, "$1woot$2" 
+      #lambdas
+      local_debug = false
+      while expression.match /λ/
+        λ_index = 0
+        while expression[λ_index] isnt "λ"
+          λ_index += 1  
+        λ_variable = λ_index+1
+        current_index = λ_index+3
+        switch expression[λ_index-1]     
+          when "("
+            alert "prototype : (λx. lambda ) = #{expression}" if local_debug
+            parentheses = 1
+            while ((parentheses > 0) and (current_index < expression.length) and (expression[current_index] isnt "<"))
+              switch expression[current_index]
+                when "("
+                  parentheses +=1
+                when ")"
+                  parentheses -=1
+              current_index +=1
+            alert "I got this : #{expression.substring(λ_index-1,current_index)}" if local_debug
+            expression = expression.replace expression.substring(λ_index-1, current_index), "<div id='' class='lambda dropped' data-variable='#{expression[λ_variable]}' data-color=''>#{expression.substring(λ_index+3,current_index-1)}</div>"
+            continue
+          else 
             switch expression[current_index]
               when "("
-                parentheses +=1
-              when ")"
-                parentheses -=1
-            current_index +=1
-          alert "I got this : #{expression.substring(λ_index-1,current_index)}" if local_debug
-          expression = expression.replace expression.substring(λ_index-1, current_index), "<div id='' class='lambda dropped' data-variable='#{expression[λ_variable]}' data-color=''>#{expression.substring(λ_index+3,current_index-1)}</div>"
-          continue
-        else 
-          switch expression[current_index]
-            when "("
-              alert "prototype : λx.(lambda) = #{expression}" if local_debug
-              parentheses = 1
-              while ((parentheses > 0) and (current_index < expression.length) and (expression[current_index] isnt "<"))
-                current_index += 1
-                switch expression[current_index]
-                  when "("
-                    parentheses +=1
-                    continue
-                  when ")"
-                    parentheses -=1
-                    continue
-                  else
-                    continue
-              alert "I got this : #{expression.substring(λ_index,current_index+1)}" if local_debug
-              expression = expression.replace expression.substring(λ_index,current_index+1), "<div id='' class='lambda dropped' data-variable='#{expression[λ_variable]}' data-color=''>#{expression.substring(λ_index+4,current_index)}</div>"
-              continue 
-            else
-              alert "prototype : λx.lambda = #{expression}" if local_debug
-              
-              while ((expression[current_index] isnt "<") and (current_index < expression.length))
-                current_index += 1
-              alert "I got this : #{expression.substring(λ_index,current_index)}" if local_debug
-              expression = expression.replace expression.substring(λ_index,current_index), "<div id='' class='lambda dropped' data-variable='#{expression[λ_variable]}' data-color=''>#{expression.substring(λ_index+3,current_index)}</div>"
-              continue           
-    #most outer parentheses
-    expression = expression.replace /[ ]*\(([^)]*\s?\)*)\)[ ]*/g, "<div id='' class='lambda priorite dropped' data-variable='parenthese' data-color='white' >$1</div>"   
-    expression = expression.replace /\(/g, "<div id='' class='lambda priorite dropped' data-variable='parenthese' data-color='white'>"
-    expression = expression.replace /\)/g, "</div>"
-    expression = expression.replace /parenthese/g, "("
-    #variables
-    reg = /woot(\w)/g
-    expression = expression.replace reg, "<div id='' class='variable dropped' data-variable='$1' data-color='' ></div>"
-    #? inconnues
+                alert "prototype : λx.(lambda) = #{expression}" if local_debug
+                parentheses = 1
+                while ((parentheses > 0) and (current_index < expression.length) and (expression[current_index] isnt "<"))
+                  current_index += 1
+                  switch expression[current_index]
+                    when "("
+                      parentheses +=1
+                      continue
+                    when ")"
+                      parentheses -=1
+                      continue
+                    else
+                      continue
+                alert "I got this : #{expression.substring(λ_index,current_index+1)}" if local_debug
+                expression = expression.replace expression.substring(λ_index,current_index+1), "<div id='' class='lambda dropped' data-variable='#{expression[λ_variable]}' data-color=''>#{expression.substring(λ_index+4,current_index)}</div>"
+                continue 
+              else
+                alert "prototype : λx.lambda = #{expression}" if local_debug
+                
+                while ((expression[current_index] isnt "<") and (current_index < expression.length))
+                  current_index += 1
+                alert "I got this : #{expression.substring(λ_index,current_index)}" if local_debug
+                expression = expression.replace expression.substring(λ_index,current_index), "<div id='' class='lambda dropped' data-variable='#{expression[λ_variable]}' data-color=''>#{expression.substring(λ_index+3,current_index)}</div>"
+                continue           
+      #most outer parentheses
+      expression = expression.replace /[ ]*\(([^)]*\s?\)*)\)[ ]*/g, "<div id='' class='lambda priorite dropped' data-variable='parenthese' data-color='white' >$1</div>"   
+      expression = expression.replace /\(/g, "<div id='' class='lambda priorite dropped' data-variable='parenthese' data-color='white'>"
+      expression = expression.replace /\)/g, "</div>"
+      expression = expression.replace /parenthese/g, "("
+      #variables
+      reg = /woot(\w)/g
+      expression = expression.replace reg, "<div id='' class='variable dropped' data-variable='$1' data-color='' ></div>"
+      #? inconnues
     if expression.match /\?/
-      expression = expression.replace /\?/, "<div class='definition_drop'></div>"
+      expression = expression.replace /\?/g, "<div id='' class='lambda definition_drop' data-variable='?'></div>"
     expression = $('<div/>').html( expression ).contents()
     root.empty().append $( expression )
     make_dropped_droppable()
@@ -589,19 +616,35 @@ $ ->
     $( "#exercice").find(" > .panel-button.exercice").attr "data-id", i
     $( "#exercice").attr "data-solution", exo["solution"]
     $( "#exercice").find("> .titre" ).html("<h1>#{exo['titre']}</h1>")
-    $( "#exercice").find(" > .texte" ).html("<p>#{exo['texte']}</p>")
+    
     if exo["contenu-eleve"] isnt ""
       insert_exp_into_div(exo["contenu-eleve"], $("#root"))
     else
       $("#root" ).empty().append "<div id='root_definition' class='definition_drop'></div>"
     insert_exp_into_div exo["contenu-exercice"], $( "#contenu-exercice" ) if exo["contenu-exercice"] isnt "" 
     if exo["animation"] is "yes" then $( "#animation").show() else $( "#animation").hide()
+    
+    texte = exo['texte'] 
+    if exo["parse"] is "yes"
+      reg = /<insert ([λ().\w\? ]*)>/
+      while texte.match reg
+        lambda = reg.exec(texte)
+        insert_exp_into_div lambda[1], $("#exercice-texte")
+        texte = texte.replace reg, $("#exercice-texte").html()
+    $( "#exercice-texte" ).html("<p>#{texte}</p>")
+    
+    if ("compte-rendu" of exo) and (exo["compte-rendu"] isnt "")
+      texte = exo["compte-rendu"]
+      insert_exp_into_div texte, $("#compte-rendu")
+
     $( "#exercice").show().draggable()
+    
+    
   $("#close-exercice").on "click", ->  $("#exercice").hide()  
   $( "#exercice > .check" ).on "click", ->
     local_debug = true
     solution = $( "#exercice" ).attr("data-solution")
-    resultat = get_lambda_from $("#root")
+    resultat = get_lambda_from $("#compte-rendu")
     if resultat is solution
       alert "Super ! Si tu as tout compris, passe à l'exo suivant. Sinon rejoue !"
     else
