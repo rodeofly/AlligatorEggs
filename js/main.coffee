@@ -71,6 +71,14 @@ EXERCICES =
     "contenu-eleve"    : ""
     "solution"         : "λf.(f ) "
     "animation"        : "yes"
+
+  "6" :
+    "titre"            : 'Manger'
+    "texte"            : "<p>En continuant avec l'exemple ci-dessus , l'alligator orange, mange la famille jaune. Ensuite, l'alligator vert en haut à gauche veut manger la famille à sa droite. Mais avant qu'elle ne puisse le faire , nous devons nous pencher sur la règle de couleur !</p><p>La règle de couleur dit que si un alligator est sur ​​le point de manger une famille, et que s'il y a une couleur qui apparaît dans les deux familles, nous devons changer cette couleur dans une famille avec une autre couleur. Ici, vert et rouge apparaissent à la fois la première et la seconde famille. Le changement de couleur est automatique. Une fois qu'ils ne partagent plus les mêmes couleurs, nous pouvons manger! Et manger!Et manger! Et manger, jusqu'à ce qu'il n'y ai rien de plus qui puisse être mangé .</p>"
+    "contenu-exercice" : "λz.(λe.(z z ) ) λe.(λf.(e f ) ) λh.(h ) "
+    "contenu-eleve"    : ""
+    "solution"         : "λf.(λc.(f c ) ) "
+    "animation"        : "yes"
 ALPHABET = "abcdefghijklmnopqrstuvwxyz"
 [color_tab, var_tab, debug, infobox, id, parentheses, delta] = [ [], {}, false, true, 0, 0, 500 ]
 ahead_vars = []
