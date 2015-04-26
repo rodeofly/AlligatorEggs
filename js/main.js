@@ -504,9 +504,7 @@
             ahead_vars.pop();
             stay = false;
           } else {
-            if (pointer.find(".lambda").length > 0) {
-              pointer = pointer.find(".lambda").first();
-            }
+            pointer = pointer.find(".lambda").first();
           }
           continue;
         }

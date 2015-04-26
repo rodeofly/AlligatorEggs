@@ -416,7 +416,9 @@ $ ->
           stay = false
         else
           if pointer.find(".lambda").length > 0
-              pointer = pointer.find(".lambda").first()
+            pointer = pointer.find(".lambda").first()
+          else
+            stay = false
         continue
       # On tombe sur un oeuf
       if (pointer.hasClass "variable")      
