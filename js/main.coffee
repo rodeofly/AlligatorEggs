@@ -30,43 +30,43 @@ FUNCTION =
 
 EXERCICES =
   "0" :
-    "titre"            : 'Les items (1): "Le vieil alligator & les oeufs"'
-    "texte"            : "<p>Voilà un vieil alligator avec des oeufs ! Le vieil alligator n'a plus faim, il a assez mangé.</p><p>Tous ce qu'il fait, c'est prendre soin de sa famille : ici ce sont des oeufs !</p><p>Les oeufs vont éclorent et donner de nouvelles familles d'alligators.</p><p>Fais glisser un vieil alligator dans le panel, puis fais glisser le premier oeuf sur le bout de la queue. Enfin, un à un, glisse des oeufs les uns sur les autres pour les ajouter !</p>"
+    "titre"            : 'Les items (1): "Le vieil alligator & les œufs"'
+    "texte"            : "<p>Voilà un vieil alligator avec des œufs ! Le vieil alligator n'a plus faim, il a assez mangé.</p><p>Tous ce qu'il fait, c'est prendre soin de sa famille : ici ce sont des œufs !</p><p>Les œufs vont éclore et donner de nouvelles familles d'alligators.</p><p>Fais glisser un vieil alligator dans le panel, puis fais glisser le premier œuf sur le bout de la queue. Enfin, un à un, glisse des œufs les uns sur les autres pour les ajouter !</p>"
     "contenu-exercice" : "(f g h i i )"
     "contenu-eleve"    : ""
     "solution"         : "(f g h i i ) " 
 
   "1" :
     "titre"            : 'Les items (2) : "Les alligators affamés"'
-    "texte"            : "<p>Voilà des alligators affamés...Les alligators affamés ont faim. Ils vont manger tout ce qui est en face d'eux! Mais ils sont aussi des alligators responsables, et comme les vieux alligators, ils gardent leurs familles.</p><p>Allez fais glisser !</p>"
+    "texte"            : "<p>Voilà des alligators affamés...Les alligators affamés sont voraces. Ils vont manger tout ce qui est en devant eux (au point de mourir d'indigestion)! Mais ils sont aussi des alligators responsables, et comme les vieux alligators, ils gardent leurs familles.</p><p>Allez fais glisser !</p>"
     "contenu-exercice" : "λx.(λy.(λz.() ) ) "
     "contenu-eleve"    : ""
     "solution"         : "λx.(λy.(λz.() ) ) "
 
   "2" :
     "titre"            : 'Les familles (1)'
-    "texte"            : "<p>Voici une petite famille : un alligator garde son oeuf !</p><p>Peux tu la recréer ?</p>"
+    "texte"            : "<p>Voici une petite famille : un alligator garde son œuf !</p><p>Peux tu la recréer ?</p>"
     "contenu-exercice" : "λe.e"
     "contenu-eleve"    : ""
     "solution"         : "λe.(e ) "
 
   "3" :
     "titre"            : 'Les familles (2)'
-    "texte"            : "<p>Voici une petite famille un peu plus grande.</p><p>Un alligator garde un autre alligator qui gardent deux oeufs. Ou tu pourrez dire qu'un alligator garder un autre alligator qui est gardien des deux oeufs.</p><p>Peux tu la recréer ?</p>"
+    "texte"            : "<p>Voici une petite famille un peu plus grande.</p><p>Un alligator garde un autre alligator qui garde deux œufs. Ou on peut dire qu'un alligator garde un autre alligator qui est gardien des deux œufs.</p><p>Peux tu la recréer ?</p>"
     "contenu-exercice" : "λe.λf.e f"
     "contenu-eleve"    : ""
     "solution"         : "λe.(λf.(e f ) ) "
     
   "4" :
     "titre"            : 'Les familles (3)'
-    "texte"            : "<p>Voici une énorme famille ! Nous avons un alligator jaune, vert et rouge qui gardent cette famille. Ils gardent trois choses : un oeuf vert, un vieux crocodile , et un oeuf rouge. Le vieil alligator, lui, garde un œuf jaune et un oeuf vert.</p><p>Note bien que les œufs n'utilisent que les couleurs des alligators qui les surveillent . Vous ne pouvez pas avoir un œuf bleu sans qu'il y ait un alligator bleu autour pour le garder.</p><p>Peux recréer cette famille ?</p>"
-    "contenu-exercice" : "λh.λe.λf.(e (h e) f)"
+    "texte"            : "<p>Voici une grande famille ! Nous avons un alligator jaune, un vert et un rose qui gardent cette famille. Ils gardent trois choses : un œuf vert, un vieux crocodile , et un œuf rose. Le vieil alligator, lui, garde un œuf jaune et un œuf vert.</p><p>Note bien que les œufs n'utilisent que les couleurs des alligators qui les surveillent . On ne peut pas avoir un œuf bleu sans qu'il y ait un alligator bleu au-dessus pour le garder.</p><p>Peux recréer cette famille ?</p>"
+    "contenu-exercice" : "λh.λe.λg.(e (h e) g)"
     "contenu-eleve"    : ""
-    "solution"         : "λh.(λe.(λf.(e (h e ) f ) ) ) "
+    "solution"         : "λh.(λe.(λg.(e (h e ) g ) ) ) "
 
   "5" :
     "titre"            : 'Manger'
-    "texte"            : "<p>Attention, ça va se compliquer !</p><p>Voici deux familles, l'une à coté de l'autre. L'alligator vert est affamé, c'est sur et il y a cette famille jaune juste en face de lui... Comme elle semble appétissante ! La suite, tu la connais ?! Appuye sur le bouton 'Animer'.</p>"
+    "texte"            : "<p>Attention, ça va se compliquer !</p><p>Voici deux familles, l'une à coté de l'autre. L'alligator vert est affamé, c'est sr et il y a cette famille jaune juste en face de lui... Comme elle semble appétissante ! La suite, tu la connais ?! Appuye sur le bouton 'Animer'.</p>"
     "contenu-exercice" : "(λh.λe.h e) (λa.a)"
     "contenu-eleve"    : ""
     "solution"         : "λe.(e ) "
