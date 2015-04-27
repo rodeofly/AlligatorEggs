@@ -31,6 +31,7 @@
               <div id="exercices">
                    <button class="panel-button" id="close-exercice" >Fermer</button>
               </div>
+              
               <div id="root">
                   <div id="root_definition" class='definition_drop'></div>
               </div>
@@ -45,8 +46,7 @@
                   <button id="panel-lambda"   class="panel-button" data-type="lambda"   data-variable="a">λa</button>
                   <button id="panel-variable" class="panel-button" data-type="variable" data-variable="a">a</button>            
               </div>
-              
-              
+
               <div id="command-panel">
                   <button class="panel-button animation" id="go">Go (&#9658;)</button>
                   <button class="panel-button" id="repeat">Repeat (&#9658;&#9658;)</button>
@@ -201,13 +201,20 @@ alert int FACT FOUR
                               <li>AND(TRUE)(TRUE) &hArr; lambda abstraction  &hArr; function  &hArr; η-conversion  &hArr; TRUE</li>
                           </ul>
                           <pre class="code">
-                            AND = (p) -> (q) -> p(q)(p)               # λp.λq.p q p
-                            OR  = (p) -> (q) -> p(p)(q)               # λp.λq.p p q
-                            NOT = (p) -> (a) -> (b) -> p(b)(a)        # λp.λa.λb.p b a
+                            booleanJavaScript = (f) -> f(true)(false)
+                            TRUE = (x) -> (y) -> x # λx.λy.x 
+                            FALSE = (x) -> (y) -> y # λx.λy.y
+                            
+                            # λp.λq.p q p
+                            AND = (p) -> (q) -> p(q)(p)
+                            # λp.λq.p p q
+                            OR  = (p) -> (q) -> p(p)(q)
+                            # λp.λa.λb.p b a        
+                            NOT = (p) -> (a) -> (b) -> p(b)(a)
                             
                             alert "oté fépètè !"
-                            alert b AND(TRUE)(TRUE)   # --> true
-                            alert b AND(TRUE)(FALSE)  # --> false
+                            alert booleanJavaScript AND(TRUE)(TRUE) # --> true
+                            alert booleanJavaScript AND(TRUE)(FALSE) # --> false
                             alert AND(FALSE)(TRUE)  # --> false
                             alert AND(FALSE)(FALSE) # --> false
                         </pre><button class="run-previous-code">tcheksa mon dalon !</button>
@@ -219,7 +226,10 @@ alert int FACT FOUR
                           <li>Numero Zéro à Church &hArr; 0 &hArr; Fonction IDentité  &hArr;  (x) -> x</li>
                         </ul>
                         <pre class="code">
-                         
+                          booleanJavaScript = (f) -> f(true)(false)
+                          TRUE = (x) -> (y) -> x # λx.λy.x
+                          FALSE = (x) -> (y) -> y # λx.λy.y
+                          
                           $0 = ZERO  = (f) -> (x) -> x            # λf.λx.x
                           $1 = ONE   = (f) -> (x) -> f x          # λf.λx.f x
                           $2 = TWO   = (f) -> (x) -> f f x        # λf.λx.f (f x)
@@ -244,7 +254,14 @@ alert int FACT FOUR
                       
                         <pre class="code">
                           int   = (n) -> n((x) -> ++x)(0)
-
+                          
+                          $0 = ZERO = (f) -> (x) -> x # λf.λx.x
+                          $1 = ONE = (f) -> (x) -> f x # λf.λx.f x
+                          $2 = TWO = (f) -> (x) -> f f x # λf.λx.f (f x)
+                          $3 = THREE = (f) -> (x) -> f f f x # λf.λx.f (f (f x))
+                          $4 = FOUR = (f) -> (x) -> f f f f x # λf.λx.f (f (f (f x)))
+                          $5 = FIVE = (f) -> (x) -> f f f f f x # λf.λx.f (f (f (f (f x))))
+                          
                           #Predecesseur &amp; Successeur SUCC 
                           # λn.λf.λx.n (λg.λh.h (g f)) (λu.x) (λu.u)
                           PRED = (n) -> (f) -> (x) -> n((g) -> (h) -> h g f)((u) -> x)((u) -> u)
@@ -285,8 +302,29 @@ alert int FACT FOUR
                           <li>Heureusement : le combinateurwaï Y</li>
                         </ul>
                         <pre class="code">
+                          int = (n) -> n((x) -> ++x)(0)
+                          
                           #Le plus simple : le combinateur Identité
                           I = (x) -> x # λx.x
+                          
+                          TRUE  = (x) -> (y) -> x # λx.λy.x
+                          FALSE = (x) -> (y) -> y # λx.λy.y
+                          
+                          $0 = ZERO  = (f) -> (x) -> x            # λf.λx.x
+                          $1 = ONE   = (f) -> (x) -> f x          # λf.λx.f x
+                          $2 = TWO   = (f) -> (x) -> f f x        # λf.λx.f (f x)
+                          $3 = THREE = (f) -> (x) -> f f f x      # λf.λx.f (f (f x))
+                          $4 = FOUR  = (f) -> (x) -> f f f f x    # λf.λx.f (f (f (f x)))
+                          $5 = FIVE  = (f) -> (x) -> f f f f f x  # λf.λx.f (f (f (f (f x))))
+
+                          ISZERO = (n) -> n( (x) -> FALSE )(TRUE) # λn.n (λx.FALSE) TRUE
+                          #Predecesseur &amp; Successeur SUCC 
+                          # λn.λf.λx.n (λg.λh.h (g f)) (λu.x) (λu.u)
+                          PRED = (n) -> (f) -> (x) -> n((g) -> (h) -> h g f)((u) -> x)((u) -> u)
+                          SUCC = (n) -> (f) -> (x) -> f (n(f)(x)) # λn.λf.λx.f (n f x)
+
+                          #multiplication MULT
+                          MULT = (m) -> (n) -> (f) -> m n f # λm.λn.λf.m (n f)
 
                           #Récursivité
                           U = (f) -> f(f)
@@ -296,7 +334,6 @@ alert int FACT FOUR
                           # λr.λn.(1, if n = 0; else n × (r (n−1)))
                           YP = (f) -> (g) -> (x) -> (f g g) x
                           Y = (f) ->  (YP f) (YP f)
-
                           FACT = Y (r) -> (n) -> (((ISZERO n) (x) -> ONE) (x) -> (MULT n) (r (PRED n))) I
 
                           alert int FACT FOUR

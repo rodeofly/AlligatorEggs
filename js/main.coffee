@@ -27,7 +27,8 @@ FUNCTION =
   "IFTHENELSE" : "(λp.λa.λb.p a b)"
   "ISZERO"     : "(λn.n (λx.(λa.λb.b)) (λa.λb.a))"
   "LEQ"        : "(λc.λp. (λq.q (λx.(λd.λe.e)) (λd.λe.d)) ((λm.λa. (a  (λn.λf.λx. n (λg.λh.h (g f)) (λu.x) (λu.u))) m) c p))"
-
+  "Y"          : "(λr. ((λf.λg.λx. (f g g) x) r) ((λf.λg.λx. (f g g) x) r))"
+  "FACT"       : " λr.((λf.(λg.(λx.( (f g g ) x ) ) ) r ) (λf.(λg.(λx.( (f g g ) x ) ) ) r ) ) λk.(λj.(((( λn.(n λx.(λa.(λb.(b ) ) ) λa.(λb.(a ) ) ) j ) λi.( λh.(λl.(h l ) ) ) λi.(( λs.(λt.(λu.( s (t u ) ) ) ) ) (r ( λc.(λd.(λe.(c λk.(λo.(o (k d ) ) ) λq.(e ) λq.(q ) ) ) ) n ) ) ) ) ) ) ) "
 EXERCICES =
   "0" :
     "titre"            : 'Les items (1): "Le vieil alligator & les œufs"'
@@ -418,7 +419,6 @@ $ ->
     $( ".animation" ).prop("disabled",true)
     looping = true
     $(".variable.dropped, .lambda.dropped").addClass( "hide_pseudo" )
-    $("#root").css("zoom" : "20")
     go_one_step("#root")
   
   $("#stop").click () -> 
@@ -556,7 +556,7 @@ $ ->
         application = pointer.next()
         application.css('visibility','hidden')
           .clone().prependTo(pointer)
-          .css({"z-index" : "-1",border:"dashed black 1px",visibility:"visible",position:"absolute",top:"0px",left:"100%"})
+          .css({border:"dashed black 1px",visibility:"visible",position:"absolute",top:"0px",left:"100%"})
           .animate {"min-width":"0px",padding:"0px", height: '1vw', width: "1vw", top:"0", left:"60%"} , delta, ->
             #On fait disparaitre l'application et son clone
             $(this).find("> svg").remove() 
