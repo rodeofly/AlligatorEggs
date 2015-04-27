@@ -195,7 +195,7 @@ $ ->
     infobox = this.checked
     $(this).val(this.checked ? 1 : 0)
     
-  #Conteneur de jeu
+  ###Conteneur de jeu
   $("#game-container").dialog
     show:  {effect: 'fade', duration: 2000}
     hide: "size"
@@ -204,7 +204,8 @@ $ ->
     height:  Math.floor(100 * $(window).height() / 100)
     open: -> $("body").addClass("stop-scrolling")
     close: -> $("body").removeClass("stop-scrolling")
-
+  ###
+  
   #Gestion du panel
   $( ".panel-button" ).on "click", ->
     switch $( this ).attr("data-type")
