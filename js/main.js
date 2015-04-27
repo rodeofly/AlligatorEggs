@@ -651,7 +651,7 @@
               if (infobox) {
                 help("Règle de la couleur", $(this).closest(".dropped").attr("id"));
               }
-              $(this).hide().show("slow", function() {
+              $(this).hide().show(delta, function() {
                 if (index2 === n - 1) {
                   return step3.resolve(pointer);
                 }

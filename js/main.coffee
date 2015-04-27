@@ -534,7 +534,7 @@ $ ->
           found.attr("data-variable", palette[index])
           found.find("> svg").each ( index2 ) ->
             help( "Règle de la couleur", $(this).closest(".dropped").attr("id") ) if infobox
-            $(this).hide().show "slow", ->
+            $(this).hide().show delta, ->
               step3.resolve(pointer) if index2 is n-1 
             $(this).find(".skin").css("fill", var_tab[palette[index]]) 
       else
