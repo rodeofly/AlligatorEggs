@@ -153,9 +153,70 @@ nav a:hover {
 /* ==========================================================================
    Author's custom styles
    ========================================================================== */
+.stop-scrolling {
+  height: 100%;
+  overflow: hidden;
+}
 .noTitleStuff .ui-dialog-titlebar {
   display:none
   }
+  
+button {
+  min-width : 3.5vw;
+  height : 3.5vw;
+  display : inline-block;
+  line-height: auto;
+  font-size : 1vw !important;
+ 
+}
+pre.code{
+  background:#F8F8FF;
+  border:black dashed 1px;
+  padding:6px;
+  white-space: pre-line;
+  color : blue;
+}
+
+
+#prompt {
+  position : relative;
+  z-index : 10000;
+  width : 100%;
+ 
+}
+
+.ui-draggable-helper { 
+    z-index: 5000;
+}
+
+#choose-color{
+ position :relative;
+ width : 30%;
+}
+/* select menu */
+.ui-front {
+  z-index : 7000 !important;
+}
+.ui-selectmenu-menu .ui-menu {
+  
+  display : flex !important;
+  flex-wrap: wrap !important;
+}
+ul {
+  background : transparent !important;
+  border : none;
+}
+li {
+  width : 3em;
+  height : 3em;
+}
+
+#color{
+  position:relative;
+  width : 100%;
+  height : 2vw;
+  border : solid black 1px;
+}
 
 #game-container {
   position : relative;
@@ -165,19 +226,13 @@ nav a:hover {
   overflow-x: hidden;
 }
 #toggle-console {
-  float:right;
+  position : fixed;
+  top: 4vw;
+  right : 2vw;
 }
-#top-panel {
-  position : relative;
-  display : inline-block;
-  margin: auto;
-  margin-bottom : 0.5vw;
-}
+
 #console {
-  position : relative;
-  display : inline-block;
-  margin: auto;
-  margin-bottom : 0.5vw;
+  float : right;
 }
 #command-panel {
   z-index: 6500;
@@ -189,11 +244,6 @@ nav a:hover {
   background-color : rgba(0,0,0,0.5);
   text-align : center;
 }
-.stop-scrolling {
-  height: 100%;
-  overflow: hidden;
-}
-
 
 #root {
   z-index : 1000;
@@ -242,58 +292,6 @@ nav a:hover {
 #compte-rendu > [data-variable="?"]{
   width:100%;
   height:100%;
-}
-
-button {
-  min-width : 3.5vw;
-  height : 3.5vw;
-  display : inline-block;
-  line-height: auto;
-  font-size : 1vw !important;
- 
-}
-pre.code{
-  background:#F8F8FF;
-  border:black dashed 1px;
-  padding:6px;
-  white-space: pre-line;
-  color : blue;
-}
-
-.color {
-  display : inline-block;
-  vertical-align : middle;
-  text-align : center;
-  line-height : 3vw;
-  width : 3vw;
-  height : 3vw;
-}
-#prompt {
-  position : relative;
-  z-index : 10000;
- 
-}
-
-.selected-color {
-  -webkit-box-shadow:inset 0px 0px 0px 0.2vw #000;
-  -moz-box-shadow:inset 0px 0px 0px 0.2vw #000;
-  box-shadow:inset 0px 0px 0px 0.2<vw #000;
-
-}
-
-.ui-draggable-helper { 
-    z-index: 5000;
-}
-#items {
-  display: inline-flex;
- 
-}
-.item > svg {
-  display : inline-block;
-  position : relative;
-  width : 3vw;
-  height : 3vw;
-  width : 100%;
 }
 
 #root_definition.definition_drop, #solution_definition.definition_drop {

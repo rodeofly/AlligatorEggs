@@ -102,7 +102,7 @@ EXERCICES =
     "texte"            : "<p>Voici deux familles. Elles s'appellent «Vrai» et «Faux» :</p><insert λe.(λf.(e ) ) λe.(λf.(f ) ) ><p>Et ici, une famille appelée «Non» : <insert λh.(h λe.(λf.( ? ) ) λe.(λf.( ? ) ) ) ></p><p>Lorsque «Non» mange «Vrai», il produit «Faux». Et lorsque «Non» mange «Faux», il produit «Vrai». De quelles couleurs devraient être les deux œufs?</p>"
     "contenu-exercice" : ""
     "contenu-eleve"    : "λh.(h λe.(λf.( ? ) ) λe.(λf.( ? ) ) ) (λe.λf.e) "
-    "compte-rendu"     : "λh.(h λe.(λf.( ? ) ) λe.(λf.( ? ) ) ) (λe.λf.e) "
+    "compte-rendu"     : "λh.(h λe.(λf.( ? ) ) λe.(λf.( ? ) ) ) "
     "solution"         : "λh.(h λe.(λf.( f ) ) λe.(λf.( e ) ) ) "
     "parse"            : "yes"
 ALPHABET = "abcdefghijklmnopqrstuvwxyz"
@@ -124,8 +124,33 @@ $ ->
     $( "#console" ).prepend "#{html}<br>"
     html= ""
     for color,index in color_tab
-      html+= "<div id='#{color}' class='color' style='background-color:#{color};' data-color='#{color}' data-variable='#{ALPHABET[index]}'>#{ALPHABET[index]}</div>"
-    $( "#items" ).before html
+      $( "#choose-color" ).append "<option value='#{ALPHABET[index]}' data-color='#{color}' data-class='ui-icon-script' >#{ALPHABET[index]}</option>"
+    
+    $.widget "ui.selectmenu", $.extend {}, $.ui.selectmenu.prototype,
+      _renderItem : ( ul, item ) ->
+          li = $( "<li>" ).css( "background-color", item.element.data "color" )
+          this._setText( li, item.value )
+          return li.appendTo( ul )
+      _renderMenu : ( ul, items ) ->
+          that = this
+          $.each items, ( index, item ) ->
+            that._renderItemData( ul, item )
+            $("#color").css("background" , item.element.attr("data-color")).attr("data-variable",item.value).attr "data-color", item.element.attr "data-color" 
+
+
+    $( "#choose-color" )
+      .selectmenu({appendTo : "#top-panel"}).addClass( "menu-overflow" ).val("z").selectmenu('refresh') 
+      .on "selectmenuchange", ( event, ui ) ->
+        [color, variable] = [ui.item.element.attr("data-color"),ui.item.value]
+        $( "#panel-lambda" ).attr("data-variable", variable).html("λ#{variable}")
+        $( "#panel-variable").attr("data-variable", variable).html("#{variable}")
+        $( "#egg-svg, #open-svg" ).find(".skin").css("fill", color)
+        $("#color")
+          .css( "background"   , color )
+          .attr("data-variable", variable)
+          .attr("data-color"   , color )
+
+    
     s = {"egg" : "0 0 116 80", "open" : "-25 0 330 150", "vieux" : "0 0 228 78"}
     
     $.get "css/svg/egg.svg", (rawSvg) -> 
@@ -143,7 +168,26 @@ $ ->
       $("#vieux-svg").append(document.importNode rawSvg.documentElement,true)
       $("#vieux-svg svg")[0].setAttribute('viewBox', '0 0 228 78')
     , "xml"
-  ###########################################################################################################################################################
+    
+    $( "#slider-range-max" ).slider
+      range: "max",
+      min: 50,
+      max: 6000,
+      step: 500,
+      value: 2000,
+      slide: ( event, ui ) -> 
+        $( "#amount" ).val( ui.value )
+        delta = ui.value
+    $( "#amount" ).val( $( "#slider-range-max" ).slider( "value" ) )
+    
+    $( "#command-panel" ).draggable()
+    
+    $( ".item" ).draggable
+      helper : "clone"
+      start:  (event, ui) -> $(ui.helper).addClass("ui-draggable-helper")
+      stop : (event, ui) ->  $(this).show()
+      #cursorAt : {top :  50, left : 150}
+    ###########################################################################################################################################################
   #Initialisation des items, dialog, couleurs et panels
   ###########################################################################################################################################################
   #items oeuf, croco, vieux croco draggable
@@ -151,24 +195,6 @@ $ ->
     infobox = this.checked
     $(this).val(this.checked ? 1 : 0)
     
-  $( "#slider-range-max" ).slider
-    range: "max",
-    min: 50,
-    max: 6000,
-    step: 500,
-    value: 2000,
-    slide: ( event, ui ) -> 
-      $( "#amount" ).val( ui.value )
-      delta = ui.value
-  $( "#amount" ).val( $( "#slider-range-max" ).slider( "value" ) )
-  
-  $( "#command-panel" ).draggable()
-  
-  $( ".item" ).draggable
-    helper : "clone"
-    start:  (event, ui) -> $(ui.helper).addClass("ui-draggable-helper")
-    stop : (event, ui) ->  $(this).show()
-    #cursorAt : {top :  50, left : 150}
   #Conteneur de jeu
   $("#game-container").dialog
     show:  {effect: 'fade', duration: 2000}
@@ -178,16 +204,6 @@ $ ->
     height:  Math.floor(100 * $(window).height() / 100)
     open: -> $("body").addClass("stop-scrolling")
     close: -> $("body").removeClass("stop-scrolling")
-  #Choix d'une couleur dans la palette
-  $( ".color" ).on "click",  ->
-    [color, variable] = [$(this).attr("data-color"),$(this).attr("data-variable")]
-    $( "#choose-color" ).attr("data-variable", variable)
-    $( "#choose-color" ).attr("data-color", color)
-    $( "#panel-lambda" ).attr("data-variable", variable).html("λ#{variable}")
-    $( "#panel-variable").attr("data-variable", variable).html("#{variable}")
-    $( "#egg-svg, #open-svg" ).find(".skin").css("fill", color)
-    $( ".color" ).removeClass("selected-color" )
-    $(this).addClass( "selected-color" )
 
   #Gestion du panel
   $( ".panel-button" ).on "click", ->
@@ -344,7 +360,7 @@ $ ->
     if draggable.hasClass("vieux-croco")
       [variable, color] = ["(", "white"]
     else 
-      [variable, color] = [$("#choose-color").attr("data-variable"), $("#choose-color").attr("data-color")]
+      [variable, color] = [$("#color").attr("data-variable"), $("#color").attr("data-color")]
     if draggable.hasClass("egg")
       type = "variable"
     else if draggable.hasClass("croco")

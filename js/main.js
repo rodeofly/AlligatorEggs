@@ -154,9 +154,34 @@
       html = "";
       for (index = _j = 0, _len1 = color_tab.length; _j < _len1; index = ++_j) {
         color = color_tab[index];
-        html += "<div id='" + color + "' class='color' style='background-color:" + color + ";' data-color='" + color + "' data-variable='" + ALPHABET[index] + "'>" + ALPHABET[index] + "</div>";
+        $("#choose-color").append("<option value='" + ALPHABET[index] + "' data-color='" + color + "' data-class='ui-icon-script' >" + ALPHABET[index] + "</option>");
       }
-      $("#items").before(html);
+      $.widget("ui.selectmenu", $.extend({}, $.ui.selectmenu.prototype, {
+        _renderItem: function(ul, item) {
+          var li;
+          li = $("<li>").css("background-color", item.element.data("color"));
+          this._setText(li, item.value);
+          return li.appendTo(ul);
+        },
+        _renderMenu: function(ul, items) {
+          var that;
+          that = this;
+          return $.each(items, function(index, item) {
+            that._renderItemData(ul, item);
+            return $("#color").css("background", item.element.attr("data-color")).attr("data-variable", item.value).attr("data-color", item.element.attr("data-color"));
+          });
+        }
+      }));
+      $("#choose-color").selectmenu({
+        appendTo: "#top-panel"
+      }).addClass("menu-overflow").val("z").selectmenu('refresh').on("selectmenuchange", function(event, ui) {
+        var variable, _ref2;
+        _ref2 = [ui.item.element.attr("data-color"), ui.item.value], color = _ref2[0], variable = _ref2[1];
+        $("#panel-lambda").attr("data-variable", variable).html("λ" + variable);
+        $("#panel-variable").attr("data-variable", variable).html("" + variable);
+        $("#egg-svg, #open-svg").find(".skin").css("fill", color);
+        return $("#color").css("background", color).attr("data-variable", variable).attr("data-color", color);
+      });
       s = {
         "egg": "0 0 116 80",
         "open": "-25 0 330 150",
@@ -172,10 +197,32 @@
         $("#open-svg svg")[0].setAttribute('viewBox', '-25 0 330 150');
         return $(".color:first()").trigger("click");
       }, "xml");
-      return $.get("css/svg/vieux.svg", function(rawSvg) {
+      $.get("css/svg/vieux.svg", function(rawSvg) {
         $("#vieux-svg").append(document.importNode(rawSvg.documentElement, true));
         return $("#vieux-svg svg")[0].setAttribute('viewBox', '0 0 228 78');
       }, "xml");
+      $("#slider-range-max").slider({
+        range: "max",
+        min: 50,
+        max: 6000,
+        step: 500,
+        value: 2000,
+        slide: function(event, ui) {
+          $("#amount").val(ui.value);
+          return delta = ui.value;
+        }
+      });
+      $("#amount").val($("#slider-range-max").slider("value"));
+      $("#command-panel").draggable();
+      return $(".item").draggable({
+        helper: "clone",
+        start: function(event, ui) {
+          return $(ui.helper).addClass("ui-draggable-helper");
+        },
+        stop: function(event, ui) {
+          return $(this).show();
+        }
+      });
     })();
     $("#infobox").on("click", function() {
       var _ref1;
@@ -184,55 +231,17 @@
         1: 0
       });
     });
-    $("#slider-range-max").slider({
-      range: "max",
-      min: 50,
-      max: 6000,
-      step: 500,
-      value: 2000,
-      slide: function(event, ui) {
-        $("#amount").val(ui.value);
-        return delta = ui.value;
-      }
-    });
-    $("#amount").val($("#slider-range-max").slider("value"));
-    $("#command-panel").draggable();
-    $(".item").draggable({
-      helper: "clone",
-      start: function(event, ui) {
-        return $(ui.helper).addClass("ui-draggable-helper");
-      },
-      stop: function(event, ui) {
-        return $(this).show();
-      }
-    });
-    $("#game-container").dialog({
-      show: {
-        effect: 'fade',
-        duration: 2000
-      },
-      hide: "size",
-      width: "100%",
-      draggable: false,
-      height: Math.floor(100 * $(window).height() / 100),
-      open: function() {
-        return $("body").addClass("stop-scrolling");
-      },
-      close: function() {
-        return $("body").removeClass("stop-scrolling");
-      }
-    });
-    $(".color").on("click", function() {
-      var color, variable, _ref1;
-      _ref1 = [$(this).attr("data-color"), $(this).attr("data-variable")], color = _ref1[0], variable = _ref1[1];
-      $("#choose-color").attr("data-variable", variable);
-      $("#choose-color").attr("data-color", color);
-      $("#panel-lambda").attr("data-variable", variable).html("λ" + variable);
-      $("#panel-variable").attr("data-variable", variable).html("" + variable);
-      $("#egg-svg, #open-svg").find(".skin").css("fill", color);
-      $(".color").removeClass("selected-color");
-      return $(this).addClass("selected-color");
-    });
+
+    /*Conteneur de jeu
+    $("#game-container").dialog
+      show:  {effect: 'fade', duration: 2000}
+      hide: "size"
+      width : "100%"
+      draggable: false
+      height:  Math.floor(100 * $(window).height() / 100)
+      open: -> $("body").addClass("stop-scrolling")
+      close: -> $("body").removeClass("stop-scrolling")
+     */
     $(".panel-button").on("click", function() {
       var e, index, letter, _i, _len, _ref1, _results;
       switch ($(this).attr("data-type")) {
@@ -418,7 +427,7 @@
       if (draggable.hasClass("vieux-croco")) {
         _ref1 = ["(", "white"], variable = _ref1[0], color = _ref1[1];
       } else {
-        _ref2 = [$("#choose-color").attr("data-variable"), $("#choose-color").attr("data-color")], variable = _ref2[0], color = _ref2[1];
+        _ref2 = [$("#color").attr("data-variable"), $("#color").attr("data-color")], variable = _ref2[0], color = _ref2[1];
       }
       if (draggable.hasClass("egg")) {
         type = "variable";
