@@ -252,7 +252,7 @@ $ ->
    
   $('#prompt').keypress (key) ->
     insert_exp_into_div($( "#prompt").val(),$("#root")) if key.which is 13
-    return false
+
   ###########################################################################################################################################################
   #Parser une expression
   ###########################################################################################################################################################
@@ -262,9 +262,9 @@ $ ->
     exp.find(".definition_drop").remove()
     exp.find(".application_drop").remove()
     exp = exp.html()
-    exp = exp.replace /<div id="\d*" class="variable dropped" data-variable="(\w+)" data-color="\w+"[ style="opacity: 1;"]*>\s*<\/div>/g, "$1 "
-    exp = exp.replace /<div id="\d*" class="lambda dropped" data-variable="(\w+)" data-color="\w+"[ style="opacity: 1;"]*>/g, "λ$1.("
-    exp = exp.replace /<div id="\d*" class="lambda priorite dropped" data-variable="\(" data-color="white"[ style="opacity: 1;"]*>/g, "("
+    exp = exp.replace /<div[ style="opacity: 1;"]* id="\d*" class="variable dropped" data-variable="(\w+)" data-color="\w+"[ style="opacity: 1;"]*>\s*<\/div>/g, "$1 "
+    exp = exp.replace /<div[ style="opacity: 1;"]* id="\d*" class="lambda dropped" data-variable="(\w+)" data-color="\w+"[ style="opacity: 1;"]*>/g, "λ$1.("
+    exp = exp.replace /<div[ style="opacity: 1;"]* id="\d*" class="lambda priorite dropped" data-variable="\(" data-color="white"[ style="opacity: 1;"]*>/g, "("
     exp = exp.replace(/<\/div>/g , ") ")
     exp = exp.replace(/\s{2,}/g, " ")
   ###########################################################################################################################################################

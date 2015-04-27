@@ -24,19 +24,6 @@
         <!--[if lt IE 8]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-        <div class="header-container">
-            <header class="wrapper clearfix">
-                <h1 class="title">Un jeu de logique : Les oeufs alligator</h1>
-                <nav>
-                    <ul>
-                        <li><a href="http://fr.wikipedia.org/wiki/Lambda-calcul">Le lambda calcul</a></li>
-                        <li><a href="http://en.wikipedia.org/wiki/Church_encoding">Les entiers de Church (uk)</a></li>
-                        <li><a href="http://worrydream.com/AlligatorEggs/">La règle du jeu (uk)</a></li>
-                    </ul>
-                </nav>
-            </header>
-        </div>
-
         <div id="game-container">
          
               <button id="toggle-console">Toggle Console</button>
@@ -44,7 +31,10 @@
               <div id="exercices">
                    <button class="panel-button" id="close-exercice" >Fermer</button>
               </div>
-              <select name="choose-color" id="choose-color"></select>
+              
+              <div id="root">
+                  <div id="root_definition" class='definition_drop'></div>
+              </div>
               <div id="console">            
                   <input  type="text" id="prompt" name="prompt" />
                   <button class="panel-button" data-type="clear" >Effacer</button>
@@ -56,10 +46,7 @@
                   <button id="panel-lambda"   class="panel-button" data-type="lambda"   data-variable="a">λa</button>
                   <button id="panel-variable" class="panel-button" data-type="variable" data-variable="a">a</button>            
               </div>
-              
-              <div id="root">
-                  <div id="root_definition" class='definition_drop'></div>
-              </div>
+
               <div id="command-panel">
                   <button class="panel-button animation" id="go">Go (&#9658;)</button>
                   <button class="panel-button" id="repeat">Repeat (&#9658;&#9658;)</button>
@@ -72,8 +59,9 @@
                   </p>
                   <div id="slider-range-max"></div>
                   
-                  
-                  <div id="color" data-variable="" data-color=""></div> 
+                  <div id="color" data-variable="" data-color="">
+                    <select name="choose-color" id="choose-color"></select>
+                  </div> 
                   <div id="vieux-svg" class="item vieux-croco"></div>
                   <div id="egg-svg"   class="item egg"></div>
                   <div id="open-svg"  class="item croco"></div>
@@ -92,6 +80,19 @@
               <div id="help"></div>
         </div>
         
+        <div class="header-container">
+            <header class="wrapper clearfix">
+                <h1 class="title">Un jeu de logique : Les oeufs alligator</h1>
+                <nav>
+                    <ul>
+                        <li><a href="http://fr.wikipedia.org/wiki/Lambda-calcul">Le lambda calcul</a></li>
+                        <li><a href="http://en.wikipedia.org/wiki/Church_encoding">Les entiers de Church (uk)</a></li>
+                        <li><a href="http://worrydream.com/AlligatorEggs/">La règle du jeu (uk)</a></li>
+                    </ul>
+                </nav>
+            </header>
+        </div>
+
         <!-- #main-container -->
         <div class="main-container">
             <div class="main wrapper clearfix">

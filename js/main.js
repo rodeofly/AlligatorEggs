@@ -299,9 +299,8 @@
     });
     $('#prompt').keypress(function(key) {
       if (key.which === 13) {
-        insert_exp_into_div($("#prompt").val(), $("#root"));
+        return insert_exp_into_div($("#prompt").val(), $("#root"));
       }
-      return false;
     });
     get_lambda_from = function(root) {
       var exp;
@@ -785,7 +784,7 @@
         return alert("Plus rien à faire !");
       }
     };
-    $("#console").toggle();
+    $("#console").draggable().toggle();
     $("#toggle-console").on("click", function() {
       return $("#console").toggle();
     });

@@ -180,44 +180,41 @@ pre.code{
 
 #prompt {
   position : relative;
-  z-index : 10000;
   width : 100%;
  
 }
 
 .ui-draggable-helper { 
-    z-index: 5000;
+    /*z-index: 5000;*/
 }
 
 #choose-color{
  position :relative;
- width : 30%;
+
 }
 /* select menu */
-.ui-front {
-  z-index : 7000 !important;
+
+div.ui-selectmenu-menu.ui-front.ui-selectmenu-open {
+  width : 30vw;
 }
 
-.ui-selectmenu-menu .ui-menu {
-  
-  display : flex !important;
-  flex-wrap: wrap !important;
-  
-}
-ul {
+ul#choose-color-menu.ui-menu {
   background : transparent !important;
-  border : none;
+  border : 0;
+  display : inline-flex;
+  flex-flow: row wrap;
 }
-li {
-  width : 3em;
-  height : 3em;
-
+.ui-menu .ui-menu-item {  
+  width : 5vw;
+  height : 5vw;
 }
 
 #color{
-  position:relative;
-  width : 100%;
-  height : 2vw;
+  position:absolute;
+  bottom: 0;
+  right: 0;
+  width : 4vw;
+  height : 4vw;
   border : solid black 1px;
 }
 
@@ -230,15 +227,18 @@ li {
 }
 #toggle-console {
   position : fixed;
-  top: 4vw;
-  right : 2vw;
+  top: 0vw;
+  right : 0vw;
 }
 
 #console {
-  float : right;
+  position:absolute;
+  background-color : rgba(0,0,0,0.5);
+  padding : 1vw;
+  border-radius : 0.5vw;
 }
 #command-panel {
-  z-index: 6500;
+
   position : fixed;
   top : 50vh;
   left : 50vw;
@@ -249,7 +249,7 @@ li {
 }
 
 #root {
-  z-index : 1000;
+
   position:relative;
   width : 100%;
   height : 100vh;
@@ -265,7 +265,7 @@ li {
 }
 #exercice {
   position : absolute;
-  z-index : 4000 !important;
+
   padding : 1vw;
   bottom : 0%;
   right : 0%;
@@ -367,14 +367,14 @@ svg {
 .variable.dropped:before {
   content: attr(data-variable);
   position: absolute;
-  z-index: 10;  /* to be below the parent element */
+  z-index: 10;
 }
 .lambda.dropped:before {
   content: attr(data-variable);
   position: absolute;
   left : 50%;
   top : 0;
-  z-index: 10;  /* to be below the parent element */
+  z-index: 10;
 }
 .lambda.priorite.dropped:before {
   content: none;
