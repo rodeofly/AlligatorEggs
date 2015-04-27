@@ -487,6 +487,10 @@
     $("#repeat").on("click", function() {
       $(".animation").prop("disabled", true);
       looping = true;
+      $(".variable.dropped, .lambda.dropped").addClass("hide_pseudo");
+      $("#root").css({
+        "zoom": "20"
+      });
       return go_one_step("#root");
     });
     $("#stop").click(function() {
@@ -781,7 +785,10 @@
       if (action_croco.length > 0) {
         return step1.resolve(action_croco);
       } else {
-        return alert("Plus rien à faire !");
+        alert("Plus rien à faire !");
+        if (looping) {
+          return $(".variable.dropped, .lambda.dropped").removeClass("hide_pseudo");
+        }
       }
     };
     $("#console").draggable().toggle();

@@ -417,7 +417,9 @@ $ ->
   $( "#repeat" ).on "click", ->
     $( ".animation" ).prop("disabled",true)
     looping = true
-    go_one_step("#root")
+    $(".variable.dropped, .lambda.dropped").addClass( "hide_pseudo" )
+    delay 500, alert "ok"
+    delay 550, go_one_step("#root")
   
   $("#stop").click () -> 
     $( ".animation" ).prop("disabled",false)  
@@ -534,7 +536,7 @@ $ ->
           found.attr("data-variable", palette[index])
           found.find("> svg").each ( index2 ) ->
             help( "Règle de la couleur", $(this).closest(".dropped").attr("id") ) if infobox
-            $(this).hide().show "slow", ->
+            $(this).hide().show delta, ->
               step3.resolve(pointer) if index2 is n-1 
             $(this).find(".skin").css("fill", var_tab[palette[index]]) 
       else
@@ -616,9 +618,10 @@ $ ->
       step1.resolve(action_croco)
     else
       alert "Plus rien à faire !"
-    
-      
-      ###########################################################################################################################################################
+      if looping
+             $(".variable.dropped, .lambda.dropped").removeClass( "hide_pseudo" )
+   
+  ###########################################################################################################################################################
   # Gestion du jeu
   ###########################################################################################################################################################  
   $( "#console" ).draggable().toggle()

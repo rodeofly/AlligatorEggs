@@ -365,17 +365,23 @@ svg {
   width  : 4vw;
   height : 2vw;
 }
-.variable.dropped:before {
+.variable.dropped::before {
   content: attr(data-variable);
   position: absolute;
   z-index: 10;
 }
-.lambda.dropped:before {
+.variable.dropped.hide_pseudo::before {
+  content : none;
+}
+.lambda.dropped::before {
   content: attr(data-variable);
   position: absolute;
   left : 50%;
   top : 0;
   z-index: 10;
+}
+.lambda.dropped.hide_pseudo::before {
+  content : none;
 }
 .lambda.priorite.dropped:before {
   content: none;
