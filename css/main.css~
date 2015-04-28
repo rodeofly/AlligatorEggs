@@ -216,7 +216,7 @@ div.ui-selectmenu-menu.ui-front.ui-selectmenu-open {
   width : 30vw;
 }
 .ui-selectmenu-button {
-  background : transparent !important;
+  background : rgba(255,255,255,0.5) !important;
   color : black !important;
 }
  
@@ -251,8 +251,6 @@ ul#choose-color-menu.ui-menu, ul#exercices-menu.ui-menu {
   text-align : center;
 }
 #command-panel button {
-  position:relative;
-  width : 30%;
 }
 
 #exercices {

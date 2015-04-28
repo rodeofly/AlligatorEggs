@@ -115,7 +115,7 @@ $ ->
   ###########################################################################################################################################################
   do initialize_html = ->
     for key of EXERCICES
-      $( '#exercices' ).append "<option value='#{key}'  data-id='#{key}'>Ex#{key}</button>"
+      $( '#exercices' ).append "<option value='#{key}'  data-id='#{key}'>Exercice #{key}</button>"
     for letter,index in ALPHABET
       color_tab.push CSS_COLOR_NAMES[index]
       var_tab["#{letter}"] = CSS_COLOR_NAMES[index]

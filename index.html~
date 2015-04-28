@@ -27,7 +27,7 @@
         <div id="game-container">
               
               
-              <select id="exercices"><option value="choisir un exercice..."></option></select>
+              <select id="exercices"><option value="Exercices">Exercices</option></select>
               <div id ="panels">
                   
                   <div id="root">

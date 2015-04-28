@@ -242,7 +242,7 @@ ul#choose-color-menu.ui-menu, ul#exercices-menu.ui-menu {
 }
 #command-panel {
   position : absolute;
-  width : 10vw;
+  width : 15vw;
   top : 20vh;
   left : 40vw;
   padding : 1vw;
@@ -251,8 +251,6 @@ ul#choose-color-menu.ui-menu, ul#exercices-menu.ui-menu {
   text-align : center;
 }
 #command-panel button {
-  position:relative;
-  width : 30%;
 }
 
 #exercices {

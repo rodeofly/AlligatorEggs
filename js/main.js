@@ -136,6 +136,9 @@
 
   $(function() {
     var color_rule_check, find_action_pointer, get_lambda_from, go_one_step, help, initialize_html, inserer, insert_exp_into_div, looping, make_dropped_droppable;
+    $("button").button().click(function(event) {
+      return event.preventDefault();
+    });
     (initialize_html = function() {
       var color, html, index, key, letter, value, _i, _j, _len, _len1;
       for (key in EXERCICES) {
