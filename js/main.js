@@ -816,20 +816,18 @@
         $("#animation").hide();
       }
       texte = exo['texte'];
-      if (exo["parse"] === "yes") {
-        reg = /<insert ([λ().\w\? ]*)>/;
-        while (texte.match(reg)) {
-          lambda = reg.exec(texte);
-          insert_exp_into_div(lambda[1], $("#exercice-texte"));
-          texte = texte.replace(reg, $("#exercice-texte").html());
-        }
+      reg = /<insert ([λ().\w\? ]*)>/;
+      while (texte.match(reg)) {
+        lambda = reg.exec(texte);
+        insert_exp_into_div(lambda[1], $("#exercice-texte"));
+        texte = texte.replace(reg, $("#exercice-texte").html());
       }
       $("#exercice-texte").html("<p>" + texte + "</p>");
-      if (("compte-rendu" in exo) && (exo["compte-rendu"] !== "")) {
+      if ("compte-rendu" in exo) {
         texte = exo["compte-rendu"];
         insert_exp_into_div(texte, $("#compte-rendu"));
       }
-      return $("#exercice").show().draggable();
+      return $("#exercice").show();
     });
     $("#close-exercice").on("click", function() {
       return $("#exercice").hide();

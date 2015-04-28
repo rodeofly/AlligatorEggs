@@ -634,6 +634,7 @@ $ ->
     $( ".animation" ).prop("disabled",false)
     i = $( this ).attr( "data-id" )
     exo = EXERCICES[i]
+    
     $( "#exercice").find(" > .panel-button.exercice").attr "data-id", i
     $( "#exercice").attr "data-solution", exo["solution"]
     $( "#exercice").find("> .titre" ).html("<h1>#{exo['titre']}</h1>")
@@ -642,25 +643,26 @@ $ ->
       insert_exp_into_div(exo["contenu-eleve"], $("#root"))
     else
       $("#root" ).empty().append "<div id='root_definition' class='definition_drop'></div>"
-    insert_exp_into_div exo["contenu-exercice"], $( "#contenu-exercice" ) if exo["contenu-exercice"] isnt "" 
+    
+    if exo["contenu-exercice"] isnt "" then insert_exp_into_div exo["contenu-exercice"], $( "#contenu-exercice" ) 
+    
     if exo["animation"] is "yes" then $( "#animation").show() else $( "#animation").hide()
     
     texte = exo['texte'] 
-    if exo["parse"] is "yes"
-      reg = /<insert ([λ().\w\? ]*)>/
-      while texte.match reg
-        lambda = reg.exec(texte)
-        insert_exp_into_div lambda[1], $("#exercice-texte")
-        texte = texte.replace reg, $("#exercice-texte").html()
+    reg = /<insert ([λ().\w\? ]*)>/
+    while texte.match reg
+      lambda = reg.exec(texte)
+      insert_exp_into_div lambda[1], $("#exercice-texte")
+      texte = texte.replace reg, $("#exercice-texte").html()
     $( "#exercice-texte" ).html("<p>#{texte}</p>")
     
-    if ("compte-rendu" of exo) and (exo["compte-rendu"] isnt "")
+    if ("compte-rendu" of exo)
       texte = exo["compte-rendu"]
       insert_exp_into_div texte, $("#compte-rendu")
 
-    $( "#exercice").show().draggable()
+    $( "#exercice").show()
     
-    
+  
   $("#close-exercice").on "click", ->  $("#exercice").hide()  
   $( "#exercice > .check" ).on "click", ->
     local_debug = true
