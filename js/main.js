@@ -133,7 +133,7 @@
   };
 
   $(function() {
-    var color, color_rule_check, find_action_pointer, get_lambda_from, go_one_step, help, index, inserer, insert_exp_into_div, key, letter, looping, make_dropped_droppable, resize, value, _i, _j, _len, _len1;
+    var color, color_rule_check, find_action_pointer, get_lambda_from, go_one_step, help, index, inserer, insert_exp_into_div, key, letter, looping, make_dropped_droppable, preparer_exercice, resize, value, _i, _j, _len, _len1;
     for (index = _i = 0, _len = ALPHABET.length; _i < _len; index = ++_i) {
       letter = ALPHABET[index];
       color_tab.push(CSS_COLOR_NAMES[index]);
@@ -195,39 +195,10 @@
       appendTo: "body"
     });
     $("#exercices").on("selectmenuchange", function(event, ui) {
-      var exo, i, lambda, reg, texte;
-      $(".animation").prop("disabled", false);
+      var i;
       i = ui.item.element.attr("data-id");
-      exo = EXERCICES[i];
-      $("#exercice").find(" > .panel-button.exercice").attr("data-id", i);
-      $("#exercice").attr("data-solution", exo["solution"]);
-      $("#exercice").find("> .titre").html("<h1>" + exo['titre'] + "</h1>");
-      if (exo["contenu-eleve"] !== "") {
-        insert_exp_into_div(exo["contenu-eleve"], $("#root"));
-      } else {
-        $("#root").empty().append("<div id='root_definition' class='definition_drop'></div>");
-      }
-      if (exo["contenu-exercice"] !== "") {
-        insert_exp_into_div(exo["contenu-exercice"], $("#contenu-exercice"));
-      }
-      if (exo["animation"] === "yes") {
-        $("#animation").show();
-      } else {
-        $("#animation").hide();
-      }
-      texte = exo['texte'];
-      reg = /<insert ([λ().\w\? ]*)>/;
-      while (texte.match(reg)) {
-        lambda = reg.exec(texte);
-        insert_exp_into_div(lambda[1], $("#exercice-texte"));
-        texte = texte.replace(reg, $("#exercice-texte").html());
-      }
-      $("#exercice-texte").html("<p>" + texte + "</p>");
-      if ("compte-rendu" in exo) {
-        texte = exo["compte-rendu"];
-        insert_exp_into_div(texte, $("#compte-rendu"));
-      }
-      return $("#exercice").show();
+      $("#replay").attr("data-id", i);
+      return preparer_exercice(i);
     });
     $.get("css/svg/egg.svg", function(rawSvg) {
       $("#egg-svg").append(document.importNode(rawSvg.documentElement, true));
@@ -844,16 +815,11 @@
     $("#toggle-console").on("click", function() {
       return $("#console").toggle();
     });
-    $("#exercice").hide();
-    $("#close-exercice").on("click", function() {
-      return $("#exercice").hide();
-    });
-    $(".exercice").on("click", function() {
-      var exo, i, lambda, reg, texte;
+    preparer_exercice = function(id) {
+      var exo, lambda, reg, texte;
       $(".animation").prop("disabled", false);
-      i = $(this).attr("data-id");
-      exo = EXERCICES[i];
-      $("#exercice").find(" > .panel-button.exercice").attr("data-id", i);
+      exo = EXERCICES[id];
+      $("#replay").attr("data-id", id);
       $("#exercice").attr("data-solution", exo["solution"]);
       $("#exercice").find("> .titre").html("<h1>" + exo['titre'] + "</h1>");
       if (exo["contenu-eleve"] !== "") {
@@ -882,6 +848,13 @@
         insert_exp_into_div(texte, $("#compte-rendu"));
       }
       return $("#exercice").show();
+    };
+    $("#exercice").hide();
+    $("#close-exercice").on("click", function() {
+      return $("#exercice").hide();
+    });
+    $("#replay").on("click", function() {
+      return preparer_exercice($(this).attr("data-id"));
     });
     $("#exercice .check").on("click", function() {
       var local_debug, resultat, solution;
