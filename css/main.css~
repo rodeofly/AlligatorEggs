@@ -161,14 +161,18 @@ nav a:hover {
   display:none
   }
   
-button {
+button, input {
   height : 3.5vw;
   display : inline-block;
   line-height: auto;
   font-size : 1vw !important;
   border-radius : 20%;
- 
 }
+button#clear {
+  background-image: url(svg/delete.svg);
+  background-repeat: no-repeat;
+}
+
 pre.code{
   background:#F8F8FF;
   border:black dashed 1px;
@@ -207,6 +211,10 @@ pre.code{
  position :relative;
  width:4vw;
 }
+/* sliders */
+#slider-animation span.ui-slider-handle.ui-state-default {background: white url(svg/chrono.svg) no-repeat scroll 50% 50%;}
+#slider-zoom  span.ui-slider-handle.ui-state-default {background: white url(svg/zoom.svg) no-repeat scroll 50% 50%;}
+
 /* select menu */
 #exercices{
  position :relative;
@@ -242,15 +250,17 @@ ul#choose-color-menu.ui-menu, ul#exercices-menu.ui-menu {
 }
 #command-panel {
   position : absolute;
-  width : 15vw;
-  top : 20vh;
-  left : 40vw;
+  top:5vw;
+  right : 50%;
+  width : 10vw;
   padding : 1vw;
   border-radius : 0.5vw;
   background-color : rgba(0,0,0,0.5);
   text-align : center;
 }
-#command-panel button {
+
+#command-panel button{
+  width : 90%;
 }
 
 #exercices {
@@ -332,12 +342,6 @@ ul#choose-color-menu.ui-menu, ul#exercices-menu.ui-menu {
   height:100%;
 }
 
-
-
-
-
-
-
 #root_definition.definition_drop, #solution_definition.definition_drop {
   position : absolute;
   top : 0;left:0;
@@ -348,9 +352,7 @@ svg {
   height : 2.5vw;
   width : 6vw;
 }
-:root {
-  @size-of-croco: 30px;
-}
+
 .lambda.priorite.dropped, .lambda.dropped {
   position:relative;
   text-align:center;

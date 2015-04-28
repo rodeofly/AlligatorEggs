@@ -136,9 +136,8 @@
 
   $(function() {
     var color_rule_check, find_action_pointer, get_lambda_from, go_one_step, help, initialize_html, inserer, insert_exp_into_div, looping, make_dropped_droppable;
-    $("button").button().click(function(event) {
-      return event.preventDefault();
-    });
+    $("button").button();
+    $("#checkboxes").buttonset();
     (initialize_html = function() {
       var color, html, index, key, letter, resize, value, _i, _j, _len, _len1;
       for (key in EXERCICES) {
@@ -250,6 +249,14 @@
         $("#vieux-svg").append(document.importNode(rawSvg.documentElement, true));
         return $("#vieux-svg svg")[0].setAttribute('viewBox', '0 0 228 78');
       }, "xml");
+      $("#amount-animation").html($("#slider-animation").slider("value"));
+      resize = function() {
+        var double, s, simple, _ref1;
+        value = parseInt($("#amount-zoom").html());
+        _ref1 = [value + "px", (2 * value) + "px"], simple = _ref1[0], double = _ref1[1];
+        s = ".lambda.priorite.dropped, .lambda.dropped { \n  min-width  : " + double + ";\n  min-height : " + simple + ";\n  padding-top: " + simple + ";\n}\n\n.variable.dropped { \n  width  : " + double + ";\n  height : " + simple + ";\n}\n.lambda.priorite.dropped > svg, .variable.dropped > svg, .lambda.dropped > svg {\n  height : " + simple + ";\n}\n\n.definition_drop, .application_drop {\n  width : " + simple + ";\n  height: " + simple + ";\n}";
+        return $("#restyler").text(s);
+      };
       $("#slider-animation").slider({
         range: "max",
         min: 50,
@@ -261,27 +268,21 @@
           return delta = ui.value;
         }
       });
-      $("#amount-animation").html($("#slider-animation").slider("value"));
-      resize = function() {
-        var double, s, simple, _ref1;
-        value = parseInt($("#amount-zoom").html());
-        _ref1 = [value + "px", (2 * value) + "px"], simple = _ref1[0], double = _ref1[1];
-        s = ".lambda.priorite.dropped, .lambda.dropped { \n  min-width  : " + double + ";\n  min-height : " + simple + ";\n  padding-top: " + simple + ";\n}\n\n.variable.dropped { \n  width  : " + double + ";\n  height : " + simple + ";\n}\n.lambda.priorite.dropped > svg, .variable.dropped > svg, .lambda.dropped > svg {\n  height : " + simple + ";\n}\n\n.definition_drop, .application_drop {\n  width : " + simple + ";\n  height: " + simple + ";\n}";
-        return $("#restyler").text(s);
-      };
       $("#slider-zoom").slider({
         range: "max",
         min: 1,
         max: 100,
         step: 1,
-        value: 50,
+        value: 60,
         slide: function(event, ui) {
           $("#amount-zoom").html(ui.value);
           return resize();
         }
       });
       $("#amount-zoom").html($("#slider-zoom").slider("value"));
-      $("#command-panel").draggable();
+      $("#command-panel").draggable({
+        containment: "#game-container"
+      });
       return $(".item").draggable({
         helper: "clone",
         start: function(event, ui) {
@@ -293,18 +294,12 @@
       });
     })();
     $("#infobox").on("click", function() {
-      var _ref1;
-      infobox = this.checked;
-      return $(this).val((_ref1 = this.checked) != null ? _ref1 : {
-        1: 0
-      });
+      infobox = this.val();
+      return alert(infobox);
     });
     $("#tags").on("click", function() {
-      var tags, _ref1;
-      tags = this.checked;
-      $(this).val((_ref1 = this.checked) != null ? _ref1 : {
-        1: 0
-      });
+      var tags;
+      tags = $(this).val();
       if (!tags) {
         return $(".variable.dropped, .lambda.dropped").addClass("hide_pseudo");
       } else {

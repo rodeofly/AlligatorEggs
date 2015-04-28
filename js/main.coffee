@@ -110,7 +110,8 @@ ALPHABET = "abcdefghijklmnopqrstuvwxyz?"
 [color_tab, var_tab, debug, infobox, id, delta] = [ [], {}, false, true, 0, 500 ]
 ahead_vars = []
 $ ->
-  $( "button" ).button().click ( event ) -> event.preventDefault() ###########################################################################################################################################################
+  $( "button" ).button()
+  $( "#checkboxes" ).buttonset() ###########################################################################################################################################################
   #Preparation html - Construction de la console
   ###########################################################################################################################################################
   do initialize_html = ->
@@ -205,16 +206,6 @@ $ ->
       $("#vieux-svg").append(document.importNode rawSvg.documentElement,true)
       $("#vieux-svg svg")[0].setAttribute('viewBox', '0 0 228 78')
     , "xml"
-    
-    $( "#slider-animation" ).slider
-      range: "max",
-      min: 50,
-      max: 6000,
-      step: 500,
-      value: 2000,
-      slide: ( event, ui ) -> 
-        $( "#amount-animation" ).html( ui.value )
-        delta = ui.value
         
     $( "#amount-animation" ).html( $( "#slider-animation" ).slider( "value" ) )
     resize = () ->
@@ -242,20 +233,30 @@ $ ->
       }
       """
       $( "#restyler" ).text s
-      
+    
+    $( "#slider-animation" ).slider
+      range : "max"
+      min   : 50
+      max   : 6000
+      step  : 500
+      value : 2000
+      slide : ( event, ui ) -> 
+        $( "#amount-animation" ).html( ui.value )
+        delta = ui.value
+          
     $( "#slider-zoom" ).slider
-      range: "max",
-      min: 1,
-      max: 100,
-      step: 1,
-      value: 50,
-      slide: ( event, ui ) -> 
+      range : "max"
+      min   : 1
+      max   : 100
+      step  : 1
+      value : 60
+      slide : ( event, ui ) -> 
         $( "#amount-zoom" ).html( ui.value )
         resize()
          
     $( "#amount-zoom" ).html( $( "#slider-zoom" ).slider( "value" ) )
     
-    $( "#command-panel" ).draggable()
+    $( "#command-panel" ).draggable( {containment: "#game-container"})
     
     $( ".item" ).draggable
       helper : "clone"
@@ -267,12 +268,11 @@ $ ->
   ###########################################################################################################################################################
   #items oeuf, croco, vieux croco draggable
   $( "#infobox" ).on "click", -> 
-    infobox = this.checked
-    $(this).val(this.checked ? 1 : 0)
+    infobox = this.val()
+    alert infobox
   
   $( "#tags" ).on "click", -> 
-    tags = this.checked
-    $(this).val(this.checked ? 1 : 0)
+    tags = $(this).val()
     if not tags
       $(".variable.dropped, .lambda.dropped").addClass( "hide_pseudo" )
     else
