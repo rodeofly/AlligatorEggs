@@ -4,7 +4,10 @@ Array::unique = ->
   value for key, value of output
 delay = (ms, func) -> setTimeout func, ms
 interval = (ms, func) -> setInterval func, ms
+#globals
+[color_tab, ahead_vars, var_tab, debug, infobox, tags, id, delta] = [ [], [], {}, false, false, true, 0, 550 ]
 
+ALPHABET = "abcdefghijklmnopqrstuvwxyz?"
 CSS_COLOR_NAMES = ["Blue","Brown","BurlyWood","CadetBlue","Chartreuse","Chocolate","Coral","Yellow","Crimson","Cyan","DarkBlue","DarkCyan","DarkGoldenRod","DarkGray","DarkGreen","DarkKhaki","DarkMagenta","DarkOliveGreen","Darkorange","DarkOrchid","DarkRed","DarkSalmon","DarkSeaGreen","DarkSlateBlue","DarkSlateGrey","DeepPink","DeepSkyBlue","DimGray","DimGrey","DodgerBlue","FireBrick","FloralWhite","ForestGreen","Fuchsia","Gainsboro","GhostWhite","Gold","GoldenRod","Gray","Grey","Green","GreenYellow","HoneyDew","HotPink","IndianRed","Indigo","Ivory","Khaki","Lavender","LavenderBlush","LawnGreen","LemonChiffon","LightBlue","LightCoral","LightCyan","LightGoldenRodYellow","LightGray","LightGrey","LightGreen","LightPink","LightSalmon","LightSeaGreen","LightSkyBlue","LightSlateGray","LightSlateGrey","LightSteelBlue","LightYellow","Lime","LimeGreen","Linen","Magenta","Maroon","MediumAquaMarine","MediumBlue","MediumOrchid","MediumPurple","MediumSeaGreen","MediumSlateBlue","MediumSpringGreen","MediumTurquoise","MediumVioletRed","MidnightBlue","MintCream","MistyRose","Moccasin","NavajoWhite","Navy","OldLace","Olive","OliveDrab","Orange","OrangeRed","Orchid","PaleGoldenRod","PaleGreen","PaleTurquoise","PaleVioletRed","PapayaWhip","PeachPuff","Peru","Pink","Plum","PowderBlue","Purple","Red","RosyBrown","RoyalBlue","SaddleBrown","Salmon","SandyBrown","SeaGreen","SeaShell","Sienna","Silver","SkyBlue","SlateBlue","SlateGray","SlateGrey","Snow","SpringGreen","SteelBlue","Tan","Teal","Thistle","Tomato","Turquoise","Violet","Wheat","White","WhiteSmoke","YellowGreen"]
 FUNCTION =
   "ZERO"  : "(λf.λx.x)"
@@ -106,9 +109,7 @@ EXERCICES =
     "compte-rendu"     : "λh.(h λe.(λf.( ? ) ) λe.(λf.( ? ) ) ) "
     "solution"         : "λh.(h λe.(λf.( f ) ) λe.(λf.( e ) ) ) "
     "parse"            : "yes"
-ALPHABET = "abcdefghijklmnopqrstuvwxyz?"
-[color_tab, var_tab, debug, infobox, id, delta] = [ [], {}, false, false, 0, 500 ]
-ahead_vars = []
+
 $ ->
    #########################################################################################################################################################
   #Preparation html - Construction de la console
@@ -189,17 +190,17 @@ $ ->
 
   $.get "css/svg/egg.svg", (rawSvg) -> 
     $("#egg-svg").append(document.importNode rawSvg.documentElement,true)
-    $("#egg-svg svg")[0].setAttribute('viewBox', '0 0 116 80')
+    $("#egg-svg svg")[0].setAttribute('viewBox', '0 0 118 80')
     $( "#choose-color" ).selectmenu().val("?").selectmenu('refresh')
   , "xml"
   
   $.get "css/svg/open.svg", (rawSvg) -> 
     $("#open-svg").append(document.importNode rawSvg.documentElement,true)
-    $("#open-svg svg")[0].setAttribute('viewBox', '-25 0 330 150')
+    $("#open-svg svg")[0].setAttribute('viewBox', '0 0 300 124')
   , "xml"
   $.get "css/svg/vieux.svg", (rawSvg) -> 
     $("#vieux-svg").append(document.importNode rawSvg.documentElement,true)
-    $("#vieux-svg svg")[0].setAttribute('viewBox', '0 0 228 78')
+    $("#vieux-svg svg")[0].setAttribute('viewBox', '0 0 300 124')
   , "xml"
   
   $( "#slider-animation" ).slider
@@ -213,6 +214,7 @@ $ ->
       delta = ui.value
       
   $( "#amount-animation" ).html( $( "#slider-animation" ).slider( "value" ) )
+  
   resize = () ->
     value = parseInt $( "#amount-zoom" ).html()
     [simple, double] = ["#{value}px", "#{2*value}px"]
@@ -264,7 +266,6 @@ $ ->
   #items oeuf, croco, vieux croco draggable
   $( "#infobox" ).on "click", (element) -> 
     infobox = $(this).toggle(this.checked).prop( "checked" )
-    alert infobox
   
   $( "#tags" ).on "click", -> 
     tags = $(this).toggle(this.checked).prop( "checked" )
@@ -272,7 +273,7 @@ $ ->
       $(".variable.dropped, .lambda.dropped").addClass( "hide_pseudo" )
     else
       $(".variable.dropped, .lambda.dropped").removeClass( "hide_pseudo" )
-      
+  $( "#tags" ).trigger "click"   
   #Gestion du panel
   $( ".panel-button" ).on "click", ->
     switch $( this ).attr("data-type")
@@ -328,7 +329,7 @@ $ ->
     exp = exp.html()
     exp = exp.replace /<div(?: style="[\w \;\:\-]*")? id="\d*" class="variable[\w \_\-]*" data-variable="([\w\?])" data-color="\w+"(?: style="[\w \;\:\-]*")?>\s*<\/div>/g, "$1 "
     exp = exp.replace /<div(?: style="[\w \;\:\-]*")? id="\d*" class="lambda[\w \_\-]*" data-variable="([\w\?])" data-color="\w+"(?: style="[\w \;\:\-]*")?>/g, "λ$1.("
-    exp = exp.replace /<div(?: style="[\w \;\:\-]*")? id="\d*" class="lambda priorite dropped" data-variable="\(" data-color="white"(?: style="[\w \;\:\-]*")?>/g, "("
+    exp = exp.replace /<div(?: style="[\w \;\:\-]*")? id="\d*" class="lambda priorite[\w \_\-]*" data-variable="\(" data-color="white"(?: style="[\w \;\:\-]*")?>/g, "("
     exp = exp.replace(/<\/div>/g , ") ")
     exp = exp.replace(/\s{2,}/g, " ")
  ###########################################################################################################################################################

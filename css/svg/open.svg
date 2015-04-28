@@ -18,9 +18,9 @@
    sodipodi:docname="open.svg">
   <style
      type="text/css"
-     id="style7903">     
-   .border { fill: green }
-   .skin { fill: yellow }
+     id="open-style">     
+   .border { fill: black }
+   .skin { fill: white }
   </style>
   <script
      type="text/ecmascript"
