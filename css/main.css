@@ -258,7 +258,7 @@ ul#choose-color-menu.ui-menu, ul#exercices-menu.ui-menu {
 #command-panel {
   position : absolute;
   top:5vw;
-  right : 50%;
+  right : 0;
   width : 10vw;
   padding : 1vw;
   border-radius : 1em;

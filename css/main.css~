@@ -246,7 +246,7 @@ ul#choose-color-menu.ui-menu, ul#exercices-menu.ui-menu {
   bottom : 0;
   display: inline-flex;
   flex-flow : row wrap;
-  justify-content: space-around;
+  justify-content: center;
   width : 50%;
   background-color : rgba(0,0,0,0.5);
   padding : 1vw;
