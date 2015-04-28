@@ -21,6 +21,7 @@
         <script src="js/vendor/notify.min.js"></script>
     </head>
     <body>
+        <style id="restyler"></style>
         <!--[if lt IE 8]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
@@ -69,9 +70,9 @@
                   <button class="panel-button" id="repeat">&#9658;&#9658;</button>
                   <button class="panel-button" id="stop">&#x25A0;</button><br>
                   <label for="tags" style="color:white;">tags</label>
-                  <input type="checkbox" id="tags" checked/>
+                  <input type="checkbox" id="tags" />
                   <label for="infobox" style="color:white;">infobox</label>
-                  <input type="checkbox" id="infobox" checked/>
+                  <input type="checkbox" id="infobox" />
                   <div style="color:white;">animation <span id="amount-animation"></span>ms</div>
                   <div id="slider-animation"></div>
                   <div style="color:white;">zoom x<span id="amount-zoom"></span></div>

@@ -220,19 +220,29 @@ $ ->
     resize = () ->
       value = parseInt $( "#amount-zoom" ).html()
       [simple, double] = ["#{value}px", "#{2*value}px"]
-      $(".lambda.priorite.dropped, .lambda.dropped").css
-        minWidth  : double
-        minHeight : simple
-        paddingTop: simple
-      $(".variable.dropped").css
-        width  : double
-        height : simple
-      $(".lambda.priorite.dropped > svg, .variable.dropped > svg, .lambda.dropped > svg").css
-        height : simple
-      $(".definition_drop, .application_drop").css
-        width : simple
-        height: simple
-            
+      s =
+      """
+      .lambda.priorite.dropped, .lambda.dropped { 
+        min-width  : #{double};
+        min-height : #{simple};
+        padding-top: #{simple};
+      }
+      
+      .variable.dropped { 
+        width  : #{double};
+        height : #{simple};
+      }
+      .lambda.priorite.dropped > svg, .variable.dropped > svg, .lambda.dropped > svg {
+        height : #{simple};
+      }
+      
+      .definition_drop, .application_drop {
+        width : #{simple};
+        height: #{simple};
+      }
+      """
+      $( "#restyler" ).text s
+      
     $( "#slider-zoom" ).slider
       range: "max",
       min: 1,
@@ -332,7 +342,6 @@ $ ->
   insert_exp_into_div = (exp, root) ->
     expression = exp
     id = 0
-
     #make it easy to retrieve variables
     expression = expression.replace /([.( ])(([\w\?]))/g, "$1woot$2" 
     #lambdas
@@ -450,6 +459,7 @@ $ ->
       else
         droppable.parent().after $(lambda)
       droppable.remove()
+
     
   make_dropped_droppable = () ->
     $( ".application_drop, .definition_drop, [data-variable='?']" ).droppable
@@ -458,6 +468,7 @@ $ ->
       drop : ( event, ui ) ->
         inserer ui.draggable, $(this)
         make_dropped_droppable()
+
   make_dropped_droppable()
   ###########################################################################################################################################################
   #gestion d'une etape

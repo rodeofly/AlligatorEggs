@@ -263,25 +263,11 @@
       });
       $("#amount-animation").html($("#slider-animation").slider("value"));
       resize = function() {
-        var double, simple, _ref1;
+        var double, s, simple, _ref1;
         value = parseInt($("#amount-zoom").html());
         _ref1 = [value + "px", (2 * value) + "px"], simple = _ref1[0], double = _ref1[1];
-        $(".lambda.priorite.dropped, .lambda.dropped").css({
-          minWidth: double,
-          minHeight: simple,
-          paddingTop: simple
-        });
-        $(".variable.dropped").css({
-          width: double,
-          height: simple
-        });
-        $(".lambda.priorite.dropped > svg, .variable.dropped > svg, .lambda.dropped > svg").css({
-          height: simple
-        });
-        return $(".definition_drop, .application_drop").css({
-          width: simple,
-          height: simple
-        });
+        s = ".lambda.priorite.dropped, .lambda.dropped { \n  min-width  : " + double + ";\n  min-height : " + simple + ";\n  padding-top: " + simple + ";\n}\n\n.variable.dropped { \n  width  : " + double + ";\n  height : " + simple + ";\n}\n.lambda.priorite.dropped > svg, .variable.dropped > svg, .lambda.dropped > svg {\n  height : " + simple + ";\n}\n\n.definition_drop, .application_drop {\n  width : " + simple + ";\n  height: " + simple + ";\n}";
+        return $("#restyler").text(s);
       };
       $("#slider-zoom").slider({
         range: "max",
