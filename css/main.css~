@@ -177,6 +177,7 @@ pre.code{
   color : blue;
 }
 #game-container {
+  margin : auto;
   position : relative;
   width:100%;
   height:100vh;
@@ -204,14 +205,22 @@ pre.code{
 /* select menu */
 #choose-color{
  position :relative;
- width:100%;
+ width:4vw;
 }
-
+/* select menu */
+#exercices{
+ position :relative;
+ width:4vw;
+}
 div.ui-selectmenu-menu.ui-front.ui-selectmenu-open {
   width : 30vw;
 }
-
-ul#choose-color-menu.ui-menu {
+.ui-selectmenu-button {
+  background : transparent !important;
+  color : black !important;
+}
+ 
+ul#choose-color-menu.ui-menu, ul#exercices-menu.ui-menu {
   background : transparent !important;
   border : 0;
   height : 10vw;
@@ -226,7 +235,7 @@ ul#choose-color-menu.ui-menu {
 
 #console {
   position:absolute;
-  top : 10vw;
+  bottom : 0;
   background-color : rgba(0,0,0,0.5);
   padding : 1vw;
   border-radius : 0.5vw;
@@ -249,8 +258,9 @@ ul#choose-color-menu.ui-menu {
 #exercices {
 
   position : relative;
-  width: 90%;
   display : block;
+  width: 90%;
+
   margin : auto;
 }
 

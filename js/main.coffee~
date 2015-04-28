@@ -30,23 +30,23 @@ FUNCTION =
   "Y"          : "(λr. ((λf.λg.λx. (f g g) x) r) ((λf.λg.λx. (f g g) x) r))"
   "FACT"       : " λr.((λf.(λg.(λx.( (f g g ) x ) ) ) r ) (λf.(λg.(λx.( (f g g ) x ) ) ) r ) ) λk.(λj.(((( λn.(n λx.(λa.(λb.(b ) ) ) λa.(λb.(a ) ) ) j ) λi.( λh.(λl.(h l ) ) ) λi.(( λs.(λt.(λu.( s (t u ) ) ) ) ) (r ( λc.(λd.(λe.(c λk.(λo.(o (k d ) ) ) λq.(e ) λq.(q ) ) ) ) n ) ) ) ) ) ) ) "
 EXERCICES =
-  "0" :
-    "titre"            : 'Les items (1): "Le vieil alligator & les œufs"'
+  "a" :
+    "titre"            : 'Les items : "Le vieil alligator & les œufs"'
     "texte"            : "<p>Voilà un vieil alligator avec des œufs ! Le vieil alligator n'a plus faim, il a assez mangé.</p><p>Tous ce qu'il fait, c'est prendre soin de sa famille : ici ce sont des œufs !</p><p>Les œufs vont éclore et donner de nouvelles familles d'alligators.</p><p>Fais glisser un vieil alligator dans le panel, puis fais glisser le premier œuf sur le bout de la queue. Enfin, un à un, glisse des œufs les uns sur les autres pour les ajouter !</p>"
     "contenu-exercice" : "(f g h i i )"
     "contenu-eleve"    : ""
     "compte-rendu"     : "λ?"
     "solution"         : "(f g h i i ) "
 
-  "1" :
-    "titre"            : 'Les items (2) : "Les alligators affamés"'
+  "b" :
+    "titre"            : 'Les items : "Les alligators affamés"'
     "texte"            : "<p>Voilà des alligators affamés...Les alligators affamés sont voraces. Ils vont manger tout ce qui est en devant eux (au point de mourir d'indigestion)! Mais ils sont aussi des alligators responsables, et comme les vieux alligators, ils gardent leurs familles.</p><p>Allez fais glisser !</p>"
     "contenu-exercice" : "λx.(λy.(λz.() ) ) "
     "contenu-eleve"    : "λx.()"
     "compte-rendu"     : "λ?"
     "solution"         : "λx.(λy.(λz.() ) ) "
 
-  "2" :
+  "c" :
     "titre"            : 'Les familles (1)'
     "texte"            : "<p>Voici une petite famille : un alligator garde son œuf !</p><p>Peux tu la recréer ?</p>"
     "contenu-exercice" : "λe.e"
@@ -54,7 +54,7 @@ EXERCICES =
     "compte-rendu"     : "λ?"
     "solution"         : "λe.(e ) "
 
-  "3" :
+  "d" :
     "titre"            : 'Les familles (2)'
     "texte"            : "<p>Voici une petite famille un peu plus grande.</p><p>Un alligator garde un autre alligator qui garde deux œufs. Ou on peut dire qu'un alligator garde un autre alligator qui est gardien des deux œufs.</p><p>Peux tu la recréer ?</p>"
     "contenu-exercice" : "λe.λf.e f"
@@ -62,7 +62,7 @@ EXERCICES =
     "compte-rendu"     : "λ?"
     "solution"         : "λe.(λf.(e f ) ) "
     
-  "4" :
+  "e" :
     "titre"            : 'Les familles (3)'
     "texte"            : "<p>Voici une grande famille ! Nous avons un alligator jaune, un vert et un rose qui gardent cette famille. Ils gardent trois choses : un œuf vert, un vieux crocodile , et un œuf rose. Le vieil alligator, lui, garde un œuf jaune et un œuf vert.</p><p>Note bien que les œufs n'utilisent que les couleurs des alligators qui les surveillent . On ne peut pas avoir un œuf bleu sans qu'il y ait un alligator bleu au-dessus pour le garder.</p><p>Peux recréer cette famille ?</p>"
     "contenu-exercice" : "λh.λe.λg.(e (h e) g)"
@@ -70,7 +70,7 @@ EXERCICES =
     "compte-rendu"     : "λ?"
     "solution"         : "λh.(λe.(λg.(e (h e ) g ) ) ) "
 
-  "5" :
+  "f" :
     "titre"            : 'Manger'
     "texte"            : "<p>Attention, ça va se compliquer !</p><p>Voici deux familles, l'une à coté de l'autre. L'alligator vert est affamé, et il y a cette famille jaune juste en face de lui... Comme elle semble appétissante! La suite, tu la connais ?! Appuye sur le bouton (&#9658;).</p><p>Malheureusement , les yeux du crocodile vert étaient plus grands que son ventre. Il trop a mangé ! En mourant, il s'en va au paradis des alligator (ouf !). Mais, l'histoire ne se arrête pas là ; parce qu'une fois l'alligator vert mort, l'oeuf vert commence à éclore... Et étonnamment, il éclot exactement en ce que l'alligator vert avait mangé. C'est le miracle de la vie ! Maintenant, nous avons une nouvelle famille: un crocodile rouge gardant un alligator jaune et un oeuf rouge, et l'alligator jaune qui garde son œuf jaune. Mais cet alligator jaune à faim , et il y a un bel œuf rouge en face de lui. On y va encore une fois (&#9658;).</p><p>Pauvre alligator. Même un seul œuf est trop gros pour son estomac! L'alligator jaune meurt... mais encore une fois , l'œuf jaune commence à éclore ...Et il éclot dans exactement ce que l'alligator jaune avait mangé !</p><p>Maintenant, il n'y a plus rien pour quiconque à manger, donc nous pouvons arrêter là.</p>"
     "contenu-exercice" : "λe.(λf.(e f ) ) λh.(h ) "
@@ -78,7 +78,7 @@ EXERCICES =
     "solution"         : "λf.(f ) "
     "animation"        : "yes"
 
-  "6" :
+  "g" :
     "titre"            : 'La règle du "je te mange"'
     "texte"            : "<p>La règle de l'alimentation dit que s'il y a des familles côte-à-côté, l'alligator le plus en haut à gauche de la famille mange à sa droite.Puis , ce crocodile meurt . Mais si il gardait des oeufs de la même couleur que lui, chacun de ces oeufs va éclorent en ce qu'il a mangé</p>.<p>En continuant, l'alligator orange, mange la famille jaune. Ensuite, l'alligator vert en haut à gauche veut manger la famille à sa droite. Mais avant qu'elle ne puisse le faire , nous devons nous pencher sur la règle de couleur !</p><p>La règle de couleur dit que si un alligator est sur ​​le point de manger une famille, et que s'il y a une couleur qui apparaît dans les deux familles, nous devons changer cette couleur dans une famille avec une autre couleur. Ici, vert et rouge apparaissent à la fois la première et la seconde famille. Le changement de couleur est automatique. Une fois qu'ils ne partagent plus les mêmes couleurs, nous pouvons manger! Et manger!Et manger! Et manger, jusqu'à ce qu'il n'y ai rien de plus qui puisse être mangé .</p>"
     "contenu-exercice" : "λz.(λe.(z z e ) ) λe.(λf.(e f ) ) λh.(h ) "
@@ -86,7 +86,7 @@ EXERCICES =
     "solution"         : "λc.(c ) "
     "animation"        : "yes"
 
-  "7" :
+  "h" :
     "titre"            : 'La règle du vieil alligator'
     "texte"            : "<p>Il ne reste plus qu'une seule règle dans ce jeu, et elle est en lien avec les vieux alligators :</p>
 <p>L'alligator supérieur gauche ici n'a pas faim. Il ne va rien manger du tout. Tout ce dont il se soucie est sa famille. Alors, comment meurt-il?</p>
@@ -98,7 +98,7 @@ EXERCICES =
     "solution"         : "λe.(e ) "
     "animation"        : "yes"
 
-  "8" :
+  "i" :
     "titre"            : 'Challenge !'
     "texte"            : "<p>Voici deux familles. Elles s'appellent «Vrai» et «Faux» :</p><insert λe.(λf.(e ) ) λe.(λf.(f ) ) ><p>Et ici, une famille appelée «Non» : <insert λh.(h λe.(λf.( ? ) ) λe.(λf.( ? ) ) ) ></p><p>Lorsque «Non» mange «Vrai», il produit «Faux». Et lorsque «Non» mange «Faux», il produit «Vrai». De quelles couleurs devraient être les deux œufs?</p>"
     "contenu-exercice" : ""
@@ -107,7 +107,7 @@ EXERCICES =
     "solution"         : "λh.(h λe.(λf.( f ) ) λe.(λf.( e ) ) ) "
     "parse"            : "yes"
 ALPHABET = "abcdefghijklmnopqrstuvwxyz?"
-[color_tab, var_tab, debug, infobox, id, parentheses, delta] = [ [], {}, false, true, 0, 0, 500 ]
+[color_tab, var_tab, debug, infobox, id, delta] = [ [], {}, false, true, 0, 500 ]
 ahead_vars = []
 $ ->
   ###########################################################################################################################################################
@@ -115,7 +115,7 @@ $ ->
   ###########################################################################################################################################################
   do initialize_html = ->
     for key of EXERCICES
-      $( '#exercices' ).append "<button class='panel-button exercice'  data-id='#{key}'>Ex#{key}</button>"
+      $( '#exercices' ).append "<option value='#{key}'  data-id='#{key}'>Ex#{key}</button>"
     for letter,index in ALPHABET
       color_tab.push CSS_COLOR_NAMES[index]
       var_tab["#{letter}"] = CSS_COLOR_NAMES[index]
@@ -129,8 +129,10 @@ $ ->
     
     $.widget "ui.selectmenu", $.extend {}, $.ui.selectmenu.prototype,
       _renderItem : ( ul, item ) ->
-          li = $( "<li>" ).css( "background-color", item.element.data "color" )
-          this._setText( li, item.value )
+          color = var_tab[item.value]
+          li = $( "<li>", { text: item.value } ).css( "background-color", color  )
+          s = "display: block;width:100%;height:50%;background:#{color};border:solid black 1px"
+          $( "<span>", style: s).appendTo( li )
           return li.appendTo( ul )
       _renderMenu : ( ul, items ) ->
           that = this
@@ -138,15 +140,12 @@ $ ->
             that._renderItemData( ul, item )
             $("#color").css("background" , item.element.attr("data-color")).attr("data-variable",item.value).attr "data-color", item.element.attr "data-color"
       
-    $( "#root, #exercice" ).on "focus",    -> $("body").addClass("stop-scrolling")
-    $( "#root, #exercice" ).on "focusout", -> $("body").removeClass("stop-scrolling")
-      
     $( "#choose-color" )
       .selectmenu
         appendTo : "#top-panel"
         open  : -> $("body").addClass("stop-scrolling")
         close : -> $("body").removeClass("stop-scrolling")
-    $( "#choose-color" ).selectmenu().addClass( "menu-overflow" ).val("z").selectmenu('refresh').on "selectmenuchange", ( event, ui ) ->
+    $( "#choose-color" ).on "selectmenuchange", ( event, ui ) ->
       [color, variable] = [ui.item.element.attr("data-color"),ui.item.value]
       $( "#panel-lambda" ).attr("data-variable", variable).html("λ#{variable}")
       $( "#panel-variable").attr("data-variable", variable).html("#{variable}")
@@ -155,20 +154,52 @@ $ ->
         .css( "background"   , color )
         .attr("data-variable", variable)
         .attr("data-color"   , color )
+    
+    $( "#exercices" )
+      .selectmenu
+        appendTo : "#top-panel"
+        
+    $( "#exercices" ).on "selectmenuchange", ( event, ui ) ->
+      $( ".animation" ).prop("disabled",false)
+      i = ui.item.element.attr( "data-id" )
+      exo = EXERCICES[i]
+      
+      $( "#exercice").find(" > .panel-button.exercice").attr "data-id", i
+      $( "#exercice").attr "data-solution", exo["solution"]
+      $( "#exercice").find("> .titre" ).html("<h1>#{exo['titre']}</h1>")
+      
+      if exo["contenu-eleve"] isnt ""
+        insert_exp_into_div(exo["contenu-eleve"], $("#root"))
+      else
+        $("#root" ).empty().append "<div id='root_definition' class='definition_drop'></div>"
+      
+      if exo["contenu-exercice"] isnt "" then insert_exp_into_div exo["contenu-exercice"], $( "#contenu-exercice" ) 
+      
+      if exo["animation"] is "yes" then $( "#animation").show() else $( "#animation").hide()
+      
+      texte = exo['texte'] 
+      reg = /<insert ([λ().\w\? ]*)>/
+      while texte.match reg
+        lambda = reg.exec(texte)
+        insert_exp_into_div lambda[1], $("#exercice-texte")
+        texte = texte.replace reg, $("#exercice-texte").html()
+      $( "#exercice-texte" ).html("<p>#{texte}</p>")
+      
+      if ("compte-rendu" of exo)
+        texte = exo["compte-rendu"]
+        insert_exp_into_div texte, $("#compte-rendu")
 
-    
-    s = {"egg" : "0 0 116 80", "open" : "-25 0 330 150", "vieux" : "0 0 228 78"}
-    
+      $( "#exercice").show()
+
     $.get "css/svg/egg.svg", (rawSvg) -> 
       $("#egg-svg").append(document.importNode rawSvg.documentElement,true)
       $("#egg-svg svg")[0].setAttribute('viewBox', '0 0 116 80')
-      $(".color:first()" ).trigger "click"
+      $( "#choose-color" ).selectmenu().val("a").selectmenu('refresh')
     , "xml"
     
     $.get "css/svg/open.svg", (rawSvg) -> 
       $("#open-svg").append(document.importNode rawSvg.documentElement,true)
       $("#open-svg svg")[0].setAttribute('viewBox', '-25 0 330 150')
-      $(".color:first()" ).trigger "click"
     , "xml"
     $.get "css/svg/vieux.svg", (rawSvg) -> 
       $("#vieux-svg").append(document.importNode rawSvg.documentElement,true)
@@ -200,17 +231,6 @@ $ ->
   $( "#infobox" ).on "click", -> 
     infobox = this.checked
     $(this).val(this.checked ? 1 : 0)
-    
-  ###Conteneur de jeu
-  $("#game-container").dialog
-    show:  {effect: 'fade', duration: 2000}
-    hide: "size"
-    width : "100%"
-    draggable: false
-    height:  Math.floor(100 * $(window).height() / 100)
-    open: -> $("body").addClass("stop-scrolling")
-    close: -> $("body").removeClass("stop-scrolling")
-  ###
   
   #Gestion du panel
   $( ".panel-button" ).on "click", ->
@@ -256,26 +276,21 @@ $ ->
       when "read"
         $("#prompt").val get_lambda_from $("#root")
    
-  $('#prompt').keypress (key) ->
-    insert_exp_into_div($( "#prompt").val(),$("#root")) if key.which is 13
+  $('#prompt').keypress (key) -> insert_exp_into_div($( "#prompt").val(),$("#root")) if key.which is 13
 
-  ###########################################################################################################################################################
+ #########################################################################################################################################################
   #Parser une expression
-  ###########################################################################################################################################################
+###########################################################################################################################################################
   get_lambda_from = (root) ->
     exp = root.clone()
-    exp.find("svg").remove()
-    exp.find(".definition_drop").remove()
-    exp.find(".application_drop").remove()
+    exp.find("svg, .definition_drop, .application_drop").remove()
     exp = exp.html()
-    
     exp = exp.replace /<div(?: style="[\w \;\:\-]*")? id="\d*" class="variable[\w \_\-]*" data-variable="([\w\?])" data-color="\w+"(?: style="[\w \;\:\-]*")?>\s*<\/div>/g, "$1 "
-    ###
     exp = exp.replace /<div(?: style="[\w \;\:\-]*")? id="\d*" class="lambda[\w \_\-]*" data-variable="([\w\?])" data-color="\w+"(?: style="[\w \;\:\-]*")?>/g, "λ$1.("
     exp = exp.replace /<div(?: style="[\w \;\:\-]*")? id="\d*" class="lambda priorite dropped" data-variable="\(" data-color="white"(?: style="[\w \;\:\-]*")?>/g, "("
     exp = exp.replace(/<\/div>/g , ") ")
     exp = exp.replace(/\s{2,}/g, " ")
-    ### ###########################################################################################################################################################
+ ###########################################################################################################################################################
   #Inserer une expression
   ###########################################################################################################################################################
   insert_exp_into_div = (exp, root) ->
@@ -411,15 +426,18 @@ $ ->
   ###########################################################################################################################################################
   #gestion d'une etape
   ###########################################################################################################################################################  
-  
-  promises = []  
 
   looping = false
   $( "#animation" ).on "click", (event) ->
     event.stopPropagation()
     event.preventDefault()
     go_one_step( "#contenu-exercice" )
-      
+  
+  $("#stop").click () -> 
+    $( ".animation" ).prop("disabled",false)  
+    looping = false
+    $( "#slider-range-max" ).slider( "option", "disabled", false )    
+            
   $( "#go" ).on "click", (event) ->
     event.stopPropagation()
     event.preventDefault()
@@ -432,13 +450,6 @@ $ ->
     looping = true
     $(".variable.dropped, .lambda.dropped").addClass( "hide_pseudo" )
     go_one_step("#root")
-  
-  $("#stop").click () -> 
-    $( ".animation" ).prop("disabled",false)  
-    looping = false
-    $( "#slider-range-max" ).slider( "option", "disabled", false )    
-        
-  
         
   $( "#help" ).dialog
     autoOpen    : false
@@ -455,8 +466,7 @@ $ ->
         of: "##{element}"
     $( "#help" ).html message
     $( "#help" ).dialog( "open")    
-
-  
+ 
   find_action_pointer = (root) ->
     local_debug = false
     ahead_vars = []
@@ -515,13 +525,21 @@ $ ->
     $( ".animation" ).prop("disabled",true)
     $( "#{root} .application_drop, #{root} .definition_drop" ).remove()
     $(root).find( ".dropped" ).each (i = 0) -> $(this).attr "id", id+=1
-    
-    
+   
     step1 = $.Deferred()
     step2 = $.Deferred()
     step3 = $.Deferred()
     step4 = $.Deferred()
     
+    #STEP 1 : 
+    action_croco = find_action_pointer root
+    if action_croco.length > 0
+      step1.resolve(action_croco)
+    else
+      alert "Plus rien à faire !"
+      if looping
+             $(".variable.dropped, .lambda.dropped").removeClass( "hide_pseudo" )
+   
     #STEP 2 : regle du vieil alligator inutile
     step1.done (pointer) ->  
       if (pointer.hasClass "priorite") and (pointer.children(":not(svg)").length < 2)
@@ -586,8 +604,7 @@ $ ->
           go_one_step(root)
         else 
           $( ".animation" ).prop("disabled",false)
-      
-    
+  
     #STEP 5 : regle de l'eclosion des oeufs
     step4.done (pointer, application) ->
       #On va faire reapparaitre l'application à chaque oeuf
@@ -623,16 +640,6 @@ $ ->
           go_one_step(root)
         else 
           $( ".animation" ).prop("disabled",false)
-
-    #STEP 1 : 
-    action_croco = find_action_pointer root
-    if action_croco.length > 0
-      step1.resolve(action_croco)
-    else
-      alert "Plus rien à faire !"
-      if looping
-             $(".variable.dropped, .lambda.dropped").removeClass( "hide_pseudo" )
-   
   ###########################################################################################################################################################
   # Gestion du jeu
   ###########################################################################################################################################################  
