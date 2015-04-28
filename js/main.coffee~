@@ -154,7 +154,7 @@ $ ->
   
   $( "#exercices" )
     .selectmenu
-      appendTo : "#panels"
+      appendTo : "body"
       
   $( "#exercices" ).on "selectmenuchange", ( event, ui ) ->
     $( ".animation" ).prop("disabled",false)
@@ -329,7 +329,7 @@ $ ->
     exp = exp.html()
     exp = exp.replace /<div(?: style="[\w \;\:\-]*")? id="\d*" class="variable[\w \_\-]*" data-variable="([\w\?])" data-color="\w+"(?: style="[\w \;\:\-]*")?>\s*<\/div>/g, "$1 "
     exp = exp.replace /<div(?: style="[\w \;\:\-]*")? id="\d*" class="lambda[\w \_\-]*" data-variable="([\w\?])" data-color="\w+"(?: style="[\w \;\:\-]*")?>/g, "λ$1.("
-    exp = exp.replace /<div(?: style="[\w \;\:\-]*")? id="\d*" class="lambda priorite dropped" data-variable="\(" data-color="white"(?: style="[\w \;\:\-]*")?>/g, "("
+    exp = exp.replace /<div(?: style="[\w \;\:\-]*")? id="\d*" class="lambda priorite[\w \_\-]*" data-variable="\(" data-color="white"(?: style="[\w \;\:\-]*")?>/g, "("
     exp = exp.replace(/<\/div>/g , ") ")
     exp = exp.replace(/\s{2,}/g, " ")
  ###########################################################################################################################################################

@@ -139,7 +139,7 @@ $ ->
     
   $( "#choose-color" )
     .selectmenu
-      appendTo : "#command-panel"
+      appendTo : "#top-panel"
       open  : -> $("#game-container").addClass("stop-scrolling")
       close : -> $("#game-container").removeClass("stop-scrolling")
   $( "#choose-color" ).on "selectmenuchange", ( event, ui ) ->
@@ -154,7 +154,7 @@ $ ->
   
   $( "#exercices" )
     .selectmenu
-      appendTo : "#panels"
+      appendTo : "body"
       
   $( "#exercices" ).on "selectmenuchange", ( event, ui ) ->
     $( ".animation" ).prop("disabled",false)

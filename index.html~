@@ -25,18 +25,17 @@
         <!--[if lt IE 8]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-        <div id="game-container">
-              
-              
-              <select id="exercices"><option value="Exercices">Exercices</option></select><button id="toggle-console">C</button>
-                  <button id="toggle-theory">T</button><br>
-              <div id ="panels">
-                  
+        <div id="game-container">       
+              <div id="top-panel" class="ui-front">
+                <button id="toggle-console">C</button>
+                <button id="toggle-theory">T</button>
+                <select id="exercices" style="z-index:100;"><option value="Exercices">Exercices</option></select>
+              </div>  
+              <div id ="panels">        
                   <div id="root">
                       <div id="root_definition" class='definition_drop'></div>
                   </div>
-                  <div id="exercice" data-id="" data-solution="">
-                      
+                  <div id="exercice" data-id="" data-solution="">              
                       <div class="titre"></div>
                       <div id="exercice-texte" class="texte"></div>
                       <div id="exercice-fixed-part">
@@ -80,15 +79,8 @@
                   </div> 
                   <div id="vieux-svg" class="item vieux-croco"></div>
                   <div id="egg-svg"   class="item egg"></div>
-                  <div id="open-svg"  class="item croco"></div>
-                  
-                  
-                  
-                  
-                    
-              </div>
-              
-              
+                  <div id="open-svg"  class="item croco"></div>      
+              </div>      
         </div>
         <div id="theory">
             <div class="header-container">

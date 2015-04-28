@@ -175,7 +175,7 @@
       }
     }));
     $("#choose-color").selectmenu({
-      appendTo: "#command-panel",
+      appendTo: "#top-panel",
       open: function() {
         return $("#game-container").addClass("stop-scrolling");
       },
@@ -192,7 +192,7 @@
       return $("#color").css("background", color).attr("data-variable", variable).attr("data-color", color);
     });
     $("#exercices").selectmenu({
-      appendTo: "#panels"
+      appendTo: "body"
     });
     $("#exercices").on("selectmenuchange", function(event, ui) {
       var exo, i, lambda, reg, texte;
