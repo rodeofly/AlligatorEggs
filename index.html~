@@ -25,24 +25,29 @@
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
         <div id="game-container">
-         
-              <button id="toggle-console">Toggle Console</button>
+              
+              
               
               <div id="exercices">
-                   <button class="panel-button" id="close-exercice" >Fermer</button>
+                   <button id="toggle-console">Console</button>
+                   <button id="toggle-theory">Theorie</button>
               </div>
-              <div id ="panels"
+              <div id ="panels">
                   <div id="root">
                       <div id="root_definition" class='definition_drop'></div>
                   </div>
                   <div id="exercice" data-id="" data-solution="">
+                      
                       <div class="titre"></div>
                       <div id="exercice-texte" class="texte"></div>
                       <div id="contenu-exercice" ></div>
                       <div id="compte-rendu" ></div>
-                      <button class="panel-button check">Check !</button>
-                      <button class="panel-button exercice"  id="replay">Rejouer</button>
-                      <button class="panel-button animation" id="animation">&#9658;</button>
+                      <div id="exercice-panel">
+                        <button class="panel-button check">Check !</button>
+                        <button class="panel-button exercice"  id="replay">Rejouer</button>
+                        <button class="panel-button animation" id="animation">&#9658;</button>
+                        <button class="panel-button" id="close-exercice" >Fermer l'exercice</button>
+                      </div>
                   </div>    
                   <div id="help"></div>
               </div>
@@ -58,319 +63,323 @@
                   <button id="panel-variable" class="panel-button" data-type="variable" data-variable="a">a</button>            
               </div>
               <div id="command-panel">
-                  <button class="panel-button animation" id="go">Go (&#9658;)</button>
-                  <button class="panel-button" id="repeat">Repeat (&#9658;&#9658;)</button>
-                  <button class="panel-button" id="stop">Stop (&#x25A0;)</button>
+                  <button class="panel-button animation" id="go">&#9658;</button>
+                  <button class="panel-button" id="repeat">&#9658;&#9658;</button>
+                  <button class="panel-button" id="stop">&#x25A0;</button>
                   <p>
-                    <label for="amount" style="color:white;">animation (ms)</label>
-                    <input type="text" id="amount"  size="4" />
                     <label for="infobox" style="color:white;">infobox</label>
                     <input type="checkbox" id="infobox" checked/>
+                    <div style="color:white;">animation <span id="amount"></span>ms</div>
+                    
+                    
                   </p>
                   <div id="slider-range-max"></div>
-                  
-                  <div id="color" data-variable="" data-color="">
-                    <select name="choose-color" id="choose-color"></select>
-                  </div> 
                   <div id="vieux-svg" class="item vieux-croco"></div>
                   <div id="egg-svg"   class="item egg"></div>
                   <div id="open-svg"  class="item croco"></div>
+                  <div id="color" data-variable="" data-color="">
+                    <select name="choose-color" id="choose-color"></select>
+                  </div> 
+                  
+                  
                   
                     
               </div>
               
               
         </div>
-        
-        <div class="header-container">
-            <header class="wrapper clearfix">
-                <h1 class="title">Un jeu de logique : Les oeufs alligator</h1>
-                <nav>
-                    <ul>
-                        <li><a href="http://fr.wikipedia.org/wiki/Lambda-calcul">Le lambda calcul</a></li>
-                        <li><a href="http://en.wikipedia.org/wiki/Church_encoding">Les entiers de Church (uk)</a></li>
-                        <li><a href="http://worrydream.com/AlligatorEggs/">La règle du jeu (uk)</a></li>
-                    </ul>
-                </nav>
-            </header>
-        </div>
-
-        <!-- #main-container -->
-        <div class="main-container">
-            <div class="main wrapper clearfix">
-                <article>
-                    <header>
-                        <h1>Théorie</h1>
-                      Ce jeu représente le lambda calcul (non typé).<button id="play">Jouer</button>
-                      <ul>
-                        <li>Un alligator de couleur est une lambda abstraction</li>
-                        <li>Un (vieil) alligator blanc représente des parenthèses</li>
-                        <li>Un oeuf est une variables</li>
-                        <li>La règle numero un, "règle de je-te-mange", correspond à une beta-reduction.</li>
-                        <li>La règle numero deux, "règle de la couleur", correspond à une alpha-conversion.</li>
-                        <li>La règle du vieil alligator dit que si une paire de parenthèses contient un seul terme, les parenthèses peuvent être enlevées</li>
-                      </ul>
-                      
-                      <h1>λ-Calcul en CoffeeScript</h1>  
-                        <pre class="code">
-                         <textarea type="text" style="width:100%;">
-Id = (x) -> x
-TRUE  = (x) -> (y) -> x # λx.λy.x
-FALSE = (x) -> (y) -> y # λx.λy.y
-JSbool = (f) -> f(true)(false)
-AND = (p) -> (q) -> p(q)(p)               # λp.λq.p q p
-OR  = (p) -> (q) -> p(p)(q)               # λp.λq.p p q
-NOT = (p) -> (a) -> (b) -> p(b)(a)        # λp.λa.λb.p b a  
-
-$0 = ZERO  = (f) -> (x) -> x            # λf.λx.x
-$1 = ONE   = (f) -> (x) -> f x          # λf.λx.f x
-$2 = TWO   = (f) -> (x) -> f f x        # λf.λx.f (f x)
-$3 = THREE = (f) -> (x) -> f f f x      # λf.λx.f (f (f x))
-$4 = FOUR  = (f) -> (x) -> f f f f x    # λf.λx.f (f (f (f x)))
-$5 = FIVE  = (f) -> (x) -> f f f f f x  # λf.λx.f (f (f (f (f x))))
-
-ISZERO = (n) -> n( (x) -> FALSE )(TRUE) # λn.n (λx.FALSE) TRUE
-IF = (p) -> (a) -> (b) -> p(a)(b) # λp.λa.λb.p a b
-
-int   = (n) -> n((x) -> ++x)(0)
-toInt = (n) -> (n ((x) -> x + 1)) 0
-           
-#Predecesseur & Successeur SUCC 
-# λn.λf.λx.n (λg.λh.h (g f)) (λu.x) (λu.u)
-PRED = (n) -> (f) -> (x) -> n((g) -> (h) -> h g f)((u) -> x)((u) -> u)
-SUCC = (n) -> (f) -> (x) -> f (n(f)(x)) # λn.λf.λx.f (n f x)
-
-#addition PLUS
-PLUS = (m) -> (n) -> (f) -> (x) -> m(f)(n(f)(x)) # λm.λn.λf.λx.m f (n f x)
-PLUS = (m) -> (n) -> m(SUCC)(n) # λm.λn.m SUCC n
-
-#soustraction SUB
-SUB = (m) -> (n) -> n(PRED)(m) # λm.λn.n PRED m
-
-#multiplication MULT
-MULT = (m) -> (n) -> (f) -> m n f # λm.λn.λf.m (n f)
-
-#power POW
-POW  = (b) -> (e) -> e b  # λb.λe.e b     
-
-#Récursivité
-I = (x) -> x # λx.x
-
-#La Factorielle 
-# λr.λn.(1, if n = 0; else n × (r (n−1)))
-YP = (f) -> (g) -> (x) -> (f g g) x
-Y = (f) ->  (YP f) (YP f)
-FACT = Y (r) -> (n) -> (((ISZERO n) (x) -> ONE) (x) -> (MULT n) (r (PRED n))) I
-REPEAT = Y (r) -> (n) -> (c) -> (((ISZERO n) (x) -> NIL) (x) -> (PAIR c) ((r PRED n) c)) I
-alert int FACT FOUR
-                         </textarea><button class="run-previous-code">Church !</button>
-                        </pre>
-                    </header>
-                    <section>
-                        <h2>Fonctions Haskell-iennes</h2>
-                         <ul>
-                          <li>Une <b>lambda abstraction</b> s'écrit λx.x  &hArr;  f(x) = x &hArr;  (x) -> x</li>
-                          <li>L'<b>application</b> (λx.x)(2) &hArr; f(x) = x & x=2 &hArr; ((x) -> x)(2)</li>
-                           <li>le λ-calculus encode données, logique des prédicats & recursivité</li>
-                          <li>λ-calcul compute saklé computable !</li>
-                        </ul>          
-                        <pre id="1" class="code">
-                              f = (x) -> x
-                                                
-                              alert ((x) -> x)(2)
-                              alert f
-                              alert f(2)
-                              alert "Sa ti giny, sati geign pas !"
-                        </pre><button class="run-previous-code">Sa ti giny, sati geign pas !</button>
-                          
-                    </section>
-                    <section>
-                        <h2>Logique des prédicats</h2>
-                          <h3>Church à les bools : true & false</h3>
-                          <pre id="1" class="code">
-                            TRUE  = (x) -> (y) -> x # λx.λy.x
-                            FALSE = (x) -> (y) -> y # λx.λy.y
-                            
-                            booleanJavaScript = (f) -> f(true)(false)
-                           
-                            alert booleanJavaScript(TRUE)
-                            alert booleanJavaScript(FALSE)
-                            alert "sa mèm !"
-                          </pre><button class="run-previous-code">Témas le zafer !</button>
+        <div id="theory">
+            <div class="header-container">
                 
-                          <h3>(AND / OR) & (NOT / IFTHENELSE) </h3>
-                            <ul>
-                              <li>AND(TRUE)(TRUE) &hArr; lambda abstraction  &hArr; function  &hArr; η-conversion  &hArr; TRUE</li>
+                <header class="wrapper clearfix">
+                    <h1 class="title">Un jeu de logique : Les oeufs alligator</h1>
+                    <nav>
+                        <ul>
+                            <li><a href="http://fr.wikipedia.org/wiki/Lambda-calcul">Le lambda calcul</a></li>
+                            <li><a href="http://en.wikipedia.org/wiki/Church_encoding">Les entiers de Church (uk)</a></li>
+                            <li><a href="http://worrydream.com/AlligatorEggs/">La règle du jeu (uk)</a></li>
+                        </ul>
+                    </nav>
+                </header>
+                
+            </div>
+
+            <!-- #main-container -->
+            <div class="main-container">
+                <div class="main wrapper clearfix">
+                    <article>
+                        <header>
+                            <h1>Théorie</h1>
+                          Ce jeu représente le lambda calcul (non typé).<button id="play">Jouer</button>
+                          <ul>
+                            <li>Un alligator de couleur est une lambda abstraction</li>
+                            <li>Un (vieil) alligator blanc représente des parenthèses</li>
+                            <li>Un oeuf est une variables</li>
+                            <li>La règle numero un, "règle de je-te-mange", correspond à une beta-reduction.</li>
+                            <li>La règle numero deux, "règle de la couleur", correspond à une alpha-conversion.</li>
+                            <li>La règle du vieil alligator dit que si une paire de parenthèses contient un seul terme, les parenthèses peuvent être enlevées</li>
                           </ul>
-                          <pre class="code">
-                            booleanJavaScript = (f) -> f(true)(false)
-                            TRUE = (x) -> (y) -> x # λx.λy.x 
-                            FALSE = (x) -> (y) -> y # λx.λy.y
-                            
-                            # λp.λq.p q p
-                            AND = (p) -> (q) -> p(q)(p)
-                            # λp.λq.p p q
-                            OR  = (p) -> (q) -> p(p)(q)
-                            # λp.λa.λb.p b a        
-                            NOT = (p) -> (a) -> (b) -> p(b)(a)
-                            
-                            alert "oté fépètè !"
-                            alert booleanJavaScript AND(TRUE)(TRUE) # --> true
-                            alert booleanJavaScript AND(TRUE)(FALSE) # --> false
-                            alert AND(FALSE)(TRUE)  # --> false
-                            alert AND(FALSE)(FALSE) # --> false
-                        </pre><button class="run-previous-code">tcheksa mon dalon !</button>
-                    </section>    
-                    <section>
-                    
-                      <h2>Church à les Numéros</h2>
-                        <ul>
-                          <li>Numero Zéro à Church &hArr; 0 &hArr; Fonction IDentité  &hArr;  (x) -> x</li>
-                        </ul>
-                        <pre class="code">
-                          booleanJavaScript = (f) -> f(true)(false)
-                          TRUE = (x) -> (y) -> x # λx.λy.x
-                          FALSE = (x) -> (y) -> y # λx.λy.y
                           
-                          $0 = ZERO  = (f) -> (x) -> x            # λf.λx.x
-                          $1 = ONE   = (f) -> (x) -> f x          # λf.λx.f x
-                          $2 = TWO   = (f) -> (x) -> f f x        # λf.λx.f (f x)
-                          $3 = THREE = (f) -> (x) -> f f f x      # λf.λx.f (f (f x))
-                          $4 = FOUR  = (f) -> (x) -> f f f f x    # λf.λx.f (f (f (f x)))
-                          $5 = FIVE  = (f) -> (x) -> f f f f f x  # λf.λx.f (f (f (f (f x))))
+                          <h1>λ-Calcul en CoffeeScript</h1>  
+                            <pre class="code">
+                             <textarea type="text" style="width:100%;">
+    Id = (x) -> x
+    TRUE  = (x) -> (y) -> x # λx.λy.x
+    FALSE = (x) -> (y) -> y # λx.λy.y
+    JSbool = (f) -> f(true)(false)
+    AND = (p) -> (q) -> p(q)(p)               # λp.λq.p q p
+    OR  = (p) -> (q) -> p(p)(q)               # λp.λq.p p q
+    NOT = (p) -> (a) -> (b) -> p(b)(a)        # λp.λa.λb.p b a  
 
-                          ISZERO = (n) -> n( (x) -> FALSE )(TRUE) # λn.n (λx.FALSE) TRUE
-                          IFTHENELSE = (p) -> (a) -> (b) -> p(a)(b) # λp.λa.λb.p a b
+    $0 = ZERO  = (f) -> (x) -> x            # λf.λx.x
+    $1 = ONE   = (f) -> (x) -> f x          # λf.λx.f x
+    $2 = TWO   = (f) -> (x) -> f f x        # λf.λx.f (f x)
+    $3 = THREE = (f) -> (x) -> f f f x      # λf.λx.f (f (f x))
+    $4 = FOUR  = (f) -> (x) -> f f f f x    # λf.λx.f (f (f (f x)))
+    $5 = FIVE  = (f) -> (x) -> f f f f f x  # λf.λx.f (f (f (f (f x))))
 
-                          alert "Nawar mounwar saklé vrè !"
-                          alert IFTHENELSE(TRUE)(THREE)(FOUR)  # --> THREE
-                          alert IFTHENELSE(FALSE)(THREE)(FOUR) # --> FOUR
-                          alert IFTHENELSE(ISZERO(ZERO))(THREE)(FOUR) # --> THREE
-                          alert IFTHENELSE(ISZERO(ONE))(THREE)(FOUR)  # --> FOUR
-                        </pre><button class="run-previous-code">Nawar mounwar saklé vrè !</button>
+    ISZERO = (n) -> n( (x) -> FALSE )(TRUE) # λn.n (λx.FALSE) TRUE
+    IF = (p) -> (a) -> (b) -> p(a)(b) # λp.λa.λb.p a b
 
-                      <h2>Churchons les Numéros Javascript</h2>
-                        <ul>
-                          <li>int &hArr; integerJavaScript  &hArr; Church Numeral</li>
-                        </ul>
-                      
-                        <pre class="code">
-                          int   = (n) -> n((x) -> ++x)(0)
-                          
-                          $0 = ZERO = (f) -> (x) -> x # λf.λx.x
-                          $1 = ONE = (f) -> (x) -> f x # λf.λx.f x
-                          $2 = TWO = (f) -> (x) -> f f x # λf.λx.f (f x)
-                          $3 = THREE = (f) -> (x) -> f f f x # λf.λx.f (f (f x))
-                          $4 = FOUR = (f) -> (x) -> f f f f x # λf.λx.f (f (f (f x)))
-                          $5 = FIVE = (f) -> (x) -> f f f f f x # λf.λx.f (f (f (f (f x))))
-                          
-                          #Predecesseur &amp; Successeur SUCC 
-                          # λn.λf.λx.n (λg.λh.h (g f)) (λu.x) (λu.u)
-                          PRED = (n) -> (f) -> (x) -> n((g) -> (h) -> h g f)((u) -> x)((u) -> u)
-                          SUCC = (n) -> (f) -> (x) -> f (n(f)(x)) # λn.λf.λx.f (n f x)
-
-                          #addition PLUS
-                          PLUS = (m) -> (n) -> (f) -> (x) -> m(f)(n(f)(x)) # λm.λn.λf.λx.m f (n f x)
-                          PLUS = (m) -> (n) -> m(SUCC)(n) # λm.λn.m SUCC n
-
-                          #soustraction SUB
-                          SUB = (m) -> (n) -> n(PRED)(m) # λm.λn.n PRED m
-
-                          #multiplication MULT
-                          MULT = (m) -> (n) -> (f) -> m n f # λm.λn.λf.m (n f)
-
-                          #power POW
-                          POW  = (b) -> (e) -> e b  # λb.λe.e b     
-
-                          alert   PLUS(ONE)(TWO) # --> THREE
-                          alert int PLUS(ONE)(TWO)  # --> 3
-                          alert int SUCC(ONE)       # --> 2
-                          alert int MULT(TWO)(FIVE) # --> 10
-                          alert int POW(TWO)(FIVE)  # --> 32
-                          alert int PRED(TWO)       # --> 1
-                          alert int SUB(THREE)(TWO) # --> 1
-                          alert int SUB(TWO)(THREE) # --> 0
-                          alert "Perkutè kwé ?!"
-                        </pre><button class="run-previous-code">Perkutè kwé ?!</button>
-                        
-                    </section>
-                          
-                    <section>
-                      <h2>Combinateurs</h2>
-                        <ul>
-                          <li>combinateurs &hArr; lambda expressions sans constante</li>
-                          <li>En λ-calcul les abstractions sont anonymous !</li>
-                          <li>Pas de nom de fonction dans le corps de la fonction
-                          <li>Heureusement : le combinateurwaï Y</li>
-                        </ul>
-                        <pre class="code">
-                          int = (n) -> n((x) -> ++x)(0)
-                          
-                          #Le plus simple : le combinateur Identité
-                          I = (x) -> x # λx.x
-                          
-                          TRUE  = (x) -> (y) -> x # λx.λy.x
-                          FALSE = (x) -> (y) -> y # λx.λy.y
-                          
-                          $0 = ZERO  = (f) -> (x) -> x            # λf.λx.x
-                          $1 = ONE   = (f) -> (x) -> f x          # λf.λx.f x
-                          $2 = TWO   = (f) -> (x) -> f f x        # λf.λx.f (f x)
-                          $3 = THREE = (f) -> (x) -> f f f x      # λf.λx.f (f (f x))
-                          $4 = FOUR  = (f) -> (x) -> f f f f x    # λf.λx.f (f (f (f x)))
-                          $5 = FIVE  = (f) -> (x) -> f f f f f x  # λf.λx.f (f (f (f (f x))))
-
-                          ISZERO = (n) -> n( (x) -> FALSE )(TRUE) # λn.n (λx.FALSE) TRUE
-                          #Predecesseur &amp; Successeur SUCC 
-                          # λn.λf.λx.n (λg.λh.h (g f)) (λu.x) (λu.u)
-                          PRED = (n) -> (f) -> (x) -> n((g) -> (h) -> h g f)((u) -> x)((u) -> u)
-                          SUCC = (n) -> (f) -> (x) -> f (n(f)(x)) # λn.λf.λx.f (n f x)
-
-                          #multiplication MULT
-                          MULT = (m) -> (n) -> (f) -> m n f # λm.λn.λf.m (n f)
-
-                          #Récursivité
-                          U = (f) -> f(f)
-                          Y = (g) -> ((x) -> g (x x))((x) -> g (x x)) # λg.(λx.g (x x)) (λx.g (x x))
-  
-                          #La Factorielle 
-                          # λr.λn.(1, if n = 0; else n × (r (n−1)))
-                          YP = (f) -> (g) -> (x) -> (f g g) x
-                          Y = (f) ->  (YP f) (YP f)
-                          FACT = Y (r) -> (n) -> (((ISZERO n) (x) -> ONE) (x) -> (MULT n) (r (PRED n))) I
-
-                          alert int FACT FOUR
-
-                        </pre><button class="run-previous-code">Perkutè kwé ?!</button>
-                        
-
-                    </section>
+    int   = (n) -> n((x) -> ++x)(0)
+    toInt = (n) -> (n ((x) -> x + 1)) 0
                
-                    <footer>
-                        <h3>Florian Tobé 2015</h3>
-                    </footer> 
-              
-                </article>
+    #Predecesseur & Successeur SUCC 
+    # λn.λf.λx.n (λg.λh.h (g f)) (λu.x) (λu.u)
+    PRED = (n) -> (f) -> (x) -> n((g) -> (h) -> h g f)((u) -> x)((u) -> u)
+    SUCC = (n) -> (f) -> (x) -> f (n(f)(x)) # λn.λf.λx.f (n f x)
 
-                <aside>
-                     
-                    <h3>Liens</h3>
-                      <ul>
-                        <li><a href="http://en.wikipedia.org/wiki/Lambda_calculus">Wikipedia : λ-calcul</a>
-                        <li><a href="https://github.com/emorikawa/lambda-cofffee/blob/master/%CE%BB.litcoffee">original</a></li>
-                        <li><a href="http://worrydream.com/AlligatorEggs/">description du jeu des alligators</a>
-                        <li><a href="http://metatoys.org/alligator/">Le jeu en ligne des alligators</a></li>
-                      </ul>
-                </aside>
+    #addition PLUS
+    PLUS = (m) -> (n) -> (f) -> (x) -> m(f)(n(f)(x)) # λm.λn.λf.λx.m f (n f x)
+    PLUS = (m) -> (n) -> m(SUCC)(n) # λm.λn.m SUCC n
 
-            </div> <!-- #main -->
-        </div>
+    #soustraction SUB
+    SUB = (m) -> (n) -> n(PRED)(m) # λm.λn.n PRED m
 
-        <div class="footer-container">
-            <footer class="wrapper">
-                <h3>Florian Tobé 2015</h3>
-            </footer>
-        </div>
+    #multiplication MULT
+    MULT = (m) -> (n) -> (f) -> m n f # λm.λn.λf.m (n f)
 
+    #power POW
+    POW  = (b) -> (e) -> e b  # λb.λe.e b     
+
+    #Récursivité
+    I = (x) -> x # λx.x
+
+    #La Factorielle 
+    # λr.λn.(1, if n = 0; else n × (r (n−1)))
+    YP = (f) -> (g) -> (x) -> (f g g) x
+    Y = (f) ->  (YP f) (YP f)
+    FACT = Y (r) -> (n) -> (((ISZERO n) (x) -> ONE) (x) -> (MULT n) (r (PRED n))) I
+    REPEAT = Y (r) -> (n) -> (c) -> (((ISZERO n) (x) -> NIL) (x) -> (PAIR c) ((r PRED n) c)) I
+    alert int FACT FOUR
+                             </textarea><button class="run-previous-code">Church !</button>
+                            </pre>
+                        </header>
+                        <section>
+                            <h2>Fonctions Haskell-iennes</h2>
+                             <ul>
+                              <li>Une <b>lambda abstraction</b> s'écrit λx.x  &hArr;  f(x) = x &hArr;  (x) -> x</li>
+                              <li>L'<b>application</b> (λx.x)(2) &hArr; f(x) = x & x=2 &hArr; ((x) -> x)(2)</li>
+                               <li>le λ-calculus encode données, logique des prédicats & recursivité</li>
+                              <li>λ-calcul compute saklé computable !</li>
+                            </ul>          
+                            <pre id="1" class="code">
+                                  f = (x) -> x
+                                                    
+                                  alert ((x) -> x)(2)
+                                  alert f
+                                  alert f(2)
+                                  alert "Sa ti giny, sati geign pas !"
+                            </pre><button class="run-previous-code">Sa ti giny, sati geign pas !</button>
+                              
+                        </section>
+                        <section>
+                            <h2>Logique des prédicats</h2>
+                              <h3>Church à les bools : true & false</h3>
+                              <pre id="1" class="code">
+                                TRUE  = (x) -> (y) -> x # λx.λy.x
+                                FALSE = (x) -> (y) -> y # λx.λy.y
+                                
+                                booleanJavaScript = (f) -> f(true)(false)
+                               
+                                alert booleanJavaScript(TRUE)
+                                alert booleanJavaScript(FALSE)
+                                alert "sa mèm !"
+                              </pre><button class="run-previous-code">Témas le zafer !</button>
+                    
+                              <h3>(AND / OR) & (NOT / IFTHENELSE) </h3>
+                                <ul>
+                                  <li>AND(TRUE)(TRUE) &hArr; lambda abstraction  &hArr; function  &hArr; η-conversion  &hArr; TRUE</li>
+                              </ul>
+                              <pre class="code">
+                                booleanJavaScript = (f) -> f(true)(false)
+                                TRUE = (x) -> (y) -> x # λx.λy.x 
+                                FALSE = (x) -> (y) -> y # λx.λy.y
+                                
+                                # λp.λq.p q p
+                                AND = (p) -> (q) -> p(q)(p)
+                                # λp.λq.p p q
+                                OR  = (p) -> (q) -> p(p)(q)
+                                # λp.λa.λb.p b a        
+                                NOT = (p) -> (a) -> (b) -> p(b)(a)
+                                
+                                alert "oté fépètè !"
+                                alert booleanJavaScript AND(TRUE)(TRUE) # --> true
+                                alert booleanJavaScript AND(TRUE)(FALSE) # --> false
+                                alert AND(FALSE)(TRUE)  # --> false
+                                alert AND(FALSE)(FALSE) # --> false
+                            </pre><button class="run-previous-code">tcheksa mon dalon !</button>
+                        </section>    
+                        <section>
+                        
+                          <h2>Church à les Numéros</h2>
+                            <ul>
+                              <li>Numero Zéro à Church &hArr; 0 &hArr; Fonction IDentité  &hArr;  (x) -> x</li>
+                            </ul>
+                            <pre class="code">
+                              booleanJavaScript = (f) -> f(true)(false)
+                              TRUE = (x) -> (y) -> x # λx.λy.x
+                              FALSE = (x) -> (y) -> y # λx.λy.y
+                              
+                              $0 = ZERO  = (f) -> (x) -> x            # λf.λx.x
+                              $1 = ONE   = (f) -> (x) -> f x          # λf.λx.f x
+                              $2 = TWO   = (f) -> (x) -> f f x        # λf.λx.f (f x)
+                              $3 = THREE = (f) -> (x) -> f f f x      # λf.λx.f (f (f x))
+                              $4 = FOUR  = (f) -> (x) -> f f f f x    # λf.λx.f (f (f (f x)))
+                              $5 = FIVE  = (f) -> (x) -> f f f f f x  # λf.λx.f (f (f (f (f x))))
+
+                              ISZERO = (n) -> n( (x) -> FALSE )(TRUE) # λn.n (λx.FALSE) TRUE
+                              IFTHENELSE = (p) -> (a) -> (b) -> p(a)(b) # λp.λa.λb.p a b
+
+                              alert "Nawar mounwar saklé vrè !"
+                              alert IFTHENELSE(TRUE)(THREE)(FOUR)  # --> THREE
+                              alert IFTHENELSE(FALSE)(THREE)(FOUR) # --> FOUR
+                              alert IFTHENELSE(ISZERO(ZERO))(THREE)(FOUR) # --> THREE
+                              alert IFTHENELSE(ISZERO(ONE))(THREE)(FOUR)  # --> FOUR
+                            </pre><button class="run-previous-code">Nawar mounwar saklé vrè !</button>
+
+                          <h2>Churchons les Numéros Javascript</h2>
+                            <ul>
+                              <li>int &hArr; integerJavaScript  &hArr; Church Numeral</li>
+                            </ul>
+                          
+                            <pre class="code">
+                              int   = (n) -> n((x) -> ++x)(0)
+                              
+                              $0 = ZERO = (f) -> (x) -> x # λf.λx.x
+                              $1 = ONE = (f) -> (x) -> f x # λf.λx.f x
+                              $2 = TWO = (f) -> (x) -> f f x # λf.λx.f (f x)
+                              $3 = THREE = (f) -> (x) -> f f f x # λf.λx.f (f (f x))
+                              $4 = FOUR = (f) -> (x) -> f f f f x # λf.λx.f (f (f (f x)))
+                              $5 = FIVE = (f) -> (x) -> f f f f f x # λf.λx.f (f (f (f (f x))))
+                              
+                              #Predecesseur &amp; Successeur SUCC 
+                              # λn.λf.λx.n (λg.λh.h (g f)) (λu.x) (λu.u)
+                              PRED = (n) -> (f) -> (x) -> n((g) -> (h) -> h g f)((u) -> x)((u) -> u)
+                              SUCC = (n) -> (f) -> (x) -> f (n(f)(x)) # λn.λf.λx.f (n f x)
+
+                              #addition PLUS
+                              PLUS = (m) -> (n) -> (f) -> (x) -> m(f)(n(f)(x)) # λm.λn.λf.λx.m f (n f x)
+                              PLUS = (m) -> (n) -> m(SUCC)(n) # λm.λn.m SUCC n
+
+                              #soustraction SUB
+                              SUB = (m) -> (n) -> n(PRED)(m) # λm.λn.n PRED m
+
+                              #multiplication MULT
+                              MULT = (m) -> (n) -> (f) -> m n f # λm.λn.λf.m (n f)
+
+                              #power POW
+                              POW  = (b) -> (e) -> e b  # λb.λe.e b     
+
+                              alert   PLUS(ONE)(TWO) # --> THREE
+                              alert int PLUS(ONE)(TWO)  # --> 3
+                              alert int SUCC(ONE)       # --> 2
+                              alert int MULT(TWO)(FIVE) # --> 10
+                              alert int POW(TWO)(FIVE)  # --> 32
+                              alert int PRED(TWO)       # --> 1
+                              alert int SUB(THREE)(TWO) # --> 1
+                              alert int SUB(TWO)(THREE) # --> 0
+                              alert "Perkutè kwé ?!"
+                            </pre><button class="run-previous-code">Perkutè kwé ?!</button>
+                            
+                        </section>
+                              
+                        <section>
+                          <h2>Combinateurs</h2>
+                            <ul>
+                              <li>combinateurs &hArr; lambda expressions sans constante</li>
+                              <li>En λ-calcul les abstractions sont anonymous !</li>
+                              <li>Pas de nom de fonction dans le corps de la fonction
+                              <li>Heureusement : le combinateurwaï Y</li>
+                            </ul>
+                            <pre class="code">
+                              int = (n) -> n((x) -> ++x)(0)
+                              
+                              #Le plus simple : le combinateur Identité
+                              I = (x) -> x # λx.x
+                              
+                              TRUE  = (x) -> (y) -> x # λx.λy.x
+                              FALSE = (x) -> (y) -> y # λx.λy.y
+                              
+                              $0 = ZERO  = (f) -> (x) -> x            # λf.λx.x
+                              $1 = ONE   = (f) -> (x) -> f x          # λf.λx.f x
+                              $2 = TWO   = (f) -> (x) -> f f x        # λf.λx.f (f x)
+                              $3 = THREE = (f) -> (x) -> f f f x      # λf.λx.f (f (f x))
+                              $4 = FOUR  = (f) -> (x) -> f f f f x    # λf.λx.f (f (f (f x)))
+                              $5 = FIVE  = (f) -> (x) -> f f f f f x  # λf.λx.f (f (f (f (f x))))
+
+                              ISZERO = (n) -> n( (x) -> FALSE )(TRUE) # λn.n (λx.FALSE) TRUE
+                              #Predecesseur &amp; Successeur SUCC 
+                              # λn.λf.λx.n (λg.λh.h (g f)) (λu.x) (λu.u)
+                              PRED = (n) -> (f) -> (x) -> n((g) -> (h) -> h g f)((u) -> x)((u) -> u)
+                              SUCC = (n) -> (f) -> (x) -> f (n(f)(x)) # λn.λf.λx.f (n f x)
+
+                              #multiplication MULT
+                              MULT = (m) -> (n) -> (f) -> m n f # λm.λn.λf.m (n f)
+
+                              #Récursivité
+                              U = (f) -> f(f)
+                              Y = (g) -> ((x) -> g (x x))((x) -> g (x x)) # λg.(λx.g (x x)) (λx.g (x x))
+      
+                              #La Factorielle 
+                              # λr.λn.(1, if n = 0; else n × (r (n−1)))
+                              YP = (f) -> (g) -> (x) -> (f g g) x
+                              Y = (f) ->  (YP f) (YP f)
+                              FACT = Y (r) -> (n) -> (((ISZERO n) (x) -> ONE) (x) -> (MULT n) (r (PRED n))) I
+
+                              alert int FACT FOUR
+
+                            </pre><button class="run-previous-code">Perkutè kwé ?!</button>
+                            
+
+                        </section>
+                   
+                        <footer>
+                            <h3>Florian Tobé 2015</h3>
+                        </footer> 
+                  
+                    </article>
+
+                    <aside>
+                         
+                        <h3>Liens</h3>
+                          <ul>
+                            <li><a href="http://en.wikipedia.org/wiki/Lambda_calculus">Wikipedia : λ-calcul</a>
+                            <li><a href="https://github.com/emorikawa/lambda-cofffee/blob/master/%CE%BB.litcoffee">original</a></li>
+                            <li><a href="http://worrydream.com/AlligatorEggs/">description du jeu des alligators</a>
+                            <li><a href="http://metatoys.org/alligator/">Le jeu en ligne des alligators</a></li>
+                          </ul>
+                    </aside>
+
+                </div> <!-- #main -->
+            </div>
+
+            <div class="footer-container">
+                <footer class="wrapper">
+                    <h3>Florian Tobé 2015</h3>
+                </footer>
+            </div>
+     </div>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
 
         <script src="js/main.js"></script>

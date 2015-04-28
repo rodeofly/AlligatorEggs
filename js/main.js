@@ -58,7 +58,7 @@
       "texte": "<p>Voilà un vieil alligator avec des œufs ! Le vieil alligator n'a plus faim, il a assez mangé.</p><p>Tous ce qu'il fait, c'est prendre soin de sa famille : ici ce sont des œufs !</p><p>Les œufs vont éclore et donner de nouvelles familles d'alligators.</p><p>Fais glisser un vieil alligator dans le panel, puis fais glisser le premier œuf sur le bout de la queue. Enfin, un à un, glisse des œufs les uns sur les autres pour les ajouter !</p>",
       "contenu-exercice": "(f g h i i )",
       "contenu-eleve": "",
-      "compte-rendu": "?",
+      "compte-rendu": "λ?",
       "solution": "(f g h i i ) "
     },
     "1": {
@@ -66,7 +66,7 @@
       "texte": "<p>Voilà des alligators affamés...Les alligators affamés sont voraces. Ils vont manger tout ce qui est en devant eux (au point de mourir d'indigestion)! Mais ils sont aussi des alligators responsables, et comme les vieux alligators, ils gardent leurs familles.</p><p>Allez fais glisser !</p>",
       "contenu-exercice": "λx.(λy.(λz.() ) ) ",
       "contenu-eleve": "λx.()",
-      "compte-rendu": "?",
+      "compte-rendu": "λ?",
       "solution": "λx.(λy.(λz.() ) ) "
     },
     "2": {
@@ -74,7 +74,7 @@
       "texte": "<p>Voici une petite famille : un alligator garde son œuf !</p><p>Peux tu la recréer ?</p>",
       "contenu-exercice": "λe.e",
       "contenu-eleve": "",
-      "compte-rendu": "?",
+      "compte-rendu": "λ?",
       "solution": "λe.(e ) "
     },
     "3": {
@@ -82,7 +82,7 @@
       "texte": "<p>Voici une petite famille un peu plus grande.</p><p>Un alligator garde un autre alligator qui garde deux œufs. Ou on peut dire qu'un alligator garde un autre alligator qui est gardien des deux œufs.</p><p>Peux tu la recréer ?</p>",
       "contenu-exercice": "λe.λf.e f",
       "contenu-eleve": "",
-      "compte-rendu": "?",
+      "compte-rendu": "λ?",
       "solution": "λe.(λf.(e f ) ) "
     },
     "4": {
@@ -90,7 +90,7 @@
       "texte": "<p>Voici une grande famille ! Nous avons un alligator jaune, un vert et un rose qui gardent cette famille. Ils gardent trois choses : un œuf vert, un vieux crocodile , et un œuf rose. Le vieil alligator, lui, garde un œuf jaune et un œuf vert.</p><p>Note bien que les œufs n'utilisent que les couleurs des alligators qui les surveillent . On ne peut pas avoir un œuf bleu sans qu'il y ait un alligator bleu au-dessus pour le garder.</p><p>Peux recréer cette famille ?</p>",
       "contenu-exercice": "λh.λe.λg.(e (h e) g)",
       "contenu-eleve": "λh.λe.λg.(e (h e) g)",
-      "compte-rendu": "?",
+      "compte-rendu": "λ?",
       "solution": "λh.(λe.(λg.(e (h e ) g ) ) ) "
     },
     "5": {
@@ -128,7 +128,7 @@
     }
   };
 
-  ALPHABET = "abcdefghijklmnopqrstuvwxyz";
+  ALPHABET = "abcdefghijklmnopqrstuvwxyz?";
 
   _ref = [[], {}, false, true, 0, 0, 500], color_tab = _ref[0], var_tab = _ref[1], debug = _ref[2], infobox = _ref[3], id = _ref[4], parentheses = _ref[5], delta = _ref[6];
 
@@ -137,13 +137,12 @@
   $(function() {
     var color_rule_check, find_action_pointer, get_lambda_from, go_one_step, help, initialize_html, inserer, insert_exp_into_div, looping, make_dropped_droppable, promises;
     (initialize_html = function() {
-      var color, html, index, key, letter, s, value, _i, _j, _len, _len1, _ref1;
+      var color, html, index, key, letter, s, value, _i, _j, _len, _len1;
       for (key in EXERCICES) {
         $('#exercices').append("<button class='panel-button exercice'  data-id='" + key + "'>Ex" + key + "</button>");
       }
-      _ref1 = ALPHABET.slice(0, 26);
-      for (index = _i = 0, _len = _ref1.length; _i < _len; index = ++_i) {
-        letter = _ref1[index];
+      for (index = _i = 0, _len = ALPHABET.length; _i < _len; index = ++_i) {
+        letter = ALPHABET[index];
         color_tab.push(CSS_COLOR_NAMES[index]);
         var_tab["" + letter] = CSS_COLOR_NAMES[index];
       }
@@ -174,11 +173,24 @@
           });
         }
       }));
+      $("#root, #exercice").on("focus", function() {
+        return $("body").addClass("stop-scrolling");
+      });
+      $("#root, #exercice").on("focusout", function() {
+        return $("body").removeClass("stop-scrolling");
+      });
       $("#choose-color").selectmenu({
-        appendTo: "#top-panel"
-      }).addClass("menu-overflow").val("z").selectmenu('refresh').on("selectmenuchange", function(event, ui) {
-        var variable, _ref2;
-        _ref2 = [ui.item.element.attr("data-color"), ui.item.value], color = _ref2[0], variable = _ref2[1];
+        appendTo: "#top-panel",
+        open: function() {
+          return $("body").addClass("stop-scrolling");
+        },
+        close: function() {
+          return $("body").removeClass("stop-scrolling");
+        }
+      });
+      $("#choose-color").selectmenu().addClass("menu-overflow").val("z").selectmenu('refresh').on("selectmenuchange", function(event, ui) {
+        var variable, _ref1;
+        _ref1 = [ui.item.element.attr("data-color"), ui.item.value], color = _ref1[0], variable = _ref1[1];
         $("#panel-lambda").attr("data-variable", variable).html("λ" + variable);
         $("#panel-variable").attr("data-variable", variable).html("" + variable);
         $("#egg-svg, #open-svg").find(".skin").css("fill", color);
@@ -210,11 +222,11 @@
         step: 500,
         value: 2000,
         slide: function(event, ui) {
-          $("#amount").val(ui.value);
+          $("#amount").html(ui.value);
           return delta = ui.value;
         }
       });
-      $("#amount").val($("#slider-range-max").slider("value"));
+      $("#amount").html($("#slider-range-max").slider("value"));
       $("#command-panel").draggable();
       return $(".item").draggable({
         helper: "clone",
@@ -311,8 +323,8 @@
       exp.find(".definition_drop").remove();
       exp.find(".application_drop").remove();
       exp = exp.html();
-      exp = exp.replace(/<div[ style="opacity: 1;"]* id="\d*" class="variable dropped" data-variable="(\w+)" data-color="\w+"[ style="opacity: 1;"]*>\s*<\/div>/g, "$1 ");
-      exp = exp.replace(/<div[ style="opacity: 1;"]* id="\d*" class="lambda dropped" data-variable="(\w+)" data-color="\w+"[ style="opacity: 1;"]*>/g, "λ$1.(");
+      exp = exp.replace(/<div[ style="opacity: 1;"]* id="\d*" class="variable[\w \_\-]*" data-variable="([\w\?])" data-color="\w+"[ style="opacity: 1;"]*>\s*<\/div>/g, "$1 ");
+      exp = exp.replace(/<div[ style="opacity: 1;"]* id="\d*" class="lambda[\w \_\-]*" data-variable="([\w\?])" data-color="\w+"[ style="opacity: 1;"]*>/g, "λ$1.(");
       exp = exp.replace(/<div[ style="opacity: 1;"]* id="\d*" class="lambda priorite dropped" data-variable="\(" data-color="white"[ style="opacity: 1;"]*>/g, "(");
       exp = exp.replace(/<\/div>/g, ") ");
       return exp = exp.replace(/\s{2,}/g, " ");
@@ -321,107 +333,105 @@
       var current_index, expression, local_debug, reg, λ_index, λ_variable;
       expression = exp;
       id = 0;
-      if (expression !== "?") {
-        expression = expression.replace(/([.( ])([a-z])/g, "$1woot$2");
-        local_debug = false;
-        while (expression.match(/λ/)) {
-          λ_index = 0;
-          while (expression[λ_index] !== "λ") {
-            λ_index += 1;
-          }
-          λ_variable = λ_index + 1;
-          current_index = λ_index + 3;
-          switch (expression[λ_index - 1]) {
-            case "(":
-              if (local_debug) {
-                alert("prototype : (λx. lambda ) = " + expression);
-              }
-              parentheses = 1;
-              while ((parentheses > 0) && (current_index < expression.length) && (expression[current_index] !== "<")) {
-                switch (expression[current_index]) {
-                  case "(":
-                    parentheses += 1;
-                    break;
-                  case ")":
-                    parentheses -= 1;
-                }
-                current_index += 1;
-              }
-              if (local_debug) {
-                alert("I got this : " + (expression.substring(λ_index - 1, current_index)));
-              }
-              expression = expression.replace(expression.substring(λ_index - 1, current_index), "<div id='' class='lambda dropped' data-variable='" + expression[λ_variable] + "' data-color=''>" + (expression.substring(λ_index + 3, current_index - 1)) + "</div>");
-              continue;
-            default:
+      expression = expression.replace(/([.( ])(([\w\?]))/g, "$1woot$2");
+      local_debug = false;
+      while (expression.match(/λ/)) {
+        λ_index = 0;
+        while (expression[λ_index] !== "λ") {
+          λ_index += 1;
+        }
+        λ_variable = λ_index + 1;
+        current_index = λ_index + 3;
+        switch (expression[λ_index - 1]) {
+          case "(":
+            if (local_debug) {
+              alert("prototype : (λx. lambda ) = " + expression);
+            }
+            parentheses = 1;
+            while ((parentheses > 0) && (current_index < expression.length) && (expression[current_index] !== "<")) {
               switch (expression[current_index]) {
                 case "(":
-                  if (local_debug) {
-                    alert("prototype : λx.(lambda) = " + expression);
-                  }
-                  parentheses = 1;
-                  while ((parentheses > 0) && (current_index < expression.length) && (expression[current_index] !== "<")) {
-                    current_index += 1;
-                    switch (expression[current_index]) {
-                      case "(":
-                        parentheses += 1;
-                        continue;
-                      case ")":
-                        parentheses -= 1;
-                        continue;
-                      default:
-                        continue;
-                    }
-                  }
-                  if (local_debug) {
-                    alert("I got this : " + (expression.substring(λ_index, current_index + 1)));
-                  }
-                  expression = expression.replace(expression.substring(λ_index, current_index + 1), "<div id='' class='lambda dropped' data-variable='" + expression[λ_variable] + "' data-color=''>" + (expression.substring(λ_index + 4, current_index)) + "</div>");
-                  continue;
-                default:
-                  if (local_debug) {
-                    alert("prototype : λx.lambda = " + expression);
-                  }
-                  while ((expression[current_index] !== "<") && (current_index < expression.length)) {
-                    current_index += 1;
-                  }
-                  if (local_debug) {
-                    alert("I got this : " + (expression.substring(λ_index, current_index)));
-                  }
-                  expression = expression.replace(expression.substring(λ_index, current_index), "<div id='' class='lambda dropped' data-variable='" + expression[λ_variable] + "' data-color=''>" + (expression.substring(λ_index + 3, current_index)) + "</div>");
-                  continue;
+                  parentheses += 1;
+                  break;
+                case ")":
+                  parentheses -= 1;
               }
-          }
+              current_index += 1;
+            }
+            if (local_debug) {
+              alert("I got this : " + (expression.substring(λ_index - 1, current_index)));
+            }
+            expression = expression.replace(expression.substring(λ_index - 1, current_index), "<div id='' class='lambda dropped' data-variable='" + expression[λ_variable] + "' data-color=''>" + (expression.substring(λ_index + 3, current_index - 1)) + "</div>");
+            continue;
+          default:
+            switch (expression[current_index]) {
+              case "(":
+                if (local_debug) {
+                  alert("prototype : λx.(lambda) = " + expression);
+                }
+                parentheses = 1;
+                while ((parentheses > 0) && (current_index < expression.length) && (expression[current_index] !== "<")) {
+                  current_index += 1;
+                  switch (expression[current_index]) {
+                    case "(":
+                      parentheses += 1;
+                      continue;
+                    case ")":
+                      parentheses -= 1;
+                      continue;
+                    default:
+                      continue;
+                  }
+                }
+                if (local_debug) {
+                  alert("I got this : " + (expression.substring(λ_index, current_index + 1)));
+                }
+                expression = expression.replace(expression.substring(λ_index, current_index + 1), "<div id='' class='lambda dropped' data-variable='" + expression[λ_variable] + "' data-color=''>" + (expression.substring(λ_index + 4, current_index)) + "</div>");
+                continue;
+              default:
+                if (local_debug) {
+                  alert("prototype : λx.lambda = " + expression);
+                }
+                while ((expression[current_index] !== "<") && (current_index < expression.length)) {
+                  current_index += 1;
+                }
+                if (local_debug) {
+                  alert("I got this : " + (expression.substring(λ_index, current_index)));
+                }
+                expression = expression.replace(expression.substring(λ_index, current_index), "<div id='' class='lambda dropped' data-variable='" + expression[λ_variable] + "' data-color=''>" + (expression.substring(λ_index + 3, current_index)) + "</div>");
+                continue;
+            }
         }
-        expression = expression.replace(/[ ]*\(([^)]*\s?\)*)\)[ ]*/g, "<div id='' class='lambda priorite dropped' data-variable='parenthese' data-color='white' >$1</div>");
-        expression = expression.replace(/\(/g, "<div id='' class='lambda priorite dropped' data-variable='parenthese' data-color='white'>");
-        expression = expression.replace(/\)/g, "</div>");
-        expression = expression.replace(/parenthese/g, "(");
-        reg = /woot(\w)/g;
-        expression = expression.replace(reg, "<div id='' class='variable dropped' data-variable='$1' data-color='' ></div>");
       }
-      if (expression.match(/\?/)) {
-        expression = expression.replace(/\?/g, "<div id='' class='lambda definition_drop' data-variable='?'></div>");
-      }
+      expression = expression.replace(/[ ]*\(([^)]*\s?\)*)\)[ ]*/g, "<div id='' class='lambda priorite dropped' data-variable='parenthese' data-color='white' >$1</div>");
+      expression = expression.replace(/\(/g, "<div id='' class='lambda priorite dropped' data-variable='parenthese' data-color='white'>");
+      expression = expression.replace(/\)/g, "</div>");
+      expression = expression.replace(/parenthese/g, "(");
+      reg = /woot(([\w\?]))/g;
+      expression = expression.replace(reg, "<div id='' class='variable dropped' data-variable='$1' data-color='' ></div>");
       expression = $('<div/>').html(expression).contents();
       root.empty().append($(expression));
-      make_dropped_droppable();
-      return $(root).find(".dropped").each(function() {
+      $(root).find(".dropped").each(function() {
         var variable;
         $(this).attr("id", "" + (id += 1));
         if (($(this).hasClass("lambda")) && ($(this).hasClass("priorite"))) {
-          return $("#vieux-svg").clone().contents().prependTo($(this));
+          $("#vieux-svg").clone().contents().prependTo($(this));
         } else {
           variable = $(this).attr("data-variable");
           $(this).attr("data-color", "" + var_tab[variable]);
           if ($(this).hasClass("variable")) {
             $("#egg-svg").find(".skin").css("fill", $(this).attr("data-color"));
-            return $("#egg-svg").clone().contents().prependTo($(this));
+            $("#egg-svg").clone().contents().prependTo($(this));
           } else {
             $("#open-svg").find(".skin").css("fill", $(this).attr("data-color"));
-            return $("#open-svg").clone().contents().prependTo($(this));
+            $("#open-svg").clone().contents().prependTo($(this));
           }
         }
+        if (variable === "?") {
+          return $(this).addClass("definition_dropped");
+        }
       });
+      return make_dropped_droppable();
     };
     inserer = function(draggable, droppable) {
       var color, lambda, type, variable, _ref1, _ref2;
@@ -454,15 +464,21 @@
         case "lambda priorite":
           $("#vieux-svg").clone().contents().prependTo($(lambda));
       }
-      if (droppable.hasClass("definition_drop")) {
-        droppable.before($(lambda));
+      if (droppable.attr("data-variable") === "?") {
+        droppable.find("> svg").remove();
+        droppable.after($(lambda));
+        return droppable.remove();
       } else {
-        droppable.parent().after($(lambda));
+        if (droppable.hasClass("definition_drop")) {
+          droppable.before($(lambda));
+        } else {
+          droppable.parent().after($(lambda));
+        }
+        return droppable.remove();
       }
-      return droppable.remove();
     };
     make_dropped_droppable = function() {
-      return $(".application_drop, .definition_drop").droppable({
+      return $(".application_drop, .definition_drop, [data-variable='?']").droppable({
         hoverClass: "ui-state-hover",
         accept: ".item",
         drop: function(event, ui) {
@@ -794,6 +810,9 @@
       return $("#console").toggle();
     });
     $("#exercice").hide();
+    $("#close-exercice").on("click", function() {
+      return $("#exercice").hide();
+    });
     $(".exercice").on("click", function() {
       var exo, i, lambda, reg, texte;
       $(".animation").prop("disabled", false);
@@ -829,10 +848,7 @@
       }
       return $("#exercice").show();
     });
-    $("#close-exercice").on("click", function() {
-      return $("#exercice").hide();
-    });
-    $("#exercice > .check").on("click", function() {
+    $("#exercice .check").on("click", function() {
       var local_debug, resultat, solution;
       local_debug = true;
       solution = $("#exercice").attr("data-solution");
@@ -845,6 +861,10 @@
           return alert("[debug soluce : " + solution + " ; eleve : " + resultat + "]");
         }
       }
+    });
+    $("#theory").toggle();
+    $("#toggle-theory").on("click", function() {
+      return $("#theory").toggle();
     });
     $("#play").on("click", function() {
       return $("#game-container").dialog("open");

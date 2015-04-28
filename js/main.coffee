@@ -35,7 +35,7 @@ EXERCICES =
     "texte"            : "<p>Voilà un vieil alligator avec des œufs ! Le vieil alligator n'a plus faim, il a assez mangé.</p><p>Tous ce qu'il fait, c'est prendre soin de sa famille : ici ce sont des œufs !</p><p>Les œufs vont éclore et donner de nouvelles familles d'alligators.</p><p>Fais glisser un vieil alligator dans le panel, puis fais glisser le premier œuf sur le bout de la queue. Enfin, un à un, glisse des œufs les uns sur les autres pour les ajouter !</p>"
     "contenu-exercice" : "(f g h i i )"
     "contenu-eleve"    : ""
-    "compte-rendu"     : "?"
+    "compte-rendu"     : "λ?"
     "solution"         : "(f g h i i ) "
 
   "1" :
@@ -43,7 +43,7 @@ EXERCICES =
     "texte"            : "<p>Voilà des alligators affamés...Les alligators affamés sont voraces. Ils vont manger tout ce qui est en devant eux (au point de mourir d'indigestion)! Mais ils sont aussi des alligators responsables, et comme les vieux alligators, ils gardent leurs familles.</p><p>Allez fais glisser !</p>"
     "contenu-exercice" : "λx.(λy.(λz.() ) ) "
     "contenu-eleve"    : "λx.()"
-    "compte-rendu"     : "?"
+    "compte-rendu"     : "λ?"
     "solution"         : "λx.(λy.(λz.() ) ) "
 
   "2" :
@@ -51,7 +51,7 @@ EXERCICES =
     "texte"            : "<p>Voici une petite famille : un alligator garde son œuf !</p><p>Peux tu la recréer ?</p>"
     "contenu-exercice" : "λe.e"
     "contenu-eleve"    : ""
-    "compte-rendu"     : "?"
+    "compte-rendu"     : "λ?"
     "solution"         : "λe.(e ) "
 
   "3" :
@@ -59,7 +59,7 @@ EXERCICES =
     "texte"            : "<p>Voici une petite famille un peu plus grande.</p><p>Un alligator garde un autre alligator qui garde deux œufs. Ou on peut dire qu'un alligator garde un autre alligator qui est gardien des deux œufs.</p><p>Peux tu la recréer ?</p>"
     "contenu-exercice" : "λe.λf.e f"
     "contenu-eleve"    : ""
-    "compte-rendu"     : "?"
+    "compte-rendu"     : "λ?"
     "solution"         : "λe.(λf.(e f ) ) "
     
   "4" :
@@ -67,7 +67,7 @@ EXERCICES =
     "texte"            : "<p>Voici une grande famille ! Nous avons un alligator jaune, un vert et un rose qui gardent cette famille. Ils gardent trois choses : un œuf vert, un vieux crocodile , et un œuf rose. Le vieil alligator, lui, garde un œuf jaune et un œuf vert.</p><p>Note bien que les œufs n'utilisent que les couleurs des alligators qui les surveillent . On ne peut pas avoir un œuf bleu sans qu'il y ait un alligator bleu au-dessus pour le garder.</p><p>Peux recréer cette famille ?</p>"
     "contenu-exercice" : "λh.λe.λg.(e (h e) g)"
     "contenu-eleve"    : "λh.λe.λg.(e (h e) g)"
-    "compte-rendu"     : "?"
+    "compte-rendu"     : "λ?"
     "solution"         : "λh.(λe.(λg.(e (h e ) g ) ) ) "
 
   "5" :
@@ -106,7 +106,7 @@ EXERCICES =
     "compte-rendu"     : "λh.(h λe.(λf.( ? ) ) λe.(λf.( ? ) ) ) "
     "solution"         : "λh.(h λe.(λf.( f ) ) λe.(λf.( e ) ) ) "
     "parse"            : "yes"
-ALPHABET = "abcdefghijklmnopqrstuvwxyz"
+ALPHABET = "abcdefghijklmnopqrstuvwxyz?"
 [color_tab, var_tab, debug, infobox, id, parentheses, delta] = [ [], {}, false, true, 0, 0, 500 ]
 ahead_vars = []
 $ ->
@@ -116,7 +116,7 @@ $ ->
   do initialize_html = ->
     for key of EXERCICES
       $( '#exercices' ).append "<button class='panel-button exercice'  data-id='#{key}'>Ex#{key}</button>"
-    for letter,index in ALPHABET[0..25]
+    for letter,index in ALPHABET
       color_tab.push CSS_COLOR_NAMES[index]
       var_tab["#{letter}"] = CSS_COLOR_NAMES[index]
     html= ""
@@ -136,20 +136,25 @@ $ ->
           that = this
           $.each items, ( index, item ) ->
             that._renderItemData( ul, item )
-            $("#color").css("background" , item.element.attr("data-color")).attr("data-variable",item.value).attr "data-color", item.element.attr "data-color" 
-
-
+            $("#color").css("background" , item.element.attr("data-color")).attr("data-variable",item.value).attr "data-color", item.element.attr "data-color"
+      
+    $( "#root, #exercice" ).on "focus",    -> $("body").addClass("stop-scrolling")
+    $( "#root, #exercice" ).on "focusout", -> $("body").removeClass("stop-scrolling")
+      
     $( "#choose-color" )
-      .selectmenu({appendTo : "#top-panel"}).addClass( "menu-overflow" ).val("z").selectmenu('refresh') 
-      .on "selectmenuchange", ( event, ui ) ->
-        [color, variable] = [ui.item.element.attr("data-color"),ui.item.value]
-        $( "#panel-lambda" ).attr("data-variable", variable).html("λ#{variable}")
-        $( "#panel-variable").attr("data-variable", variable).html("#{variable}")
-        $( "#egg-svg, #open-svg" ).find(".skin").css("fill", color)
-        $("#color")
-          .css( "background"   , color )
-          .attr("data-variable", variable)
-          .attr("data-color"   , color )
+      .selectmenu
+        appendTo : "#top-panel"
+        open  : -> $("body").addClass("stop-scrolling")
+        close : -> $("body").removeClass("stop-scrolling")
+    $( "#choose-color" ).selectmenu().addClass( "menu-overflow" ).val("z").selectmenu('refresh').on "selectmenuchange", ( event, ui ) ->
+      [color, variable] = [ui.item.element.attr("data-color"),ui.item.value]
+      $( "#panel-lambda" ).attr("data-variable", variable).html("λ#{variable}")
+      $( "#panel-variable").attr("data-variable", variable).html("#{variable}")
+      $( "#egg-svg, #open-svg" ).find(".skin").css("fill", color)
+      $("#color")
+        .css( "background"   , color )
+        .attr("data-variable", variable)
+        .attr("data-color"   , color )
 
     
     s = {"egg" : "0 0 116 80", "open" : "-25 0 330 150", "vieux" : "0 0 228 78"}
@@ -177,9 +182,9 @@ $ ->
       step: 500,
       value: 2000,
       slide: ( event, ui ) -> 
-        $( "#amount" ).val( ui.value )
+        $( "#amount" ).html( ui.value )
         delta = ui.value
-    $( "#amount" ).val( $( "#slider-range-max" ).slider( "value" ) )
+    $( "#amount" ).html( $( "#slider-range-max" ).slider( "value" ) )
     
     $( "#command-panel" ).draggable()
     
@@ -263,8 +268,8 @@ $ ->
     exp.find(".definition_drop").remove()
     exp.find(".application_drop").remove()
     exp = exp.html()
-    exp = exp.replace /<div[ style="opacity: 1;"]* id="\d*" class="variable dropped" data-variable="(\w+)" data-color="\w+"[ style="opacity: 1;"]*>\s*<\/div>/g, "$1 "
-    exp = exp.replace /<div[ style="opacity: 1;"]* id="\d*" class="lambda dropped" data-variable="(\w+)" data-color="\w+"[ style="opacity: 1;"]*>/g, "λ$1.("
+    exp = exp.replace /<div[ style="opacity: 1;"]* id="\d*" class="variable[\w \_\-]*" data-variable="([\w\?])" data-color="\w+"[ style="opacity: 1;"]*>\s*<\/div>/g, "$1 "
+    exp = exp.replace /<div[ style="opacity: 1;"]* id="\d*" class="lambda[\w \_\-]*" data-variable="([\w\?])" data-color="\w+"[ style="opacity: 1;"]*>/g, "λ$1.("
     exp = exp.replace /<div[ style="opacity: 1;"]* id="\d*" class="lambda priorite dropped" data-variable="\(" data-color="white"[ style="opacity: 1;"]*>/g, "("
     exp = exp.replace(/<\/div>/g , ") ")
     exp = exp.replace(/\s{2,}/g, " ")
@@ -274,72 +279,71 @@ $ ->
   insert_exp_into_div = (exp, root) ->
     expression = exp
     id = 0
-    if expression isnt "?"
-      #make it easy to retrieve variables
-      expression = expression.replace /([.( ])([a-z])/g, "$1woot$2" 
-      #lambdas
-      local_debug = false
-      while expression.match /λ/
-        λ_index = 0
-        while expression[λ_index] isnt "λ"
-          λ_index += 1  
-        λ_variable = λ_index+1
-        current_index = λ_index+3
-        switch expression[λ_index-1]     
-          when "("
-            alert "prototype : (λx. lambda ) = #{expression}" if local_debug
-            parentheses = 1
-            while ((parentheses > 0) and (current_index < expression.length) and (expression[current_index] isnt "<"))
-              switch expression[current_index]
-                when "("
-                  parentheses +=1
-                when ")"
-                  parentheses -=1
-              current_index +=1
-            alert "I got this : #{expression.substring(λ_index-1,current_index)}" if local_debug
-            expression = expression.replace expression.substring(λ_index-1, current_index), "<div id='' class='lambda dropped' data-variable='#{expression[λ_variable]}' data-color=''>#{expression.substring(λ_index+3,current_index-1)}</div>"
-            continue
-          else 
+
+    #make it easy to retrieve variables
+    expression = expression.replace /([.( ])(([\w\?]))/g, "$1woot$2" 
+    #lambdas
+    local_debug = false
+    while expression.match /λ/
+      λ_index = 0
+      while expression[λ_index] isnt "λ"
+        λ_index += 1  
+      λ_variable = λ_index+1
+      current_index = λ_index+3
+      switch expression[λ_index-1]     
+        when "("
+          alert "prototype : (λx. lambda ) = #{expression}" if local_debug
+          parentheses = 1
+          while ((parentheses > 0) and (current_index < expression.length) and (expression[current_index] isnt "<"))
             switch expression[current_index]
               when "("
-                alert "prototype : λx.(lambda) = #{expression}" if local_debug
-                parentheses = 1
-                while ((parentheses > 0) and (current_index < expression.length) and (expression[current_index] isnt "<"))
-                  current_index += 1
-                  switch expression[current_index]
-                    when "("
-                      parentheses +=1
-                      continue
-                    when ")"
-                      parentheses -=1
-                      continue
-                    else
-                      continue
-                alert "I got this : #{expression.substring(λ_index,current_index+1)}" if local_debug
-                expression = expression.replace expression.substring(λ_index,current_index+1), "<div id='' class='lambda dropped' data-variable='#{expression[λ_variable]}' data-color=''>#{expression.substring(λ_index+4,current_index)}</div>"
-                continue 
-              else
-                alert "prototype : λx.lambda = #{expression}" if local_debug
-                
-                while ((expression[current_index] isnt "<") and (current_index < expression.length))
-                  current_index += 1
-                alert "I got this : #{expression.substring(λ_index,current_index)}" if local_debug
-                expression = expression.replace expression.substring(λ_index,current_index), "<div id='' class='lambda dropped' data-variable='#{expression[λ_variable]}' data-color=''>#{expression.substring(λ_index+3,current_index)}</div>"
-                continue           
-      #most outer parentheses
-      expression = expression.replace /[ ]*\(([^)]*\s?\)*)\)[ ]*/g, "<div id='' class='lambda priorite dropped' data-variable='parenthese' data-color='white' >$1</div>"   
-      expression = expression.replace /\(/g, "<div id='' class='lambda priorite dropped' data-variable='parenthese' data-color='white'>"
-      expression = expression.replace /\)/g, "</div>"
-      expression = expression.replace /parenthese/g, "("
-      #variables
-      reg = /woot(\w)/g
-      expression = expression.replace reg, "<div id='' class='variable dropped' data-variable='$1' data-color='' ></div>"
+                parentheses +=1
+              when ")"
+                parentheses -=1
+            current_index +=1
+          alert "I got this : #{expression.substring(λ_index-1,current_index)}" if local_debug
+          expression = expression.replace expression.substring(λ_index-1, current_index), "<div id='' class='lambda dropped' data-variable='#{expression[λ_variable]}' data-color=''>#{expression.substring(λ_index+3,current_index-1)}</div>"
+          continue
+        else 
+          switch expression[current_index]
+            when "("
+              alert "prototype : λx.(lambda) = #{expression}" if local_debug
+              parentheses = 1
+              while ((parentheses > 0) and (current_index < expression.length) and (expression[current_index] isnt "<"))
+                current_index += 1
+                switch expression[current_index]
+                  when "("
+                    parentheses +=1
+                    continue
+                  when ")"
+                    parentheses -=1
+                    continue
+                  else
+                    continue
+              alert "I got this : #{expression.substring(λ_index,current_index+1)}" if local_debug
+              expression = expression.replace expression.substring(λ_index,current_index+1), "<div id='' class='lambda dropped' data-variable='#{expression[λ_variable]}' data-color=''>#{expression.substring(λ_index+4,current_index)}</div>"
+              continue 
+            else
+              alert "prototype : λx.lambda = #{expression}" if local_debug
+              
+              while ((expression[current_index] isnt "<") and (current_index < expression.length))
+                current_index += 1
+              alert "I got this : #{expression.substring(λ_index,current_index)}" if local_debug
+              expression = expression.replace expression.substring(λ_index,current_index), "<div id='' class='lambda dropped' data-variable='#{expression[λ_variable]}' data-color=''>#{expression.substring(λ_index+3,current_index)}</div>"
+              continue           
+    #most outer parentheses
+    expression = expression.replace /[ ]*\(([^)]*\s?\)*)\)[ ]*/g, "<div id='' class='lambda priorite dropped' data-variable='parenthese' data-color='white' >$1</div>"   
+    expression = expression.replace /\(/g, "<div id='' class='lambda priorite dropped' data-variable='parenthese' data-color='white'>"
+    expression = expression.replace /\)/g, "</div>"
+    expression = expression.replace /parenthese/g, "("
+    #variables
+    reg = /woot(([\w\?]))/g
+    expression = expression.replace reg, "<div id='' class='variable dropped' data-variable='$1' data-color='' ></div>"
       #? inconnues
-    if expression.match /\?/
-      expression = expression.replace /\?/g, "<div id='' class='lambda definition_drop' data-variable='?'></div>"
+    #if expression.match /\?/
+    #  expression = expression.replace /\?/g, "<div id='' class='lambda definition_drop' data-variable='?'></div>"
     expression = $('<div/>').html( expression ).contents()
     root.empty().append $( expression )
-    make_dropped_droppable()
     #Insert alligators
     $( root ).find(".dropped").each ->
       $( this ).attr "id", "#{id += 1}"
@@ -354,7 +358,8 @@ $ ->
         else
           $( "#open-svg").find(".skin").css("fill", $(this).attr "data-color")
           $( "#open-svg").clone().contents().prependTo  $(this)
-
+      $(this).addClass("definition_dropped") if variable is "?"
+    make_dropped_droppable()
   ###########################################################################################################################################################
   #Construction graphique
   ###########################################################################################################################################################
@@ -382,14 +387,19 @@ $ ->
         $( "#open-svg").clone().contents().prependTo $(lambda)
       when "lambda priorite"
         $( "#vieux-svg").clone().contents().prependTo $(lambda)
-    if droppable.hasClass( "definition_drop" )
-      droppable.before $(lambda)
+    if droppable.attr("data-variable") is "?" 
+        droppable.find("> svg").remove()
+        droppable.after($(lambda))
+        droppable.remove()
     else
-      droppable.parent().after $(lambda)
-    droppable.remove()
-  
+      if droppable.hasClass( "definition_drop" )
+        droppable.before $(lambda)
+      else
+        droppable.parent().after $(lambda)
+      droppable.remove()
+    
   make_dropped_droppable = () ->
-    $( ".application_drop, .definition_drop" ).droppable
+    $( ".application_drop, .definition_drop, [data-variable='?']" ).droppable
       hoverClass: "ui-state-hover"
       accept : ".item"
       drop : ( event, ui ) ->
@@ -630,6 +640,7 @@ $ ->
   
   #Exercice
   $( "#exercice").hide()
+  $("#close-exercice").on "click", ->  $("#exercice").hide()  
   $( ".exercice").on "click", () ->
     $( ".animation" ).prop("disabled",false)
     i = $( this ).attr( "data-id" )
@@ -663,8 +674,8 @@ $ ->
     $( "#exercice").show()
     
   
-  $("#close-exercice").on "click", ->  $("#exercice").hide()  
-  $( "#exercice > .check" ).on "click", ->
+  
+  $( "#exercice .check" ).on "click", ->
     local_debug = true
     solution = $( "#exercice" ).attr("data-solution")
     resultat = get_lambda_from $("#compte-rendu")
@@ -675,6 +686,8 @@ $ ->
       alert "[debug soluce : #{solution} ; eleve : #{resultat}]" if local_debug
 
   #Pour l'article
+  $( "#theory" ).toggle()
+  $( "#toggle-theory" ).on("click", -> $( "#theory" ).toggle())
   $("#play").on "click", -> $("#game-container").dialog("open")
 
   $( ".run-previous-code" ).on "click", ->
