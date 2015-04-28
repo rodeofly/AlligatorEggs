@@ -268,12 +268,14 @@ $ ->
     exp.find(".definition_drop").remove()
     exp.find(".application_drop").remove()
     exp = exp.html()
-    exp = exp.replace /<div[ style="opacity: 1;"]* id="\d*" class="variable[\w \_\-]*" data-variable="([\w\?])" data-color="\w+"[ style="opacity: 1;"]*>\s*<\/div>/g, "$1 "
-    exp = exp.replace /<div[ style="opacity: 1;"]* id="\d*" class="lambda[\w \_\-]*" data-variable="([\w\?])" data-color="\w+"[ style="opacity: 1;"]*>/g, "λ$1.("
-    exp = exp.replace /<div[ style="opacity: 1;"]* id="\d*" class="lambda priorite dropped" data-variable="\(" data-color="white"[ style="opacity: 1;"]*>/g, "("
+    
+    exp = exp.replace /<div(?: style="[\w \;\:\-]*")? id="\d*" class="variable[\w \_\-]*" data-variable="([\w\?])" data-color="\w+"(?: style="[\w \;\:\-]*")?>\s*<\/div>/g, "$1 "
+    ###
+    exp = exp.replace /<div(?: style="[\w \;\:\-]*")? id="\d*" class="lambda[\w \_\-]*" data-variable="([\w\?])" data-color="\w+"(?: style="[\w \;\:\-]*")?>/g, "λ$1.("
+    exp = exp.replace /<div(?: style="[\w \;\:\-]*")? id="\d*" class="lambda priorite dropped" data-variable="\(" data-color="white"(?: style="[\w \;\:\-]*")?>/g, "("
     exp = exp.replace(/<\/div>/g , ") ")
     exp = exp.replace(/\s{2,}/g, " ")
-  ###########################################################################################################################################################
+    ### ###########################################################################################################################################################
   #Inserer une expression
   ###########################################################################################################################################################
   insert_exp_into_div = (exp, root) ->
