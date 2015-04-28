@@ -63,17 +63,19 @@
               </div>
               <div id="command-panel">
                   <button id="toggle-console">Console</button>
-                  <button id="toggle-theory">Theorie</button>
+                  <button id="toggle-theory">Theorie</button><br>
               
                   <button class="panel-button animation" id="go">&#9658;</button>
                   <button class="panel-button" id="repeat">&#9658;&#9658;</button>
-                  <button class="panel-button" id="stop">&#x25A0;</button>
-                  <p>
-                    <label for="infobox" style="color:white;">infobox</label>
-                    <input type="checkbox" id="infobox" checked/>
-                    <div style="color:white;">animation <span id="amount"></span>ms</div>
-                  </p>
-                  <div id="slider-range-max"></div>
+                  <button class="panel-button" id="stop">&#x25A0;</button><br>
+                  <label for="tags" style="color:white;">tags</label>
+                  <input type="checkbox" id="tags" checked/>
+                  <label for="infobox" style="color:white;">infobox</label>
+                  <input type="checkbox" id="infobox" checked/>
+                  <div style="color:white;">animation <span id="amount-animation"></span>ms</div>
+                  <div id="slider-animation"></div>
+                  <div style="color:white;">zoom x<span id="amount-zoom"></span></div>
+                  <div id="slider-zoom"></div>
                   <div id="vieux-svg" class="item vieux-croco"></div>
                   <div id="egg-svg"   class="item egg"></div>
                   <div id="open-svg"  class="item croco"></div>

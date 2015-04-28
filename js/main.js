@@ -140,7 +140,7 @@
       return event.preventDefault();
     });
     (initialize_html = function() {
-      var color, html, index, key, letter, value, _i, _j, _len, _len1;
+      var color, html, index, key, letter, resize, value, _i, _j, _len, _len1;
       for (key in EXERCICES) {
         $('#exercices').append("<option value='" + key + "'  data-id='" + key + "'>Exercice " + key + "</button>");
       }
@@ -250,18 +250,51 @@
         $("#vieux-svg").append(document.importNode(rawSvg.documentElement, true));
         return $("#vieux-svg svg")[0].setAttribute('viewBox', '0 0 228 78');
       }, "xml");
-      $("#slider-range-max").slider({
+      $("#slider-animation").slider({
         range: "max",
         min: 50,
         max: 6000,
         step: 500,
         value: 2000,
         slide: function(event, ui) {
-          $("#amount").html(ui.value);
+          $("#amount-animation").html(ui.value);
           return delta = ui.value;
         }
       });
-      $("#amount").html($("#slider-range-max").slider("value"));
+      $("#amount-animation").html($("#slider-animation").slider("value"));
+      resize = function() {
+        var double, simple, _ref1;
+        value = parseInt($("#amount-zoom").html());
+        _ref1 = [value + "px", (2 * value) + "px"], simple = _ref1[0], double = _ref1[1];
+        $(".lambda.priorite.dropped, .lambda.dropped").css({
+          minWidth: double,
+          minHeight: simple,
+          paddingTop: simple
+        });
+        $(".variable.dropped").css({
+          width: double,
+          height: simple
+        });
+        $(".lambda.priorite.dropped > svg, .variable.dropped > svg, .lambda.dropped > svg").css({
+          height: simple
+        });
+        return $(".definition_drop, .application_drop").css({
+          width: simple,
+          height: simple
+        });
+      };
+      $("#slider-zoom").slider({
+        range: "max",
+        min: 1,
+        max: 100,
+        step: 1,
+        value: 50,
+        slide: function(event, ui) {
+          $("#amount-zoom").html(ui.value);
+          return resize();
+        }
+      });
+      $("#amount-zoom").html($("#slider-zoom").slider("value"));
       $("#command-panel").draggable();
       return $(".item").draggable({
         helper: "clone",
@@ -279,6 +312,18 @@
       return $(this).val((_ref1 = this.checked) != null ? _ref1 : {
         1: 0
       });
+    });
+    $("#tags").on("click", function() {
+      var tags, _ref1;
+      tags = this.checked;
+      $(this).val((_ref1 = this.checked) != null ? _ref1 : {
+        1: 0
+      });
+      if (!tags) {
+        return $(".variable.dropped, .lambda.dropped").addClass("hide_pseudo");
+      } else {
+        return $(".variable.dropped, .lambda.dropped").removeClass("hide_pseudo");
+      }
     });
     $(".panel-button").on("click", function() {
       var e, index, letter, parentheses, _i, _len, _ref1, _results;
@@ -519,7 +564,7 @@
     $("#stop").click(function() {
       $(".animation").prop("disabled", false);
       looping = false;
-      return $("#slider-range-max").slider("option", "disabled", false);
+      return $("#slider-animation").slider("option", "disabled", false);
     });
     $("#go").on("click", function(event) {
       event.stopPropagation();
@@ -531,7 +576,6 @@
     $("#repeat").on("click", function() {
       $(".animation").prop("disabled", true);
       looping = true;
-      $(".variable.dropped, .lambda.dropped").addClass("hide_pseudo");
       return go_one_step("#root");
     });
     $("#help").dialog({
@@ -653,9 +697,6 @@
         step1.resolve(action_croco);
       } else {
         alert("Plus rien à faire !");
-        if (looping) {
-          $(".variable.dropped, .lambda.dropped").removeClass("hide_pseudo");
-        }
       }
       step1.done(function(pointer) {
         if ((pointer.hasClass("priorite")) && (pointer.children(":not(svg)").length < 2)) {

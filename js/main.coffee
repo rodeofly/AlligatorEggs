@@ -206,16 +206,44 @@ $ ->
       $("#vieux-svg svg")[0].setAttribute('viewBox', '0 0 228 78')
     , "xml"
     
-    $( "#slider-range-max" ).slider
+    $( "#slider-animation" ).slider
       range: "max",
       min: 50,
       max: 6000,
       step: 500,
       value: 2000,
       slide: ( event, ui ) -> 
-        $( "#amount" ).html( ui.value )
+        $( "#amount-animation" ).html( ui.value )
         delta = ui.value
-    $( "#amount" ).html( $( "#slider-range-max" ).slider( "value" ) )
+        
+    $( "#amount-animation" ).html( $( "#slider-animation" ).slider( "value" ) )
+    resize = () ->
+      value = parseInt $( "#amount-zoom" ).html()
+      [simple, double] = ["#{value}px", "#{2*value}px"]
+      $(".lambda.priorite.dropped, .lambda.dropped").css
+        minWidth  : double
+        minHeight : simple
+        paddingTop: simple
+      $(".variable.dropped").css
+        width  : double
+        height : simple
+      $(".lambda.priorite.dropped > svg, .variable.dropped > svg, .lambda.dropped > svg").css
+        height : simple
+      $(".definition_drop, .application_drop").css
+        width : simple
+        height: simple
+            
+    $( "#slider-zoom" ).slider
+      range: "max",
+      min: 1,
+      max: 100,
+      step: 1,
+      value: 50,
+      slide: ( event, ui ) -> 
+        $( "#amount-zoom" ).html( ui.value )
+        resize()
+         
+    $( "#amount-zoom" ).html( $( "#slider-zoom" ).slider( "value" ) )
     
     $( "#command-panel" ).draggable()
     
@@ -232,6 +260,14 @@ $ ->
     infobox = this.checked
     $(this).val(this.checked ? 1 : 0)
   
+  $( "#tags" ).on "click", -> 
+    tags = this.checked
+    $(this).val(this.checked ? 1 : 0)
+    if not tags
+      $(".variable.dropped, .lambda.dropped").addClass( "hide_pseudo" )
+    else
+      $(".variable.dropped, .lambda.dropped").removeClass( "hide_pseudo" )
+      
   #Gestion du panel
   $( ".panel-button" ).on "click", ->
     switch $( this ).attr("data-type")
@@ -436,7 +472,7 @@ $ ->
   $("#stop").click () -> 
     $( ".animation" ).prop("disabled",false)  
     looping = false
-    $( "#slider-range-max" ).slider( "option", "disabled", false )    
+    $( "#slider-animation" ).slider( "option", "disabled", false )    
             
   $( "#go" ).on "click", (event) ->
     event.stopPropagation()
@@ -448,7 +484,6 @@ $ ->
   $( "#repeat" ).on "click", ->
     $( ".animation" ).prop("disabled",true)
     looping = true
-    $(".variable.dropped, .lambda.dropped").addClass( "hide_pseudo" )
     go_one_step("#root")
         
   $( "#help" ).dialog
@@ -537,8 +572,6 @@ $ ->
       step1.resolve(action_croco)
     else
       alert "Plus rien à faire !"
-      if looping
-             $(".variable.dropped, .lambda.dropped").removeClass( "hide_pseudo" )
    
     #STEP 2 : regle du vieil alligator inutile
     step1.done (pointer) ->  
