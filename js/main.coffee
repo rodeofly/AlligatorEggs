@@ -354,7 +354,7 @@ $ ->
     expression = expression.replace /\)/g, "</div>"
     expression = expression.replace /parenthese/g, "("
     #variables
-    reg = /woot(([\w\?]))/g
+    reg = /woot([\w\?])/g
     expression = expression.replace reg, "<div id='' class='variable dropped' data-variable='$1' data-color='' ></div>"
       #? inconnues
     #if expression.match /\?/
@@ -557,7 +557,7 @@ $ ->
       [function_vars, application_vars, intersection] = color_rule_check(pointer)
       if intersection.length > 0
         application = pointer.next()
-        palette = (item for item in ALPHABET when item not in function_vars.concat application_vars)
+        palette = (item for item in ALPHABET[0..24] when item not in function_vars.concat application_vars)
         palette = palette[0..intersection.length-1]    
         #Pour chacune des couleurs de la fonction on va echanger dans l'application avec une couleur disponible de la palette
         for $var, index in intersection

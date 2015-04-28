@@ -429,7 +429,7 @@
       expression = expression.replace(/\(/g, "<div id='' class='lambda priorite dropped' data-variable='parenthese' data-color='white'>");
       expression = expression.replace(/\)/g, "</div>");
       expression = expression.replace(/parenthese/g, "(");
-      reg = /woot(([\w\?]))/g;
+      reg = /woot([\w\?])/g;
       expression = expression.replace(reg, "<div id='' class='variable dropped' data-variable='$1' data-color='' ></div>");
       expression = $('<div/>').html(expression).contents();
       root.empty().append($(expression));
@@ -679,10 +679,11 @@
         if (intersection.length > 0) {
           application = pointer.next();
           palette = (function() {
-            var _i, _len, _results;
+            var _i, _len, _ref2, _results;
+            _ref2 = ALPHABET.slice(0, 25);
             _results = [];
-            for (_i = 0, _len = ALPHABET.length; _i < _len; _i++) {
-              item = ALPHABET[_i];
+            for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+              item = _ref2[_i];
               if (__indexOf.call(function_vars.concat(application_vars), item) < 0) {
                 _results.push(item);
               }

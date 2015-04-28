@@ -110,7 +110,7 @@ ALPHABET = "abcdefghijklmnopqrstuvwxyz?"
 [color_tab, var_tab, debug, infobox, id, delta] = [ [], {}, false, true, 0, 500 ]
 ahead_vars = []
 $ ->
-  ###########################################################################################################################################################
+  $( "button" ).button().click ( event ) -> event.preventDefault() ###########################################################################################################################################################
   #Preparation html - Construction de la console
   ###########################################################################################################################################################
   do initialize_html = ->
@@ -354,7 +354,7 @@ $ ->
     expression = expression.replace /\)/g, "</div>"
     expression = expression.replace /parenthese/g, "("
     #variables
-    reg = /woot(([\w\?]))/g
+    reg = /woot([\w\?])/g
     expression = expression.replace reg, "<div id='' class='variable dropped' data-variable='$1' data-color='' ></div>"
       #? inconnues
     #if expression.match /\?/

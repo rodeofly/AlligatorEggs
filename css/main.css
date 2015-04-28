@@ -333,6 +333,11 @@ ul#choose-color-menu.ui-menu, ul#exercices-menu.ui-menu {
 }
 
 
+
+
+
+
+
 #root_definition.definition_drop, #solution_definition.definition_drop {
   position : absolute;
   top : 0;left:0;
@@ -343,7 +348,7 @@ svg {
   height : 2.5vw;
   width : 6vw;
 }
-.lambda.priorite.dropped {
+.lambda.priorite.dropped, .lambda.dropped {
   position:relative;
   text-align:center;
    /* this can zoom-in-out */
@@ -355,40 +360,6 @@ svg {
   justify-content: space-around;
   align-items: flex-start;
   flex-flow: row no-wrap;
-}
-.lambda.priorite.dropped > svg, .variable.dropped > svg {
-  width:100%;
-  height : 2vw;
-  position : absolute;
-  margin-left: auto;
-  margin-right: auto;
-  top: 0;
-  left: 0;
-  right: 0;
-}
-
-.lambda.dropped {
-  position:relative;
-  text-align:center;
-   /* this can zoom-in-out */
-  min-width  : 6vw;
-  min-height : 2vw;
-  padding-top: 2.5vw;
-  vertical-align: top;
-  display: inline-flex;
-  justify-content: space-around;
-  align-items: flex-start;
-  flex-flow: row no-wrap;
-}
-.lambda.dropped > svg {
-  width:100%;
-  height : 3vw;
-  position : absolute;
-  margin-left: auto;
-  margin-right: auto;
-  top: 0;
-  left: 0;
-  right: 0;
 }
 
 .variable.dropped{
@@ -400,6 +371,18 @@ svg {
   width  : 4vw;
   height : 2vw;
 }
+
+.lambda.priorite.dropped > svg, .variable.dropped > svg, .lambda.dropped > svg {
+  width:100%;
+  height : 2vw;
+  position : absolute;
+  margin-left: auto;
+  margin-right: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
 .variable.dropped::before {
   content: attr(data-variable);
   position: absolute;
