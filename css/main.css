@@ -166,7 +166,7 @@ button, input {
   display : inline-block;
   line-height: auto;
   font-size : 1vw !important;
-  border-radius : 20%;
+  border-radius : 1em;
 }
 button#clear {
   background-image: url(svg/delete.svg);
@@ -244,9 +244,16 @@ ul#choose-color-menu.ui-menu, ul#exercices-menu.ui-menu {
 #console {
   position:absolute;
   bottom : 0;
+  display: inline-flex;
+  flex-flow : row wrap;
+  justify-content: center;
+  width : 50%;
   background-color : rgba(0,0,0,0.5);
   padding : 1vw;
-  border-radius : 0.5vw;
+  border-radius : 1em;
+}
+#console button {
+
 }
 #command-panel {
   position : absolute;
@@ -254,7 +261,7 @@ ul#choose-color-menu.ui-menu, ul#exercices-menu.ui-menu {
   right : 50%;
   width : 10vw;
   padding : 1vw;
-  border-radius : 0.5vw;
+  border-radius : 1em;
   background-color : rgba(0,0,0,0.5);
   text-align : center;
 }

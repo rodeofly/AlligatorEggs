@@ -130,176 +130,170 @@
 
   ALPHABET = "abcdefghijklmnopqrstuvwxyz?";
 
-  _ref = [[], {}, false, true, 0, 500], color_tab = _ref[0], var_tab = _ref[1], debug = _ref[2], infobox = _ref[3], id = _ref[4], delta = _ref[5];
+  _ref = [[], {}, false, false, 0, 500], color_tab = _ref[0], var_tab = _ref[1], debug = _ref[2], infobox = _ref[3], id = _ref[4], delta = _ref[5];
 
   ahead_vars = [];
 
   $(function() {
-    var color_rule_check, find_action_pointer, get_lambda_from, go_one_step, help, initialize_html, inserer, insert_exp_into_div, looping, make_dropped_droppable;
+    var color, color_rule_check, find_action_pointer, get_lambda_from, go_one_step, help, index, inserer, insert_exp_into_div, key, letter, looping, make_dropped_droppable, resize, value, _i, _j, _len, _len1;
+    for (index = _i = 0, _len = ALPHABET.length; _i < _len; index = ++_i) {
+      letter = ALPHABET[index];
+      color_tab.push(CSS_COLOR_NAMES[index]);
+      var_tab["" + letter] = CSS_COLOR_NAMES[index];
+    }
+    for (key in EXERCICES) {
+      $("#exercices").append("<option value='" + key + "'  data-id='" + key + "'>Exercice " + key + "</button>");
+    }
+    for (key in FUNCTION) {
+      value = FUNCTION[key];
+      $("#console").append("<button id='" + key + "' class='panel-button' data-type='fonction' data-lambda='" + value + "'>" + key + "</button>");
+    }
+    for (index = _j = 0, _len1 = color_tab.length; _j < _len1; index = ++_j) {
+      color = color_tab[index];
+      $("#choose-color").append("<option value='" + ALPHABET[index] + "' data-color='" + color + "' data-class='ui-icon-script' >" + ALPHABET[index] + "</option>");
+    }
     $("button").button();
     $("#checkboxes").buttonset();
-    (initialize_html = function() {
-      var color, html, index, key, letter, resize, value, _i, _j, _len, _len1;
-      for (key in EXERCICES) {
-        $('#exercices').append("<option value='" + key + "'  data-id='" + key + "'>Exercice " + key + "</button>");
+    $.widget("ui.selectmenu", $.extend({}, $.ui.selectmenu.prototype, {
+      _renderItem: function(ul, item) {
+        var li, s;
+        color = var_tab[item.value];
+        li = $("<li>", {
+          text: item.value
+        }).css("background-color", color);
+        s = "display: block;width:100%;height:50%;background:" + color + ";border:solid black 1px";
+        $("<span>", {
+          style: s
+        }).appendTo(li);
+        return li.appendTo(ul);
+      },
+      _renderMenu: function(ul, items) {
+        var that;
+        that = this;
+        return $.each(items, function(index, item) {
+          that._renderItemData(ul, item);
+          return $("#color").css("background", item.element.attr("data-color")).attr("data-variable", item.value).attr("data-color", item.element.attr("data-color"));
+        });
       }
-      for (index = _i = 0, _len = ALPHABET.length; _i < _len; index = ++_i) {
-        letter = ALPHABET[index];
-        color_tab.push(CSS_COLOR_NAMES[index]);
-        var_tab["" + letter] = CSS_COLOR_NAMES[index];
+    }));
+    $("#choose-color").selectmenu({
+      appendTo: "#top-panel",
+      open: function() {
+        return $("body").addClass("stop-scrolling");
+      },
+      close: function() {
+        return $("body").removeClass("stop-scrolling");
       }
-      html = "";
-      for (key in FUNCTION) {
-        value = FUNCTION[key];
-        html += "<button id='" + key + "' class='panel-button' data-type='fonction' data-lambda='" + value + "'>" + key + "</button>";
+    });
+    $("#choose-color").on("selectmenuchange", function(event, ui) {
+      var variable, _ref1;
+      _ref1 = [ui.item.element.attr("data-color"), ui.item.value], color = _ref1[0], variable = _ref1[1];
+      $("#panel-lambda").attr("data-variable", variable).html("λ" + variable);
+      $("#panel-variable").attr("data-variable", variable).html("" + variable);
+      $("#egg-svg, #open-svg").find(".skin").css("fill", color);
+      return $("#color").css("background", color).attr("data-variable", variable).attr("data-color", color);
+    });
+    $("#exercices").selectmenu({
+      appendTo: "#top-panel"
+    });
+    $("#exercices").on("selectmenuchange", function(event, ui) {
+      var exo, i, lambda, reg, texte;
+      $(".animation").prop("disabled", false);
+      i = ui.item.element.attr("data-id");
+      exo = EXERCICES[i];
+      $("#exercice").find(" > .panel-button.exercice").attr("data-id", i);
+      $("#exercice").attr("data-solution", exo["solution"]);
+      $("#exercice").find("> .titre").html("<h1>" + exo['titre'] + "</h1>");
+      if (exo["contenu-eleve"] !== "") {
+        insert_exp_into_div(exo["contenu-eleve"], $("#root"));
+      } else {
+        $("#root").empty().append("<div id='root_definition' class='definition_drop'></div>");
       }
-      $("#console").prepend(html + "<br>");
-      html = "";
-      for (index = _j = 0, _len1 = color_tab.length; _j < _len1; index = ++_j) {
-        color = color_tab[index];
-        $("#choose-color").append("<option value='" + ALPHABET[index] + "' data-color='" + color + "' data-class='ui-icon-script' >" + ALPHABET[index] + "</option>");
+      if (exo["contenu-exercice"] !== "") {
+        insert_exp_into_div(exo["contenu-exercice"], $("#contenu-exercice"));
       }
-      $.widget("ui.selectmenu", $.extend({}, $.ui.selectmenu.prototype, {
-        _renderItem: function(ul, item) {
-          var li, s;
-          color = var_tab[item.value];
-          li = $("<li>", {
-            text: item.value
-          }).css("background-color", color);
-          s = "display: block;width:100%;height:50%;background:" + color + ";border:solid black 1px";
-          $("<span>", {
-            style: s
-          }).appendTo(li);
-          return li.appendTo(ul);
-        },
-        _renderMenu: function(ul, items) {
-          var that;
-          that = this;
-          return $.each(items, function(index, item) {
-            that._renderItemData(ul, item);
-            return $("#color").css("background", item.element.attr("data-color")).attr("data-variable", item.value).attr("data-color", item.element.attr("data-color"));
-          });
-        }
-      }));
-      $("#choose-color").selectmenu({
-        appendTo: "#top-panel",
-        open: function() {
-          return $("body").addClass("stop-scrolling");
-        },
-        close: function() {
-          return $("body").removeClass("stop-scrolling");
-        }
-      });
-      $("#choose-color").on("selectmenuchange", function(event, ui) {
-        var variable, _ref1;
-        _ref1 = [ui.item.element.attr("data-color"), ui.item.value], color = _ref1[0], variable = _ref1[1];
-        $("#panel-lambda").attr("data-variable", variable).html("λ" + variable);
-        $("#panel-variable").attr("data-variable", variable).html("" + variable);
-        $("#egg-svg, #open-svg").find(".skin").css("fill", color);
-        return $("#color").css("background", color).attr("data-variable", variable).attr("data-color", color);
-      });
-      $("#exercices").selectmenu({
-        appendTo: "#top-panel"
-      });
-      $("#exercices").on("selectmenuchange", function(event, ui) {
-        var exo, i, lambda, reg, texte;
-        $(".animation").prop("disabled", false);
-        i = ui.item.element.attr("data-id");
-        exo = EXERCICES[i];
-        $("#exercice").find(" > .panel-button.exercice").attr("data-id", i);
-        $("#exercice").attr("data-solution", exo["solution"]);
-        $("#exercice").find("> .titre").html("<h1>" + exo['titre'] + "</h1>");
-        if (exo["contenu-eleve"] !== "") {
-          insert_exp_into_div(exo["contenu-eleve"], $("#root"));
-        } else {
-          $("#root").empty().append("<div id='root_definition' class='definition_drop'></div>");
-        }
-        if (exo["contenu-exercice"] !== "") {
-          insert_exp_into_div(exo["contenu-exercice"], $("#contenu-exercice"));
-        }
-        if (exo["animation"] === "yes") {
-          $("#animation").show();
-        } else {
-          $("#animation").hide();
-        }
-        texte = exo['texte'];
-        reg = /<insert ([λ().\w\? ]*)>/;
-        while (texte.match(reg)) {
-          lambda = reg.exec(texte);
-          insert_exp_into_div(lambda[1], $("#exercice-texte"));
-          texte = texte.replace(reg, $("#exercice-texte").html());
-        }
-        $("#exercice-texte").html("<p>" + texte + "</p>");
-        if ("compte-rendu" in exo) {
-          texte = exo["compte-rendu"];
-          insert_exp_into_div(texte, $("#compte-rendu"));
-        }
-        return $("#exercice").show();
-      });
-      $.get("css/svg/egg.svg", function(rawSvg) {
-        $("#egg-svg").append(document.importNode(rawSvg.documentElement, true));
-        $("#egg-svg svg")[0].setAttribute('viewBox', '0 0 116 80');
-        return $("#choose-color").selectmenu().val("a").selectmenu('refresh');
-      }, "xml");
-      $.get("css/svg/open.svg", function(rawSvg) {
-        $("#open-svg").append(document.importNode(rawSvg.documentElement, true));
-        return $("#open-svg svg")[0].setAttribute('viewBox', '-25 0 330 150');
-      }, "xml");
-      $.get("css/svg/vieux.svg", function(rawSvg) {
-        $("#vieux-svg").append(document.importNode(rawSvg.documentElement, true));
-        return $("#vieux-svg svg")[0].setAttribute('viewBox', '0 0 228 78');
-      }, "xml");
-      $("#amount-animation").html($("#slider-animation").slider("value"));
-      resize = function() {
-        var double, s, simple, _ref1;
-        value = parseInt($("#amount-zoom").html());
-        _ref1 = [value + "px", (2 * value) + "px"], simple = _ref1[0], double = _ref1[1];
-        s = ".lambda.priorite.dropped, .lambda.dropped { \n  min-width  : " + double + ";\n  min-height : " + simple + ";\n  padding-top: " + simple + ";\n}\n\n.variable.dropped { \n  width  : " + double + ";\n  height : " + simple + ";\n}\n.lambda.priorite.dropped > svg, .variable.dropped > svg, .lambda.dropped > svg {\n  height : " + simple + ";\n}\n\n.definition_drop, .application_drop {\n  width : " + simple + ";\n  height: " + simple + ";\n}";
-        return $("#restyler").text(s);
-      };
-      $("#slider-animation").slider({
-        range: "max",
-        min: 50,
-        max: 6000,
-        step: 500,
-        value: 2000,
-        slide: function(event, ui) {
-          $("#amount-animation").html(ui.value);
-          return delta = ui.value;
-        }
-      });
-      $("#slider-zoom").slider({
-        range: "max",
-        min: 1,
-        max: 100,
-        step: 1,
-        value: 60,
-        slide: function(event, ui) {
-          $("#amount-zoom").html(ui.value);
-          return resize();
-        }
-      });
-      $("#amount-zoom").html($("#slider-zoom").slider("value"));
-      $("#command-panel").draggable({
-        containment: "#game-container"
-      });
-      return $(".item").draggable({
-        helper: "clone",
-        start: function(event, ui) {
-          return $(ui.helper).addClass("ui-draggable-helper");
-        },
-        stop: function(event, ui) {
-          return $(this).show();
-        }
-      });
-    })();
-    $("#infobox").on("click", function() {
-      infobox = this.val();
+      if (exo["animation"] === "yes") {
+        $("#animation").show();
+      } else {
+        $("#animation").hide();
+      }
+      texte = exo['texte'];
+      reg = /<insert ([λ().\w\? ]*)>/;
+      while (texte.match(reg)) {
+        lambda = reg.exec(texte);
+        insert_exp_into_div(lambda[1], $("#exercice-texte"));
+        texte = texte.replace(reg, $("#exercice-texte").html());
+      }
+      $("#exercice-texte").html("<p>" + texte + "</p>");
+      if ("compte-rendu" in exo) {
+        texte = exo["compte-rendu"];
+        insert_exp_into_div(texte, $("#compte-rendu"));
+      }
+      return $("#exercice").show();
+    });
+    $.get("css/svg/egg.svg", function(rawSvg) {
+      $("#egg-svg").append(document.importNode(rawSvg.documentElement, true));
+      $("#egg-svg svg")[0].setAttribute('viewBox', '0 0 116 80');
+      return $("#choose-color").selectmenu().val("?").selectmenu('refresh');
+    }, "xml");
+    $.get("css/svg/open.svg", function(rawSvg) {
+      $("#open-svg").append(document.importNode(rawSvg.documentElement, true));
+      return $("#open-svg svg")[0].setAttribute('viewBox', '-25 0 330 150');
+    }, "xml");
+    $.get("css/svg/vieux.svg", function(rawSvg) {
+      $("#vieux-svg").append(document.importNode(rawSvg.documentElement, true));
+      return $("#vieux-svg svg")[0].setAttribute('viewBox', '0 0 228 78');
+    }, "xml");
+    $("#slider-animation").slider({
+      range: "max",
+      min: 50,
+      max: 6000,
+      step: 500,
+      value: 2000,
+      slide: function(event, ui) {
+        $("#amount-animation").html(ui.value);
+        return delta = ui.value;
+      }
+    });
+    $("#amount-animation").html($("#slider-animation").slider("value"));
+    resize = function() {
+      var double, s, simple, _ref1;
+      value = parseInt($("#amount-zoom").html());
+      _ref1 = [value + "px", (2 * value) + "px"], simple = _ref1[0], double = _ref1[1];
+      s = ".lambda.priorite.dropped, .lambda.dropped { \n  min-width  : " + double + ";\n  min-height : " + simple + ";\n  padding-top: " + simple + ";\n}\n\n.variable.dropped { \n  width  : " + double + ";\n  height : " + simple + ";\n}\n.lambda.priorite.dropped > svg, .variable.dropped > svg, .lambda.dropped > svg {\n  height : " + simple + ";\n}\n\n.definition_drop, .application_drop {\n  width : " + simple + ";\n  height: " + simple + ";\n}";
+      return $("#restyler").text(s);
+    };
+    $("#slider-zoom").slider({
+      range: "max",
+      min: 1,
+      max: 100,
+      step: 1,
+      value: 60,
+      slide: function(event, ui) {
+        $("#amount-zoom").html(ui.value);
+        return resize();
+      }
+    });
+    $("#amount-zoom").html($("#slider-zoom").slider("value"));
+    $("#command-panel").draggable({
+      containment: "#game-container"
+    });
+    $(".item").draggable({
+      helper: "clone",
+      start: function(event, ui) {
+        return $(ui.helper).addClass("ui-draggable-helper");
+      },
+      stop: function(event, ui) {
+        return $(this).show();
+      }
+    });
+    $("#infobox").on("click", function(element) {
+      infobox = $(this).toggle(this.checked).prop("checked");
       return alert(infobox);
     });
     $("#tags").on("click", function() {
       var tags;
-      tags = $(this).val();
+      tags = $(this).toggle(this.checked).prop("checked");
       if (!tags) {
         return $(".variable.dropped, .lambda.dropped").addClass("hide_pseudo");
       } else {
@@ -307,7 +301,7 @@
       }
     });
     $(".panel-button").on("click", function() {
-      var e, index, letter, parentheses, _i, _len, _ref1, _results;
+      var e, parentheses, _k, _len2, _ref1, _results;
       switch ($(this).attr("data-type")) {
         case "lambda":
           return $("#prompt").val($("#prompt").val() + ("λ" + ($(this).attr('data-variable')) + "."));
@@ -336,7 +330,7 @@
         case "autoclose":
           parentheses = 0;
           _ref1 = $("#prompt").val();
-          for (index = _i = 0, _len = _ref1.length; _i < _len; index = ++_i) {
+          for (index = _k = 0, _len2 = _ref1.length; _k < _len2; index = ++_k) {
             letter = _ref1[index];
             switch (letter) {
               case "(":
@@ -482,7 +476,7 @@
       return make_dropped_droppable();
     };
     inserer = function(draggable, droppable) {
-      var color, lambda, type, variable, _ref1, _ref2;
+      var lambda, type, variable, _ref1, _ref2;
       if (draggable.hasClass("vieux-croco")) {
         _ref1 = ["(", "white"], variable = _ref1[0], color = _ref1[1];
       } else {
@@ -646,10 +640,10 @@
       };
       intersection = intersect(application_vars, function_vars);
       intersection = (function() {
-        var _i, _len, _results;
+        var _k, _len2, _results;
         _results = [];
-        for (_i = 0, _len = intersection.length; _i < _len; _i++) {
-          item = intersection[_i];
+        for (_k = 0, _len2 = intersection.length; _k < _len2; _k++) {
+          item = intersection[_k];
           if (__indexOf.call(ahead_vars, item) < 0) {
             _results.push(item);
           }
@@ -696,16 +690,16 @@
         }
       });
       step2.done(function(pointer) {
-        var $var, application, application_vars, found, function_vars, index, intersection, item, n, palette, _i, _len, _ref1, _results;
+        var $var, application, application_vars, found, function_vars, intersection, item, n, palette, _k, _len2, _ref1, _results;
         _ref1 = color_rule_check(pointer), function_vars = _ref1[0], application_vars = _ref1[1], intersection = _ref1[2];
         if (intersection.length > 0) {
           application = pointer.next();
           palette = (function() {
-            var _i, _len, _ref2, _results;
+            var _k, _len2, _ref2, _results;
             _ref2 = ALPHABET.slice(0, 25);
             _results = [];
-            for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-              item = _ref2[_i];
+            for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+              item = _ref2[_k];
               if (__indexOf.call(function_vars.concat(application_vars), item) < 0) {
                 _results.push(item);
               }
@@ -714,7 +708,7 @@
           })();
           palette = palette.slice(0, +(intersection.length - 1) + 1 || 9e9);
           _results = [];
-          for (index = _i = 0, _len = intersection.length; _i < _len; index = ++_i) {
+          for (index = _k = 0, _len2 = intersection.length; _k < _len2; index = ++_k) {
             $var = intersection[index];
             found = application.find("[data-variable='" + $var + "']").andSelf().filter("[data-variable='" + $var + "']");
             n = found.length;

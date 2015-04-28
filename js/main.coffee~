@@ -107,7 +107,7 @@ EXERCICES =
     "solution"         : "λh.(h λe.(λf.( f ) ) λe.(λf.( e ) ) ) "
     "parse"            : "yes"
 ALPHABET = "abcdefghijklmnopqrstuvwxyz?"
-[color_tab, var_tab, debug, infobox, id, delta] = [ [], {}, false, true, 0, 500 ]
+[color_tab, var_tab, debug, infobox, id, delta] = [ [], {}, false, false, 0, 500 ]
 ahead_vars = []
 $ ->
   $( "button" ).button()
@@ -115,18 +115,12 @@ $ ->
   #Preparation html - Construction de la console
   ###########################################################################################################################################################
   do initialize_html = ->
-    for key of EXERCICES
-      $( '#exercices' ).append "<option value='#{key}'  data-id='#{key}'>Exercice #{key}</button>"
     for letter,index in ALPHABET
       color_tab.push CSS_COLOR_NAMES[index]
       var_tab["#{letter}"] = CSS_COLOR_NAMES[index]
-    html= ""
-    for key,value of FUNCTION
-      html += "<button id='#{key}' class='panel-button' data-type='fonction' data-lambda='#{value}'>#{key}</button>"
-    $( "#console" ).prepend "#{html}<br>"
-    html= ""
-    for color,index in color_tab
-      $( "#choose-color" ).append "<option value='#{ALPHABET[index]}' data-color='#{color}' data-class='ui-icon-script' >#{ALPHABET[index]}</option>"
+    $( "#exercices" ).append "<option value='#{key}'  data-id='#{key}'>Exercice #{key}</button>" for key of EXERCICES
+    $( "#console"   ).append "<button id='#{key}' class='panel-button' data-type='fonction' data-lambda='#{value}'>#{key}</button>" for key,value of FUNCTION
+    $( "#choose-color" ).append "<option value='#{ALPHABET[index]}' data-color='#{color}' data-class='ui-icon-script' >#{ALPHABET[index]}</option>" for color,index in color_tab
     
     $.widget "ui.selectmenu", $.extend {}, $.ui.selectmenu.prototype,
       _renderItem : ( ul, item ) ->
@@ -195,7 +189,7 @@ $ ->
     $.get "css/svg/egg.svg", (rawSvg) -> 
       $("#egg-svg").append(document.importNode rawSvg.documentElement,true)
       $("#egg-svg svg")[0].setAttribute('viewBox', '0 0 116 80')
-      $( "#choose-color" ).selectmenu().val("a").selectmenu('refresh')
+      $( "#choose-color" ).selectmenu().val("?").selectmenu('refresh')
     , "xml"
     
     $.get "css/svg/open.svg", (rawSvg) -> 
@@ -245,7 +239,7 @@ $ ->
       $( "#restyler" ).text s
       
     $( "#slider-zoom" ).slider
-      range : "max"
+      range: "max"
       min   : 1
       max   : 100
       step  : 1
@@ -267,12 +261,12 @@ $ ->
   #Initialisation des items, dialog, couleurs et panels
   ###########################################################################################################################################################
   #items oeuf, croco, vieux croco draggable
-  $( "#infobox" ).on "click", -> 
-    infobox = this.val()
+  $( "#infobox" ).on "click", (element) -> 
+    infobox = $(this).toggle(this.checked).prop( "checked" )
     alert infobox
   
   $( "#tags" ).on "click", -> 
-    tags = $(this).val()
+    tags = $(this).toggle(this.checked).prop( "checked" )
     if not tags
       $(".variable.dropped, .lambda.dropped").addClass( "hide_pseudo" )
     else
