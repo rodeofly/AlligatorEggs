@@ -177,12 +177,12 @@
       }
     }));
     $("#choose-color").selectmenu({
-      appendTo: "#top-panel",
+      appendTo: "#command-panel",
       open: function() {
-        return $("body").addClass("stop-scrolling");
+        return $("#game-container").addClass("stop-scrolling");
       },
       close: function() {
-        return $("body").removeClass("stop-scrolling");
+        return $("#game-container").removeClass("stop-scrolling");
       }
     });
     $("#choose-color").on("selectmenuchange", function(event, ui) {
@@ -194,7 +194,7 @@
       return $("#color").css("background", color).attr("data-variable", variable).attr("data-color", color);
     });
     $("#exercices").selectmenu({
-      appendTo: "#top-panel"
+      appendTo: "#panels"
     });
     $("#exercices").on("selectmenuchange", function(event, ui) {
       var exo, i, lambda, reg, texte;

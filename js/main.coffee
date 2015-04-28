@@ -138,9 +138,9 @@ $ ->
     
   $( "#choose-color" )
     .selectmenu
-      appendTo : "#top-panel"
-      open  : -> $("body").addClass("stop-scrolling")
-      close : -> $("body").removeClass("stop-scrolling")
+      appendTo : "#command-panel"
+      open  : -> $("#game-container").addClass("stop-scrolling")
+      close : -> $("#game-container").removeClass("stop-scrolling")
   $( "#choose-color" ).on "selectmenuchange", ( event, ui ) ->
     [color, variable] = [ui.item.element.attr("data-color"),ui.item.value]
     $( "#panel-lambda" ).attr("data-variable", variable).html("λ#{variable}")
@@ -153,7 +153,7 @@ $ ->
   
   $( "#exercices" )
     .selectmenu
-      appendTo : "#top-panel"
+      appendTo : "#panels"
       
   $( "#exercices" ).on "selectmenuchange", ( event, ui ) ->
     $( ".animation" ).prop("disabled",false)

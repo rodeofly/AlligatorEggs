@@ -110,154 +110,155 @@ ALPHABET = "abcdefghijklmnopqrstuvwxyz?"
 [color_tab, var_tab, debug, infobox, id, delta] = [ [], {}, false, false, 0, 500 ]
 ahead_vars = []
 $ ->
-  $( "button" ).button()
-  $( "#checkboxes" ).buttonset() ###########################################################################################################################################################
+   #########################################################################################################################################################
   #Preparation html - Construction de la console
   ###########################################################################################################################################################
-  do initialize_html = ->
-    for letter,index in ALPHABET
-      color_tab.push CSS_COLOR_NAMES[index]
-      var_tab["#{letter}"] = CSS_COLOR_NAMES[index]
-    $( "#exercices" ).append "<option value='#{key}'  data-id='#{key}'>Exercice #{key}</button>" for key of EXERCICES
-    $( "#console"   ).append "<button id='#{key}' class='panel-button' data-type='fonction' data-lambda='#{value}'>#{key}</button>" for key,value of FUNCTION
-    $( "#choose-color" ).append "<option value='#{ALPHABET[index]}' data-color='#{color}' data-class='ui-icon-script' >#{ALPHABET[index]}</option>" for color,index in color_tab
+  for letter,index in ALPHABET
+    color_tab.push CSS_COLOR_NAMES[index]
+    var_tab["#{letter}"] = CSS_COLOR_NAMES[index]
+  $( "#exercices" ).append "<option value='#{key}'  data-id='#{key}'>Exercice #{key}</button>" for key of EXERCICES
+  $( "#console"   ).append "<button id='#{key}' class='panel-button' data-type='fonction' data-lambda='#{value}'>#{key}</button>" for key,value of FUNCTION
+  $( "#choose-color" ).append "<option value='#{ALPHABET[index]}' data-color='#{color}' data-class='ui-icon-script' >#{ALPHABET[index]}</option>" for color,index in color_tab
+  
+  $( "button" ).button()
+  $( "#checkboxes" ).buttonset()
+  
+  $.widget "ui.selectmenu", $.extend {}, $.ui.selectmenu.prototype,
+    _renderItem : ( ul, item ) ->
+        color = var_tab[item.value]
+        li = $( "<li>", { text: item.value } ).css( "background-color", color  )
+        s = "display: block;width:100%;height:50%;background:#{color};border:solid black 1px"
+        $( "<span>", style: s).appendTo( li )
+        return li.appendTo( ul )
+    _renderMenu : ( ul, items ) ->
+        that = this
+        $.each items, ( index, item ) ->
+          that._renderItemData( ul, item )
+          $("#color").css("background" , item.element.attr("data-color")).attr("data-variable",item.value).attr "data-color", item.element.attr "data-color"
     
-    $.widget "ui.selectmenu", $.extend {}, $.ui.selectmenu.prototype,
-      _renderItem : ( ul, item ) ->
-          color = var_tab[item.value]
-          li = $( "<li>", { text: item.value } ).css( "background-color", color  )
-          s = "display: block;width:100%;height:50%;background:#{color};border:solid black 1px"
-          $( "<span>", style: s).appendTo( li )
-          return li.appendTo( ul )
-      _renderMenu : ( ul, items ) ->
-          that = this
-          $.each items, ( index, item ) ->
-            that._renderItemData( ul, item )
-            $("#color").css("background" , item.element.attr("data-color")).attr("data-variable",item.value).attr "data-color", item.element.attr "data-color"
+  $( "#choose-color" )
+    .selectmenu
+      appendTo : "#command-panel"
+      open  : -> $("body").addClass("stop-scrolling")
+      close : -> $("body").removeClass("stop-scrolling")
+  $( "#choose-color" ).on "selectmenuchange", ( event, ui ) ->
+    [color, variable] = [ui.item.element.attr("data-color"),ui.item.value]
+    $( "#panel-lambda" ).attr("data-variable", variable).html("λ#{variable}")
+    $( "#panel-variable").attr("data-variable", variable).html("#{variable}")
+    $( "#egg-svg, #open-svg" ).find(".skin").css("fill", color)
+    $("#color")
+      .css( "background"   , color )
+      .attr("data-variable", variable)
+      .attr("data-color"   , color )
+  
+  $( "#exercices" )
+    .selectmenu
+      appendTo : "#panels"
       
-    $( "#choose-color" )
-      .selectmenu
-        appendTo : "#top-panel"
-        open  : -> $("body").addClass("stop-scrolling")
-        close : -> $("body").removeClass("stop-scrolling")
-    $( "#choose-color" ).on "selectmenuchange", ( event, ui ) ->
-      [color, variable] = [ui.item.element.attr("data-color"),ui.item.value]
-      $( "#panel-lambda" ).attr("data-variable", variable).html("λ#{variable}")
-      $( "#panel-variable").attr("data-variable", variable).html("#{variable}")
-      $( "#egg-svg, #open-svg" ).find(".skin").css("fill", color)
-      $("#color")
-        .css( "background"   , color )
-        .attr("data-variable", variable)
-        .attr("data-color"   , color )
+  $( "#exercices" ).on "selectmenuchange", ( event, ui ) ->
+    $( ".animation" ).prop("disabled",false)
+    i = ui.item.element.attr( "data-id" )
+    exo = EXERCICES[i]
     
-    $( "#exercices" )
-      .selectmenu
-        appendTo : "#top-panel"
-        
-    $( "#exercices" ).on "selectmenuchange", ( event, ui ) ->
-      $( ".animation" ).prop("disabled",false)
-      i = ui.item.element.attr( "data-id" )
-      exo = EXERCICES[i]
-      
-      $( "#exercice").find(" > .panel-button.exercice").attr "data-id", i
-      $( "#exercice").attr "data-solution", exo["solution"]
-      $( "#exercice").find("> .titre" ).html("<h1>#{exo['titre']}</h1>")
-      
-      if exo["contenu-eleve"] isnt ""
-        insert_exp_into_div(exo["contenu-eleve"], $("#root"))
-      else
-        $("#root" ).empty().append "<div id='root_definition' class='definition_drop'></div>"
-      
-      if exo["contenu-exercice"] isnt "" then insert_exp_into_div exo["contenu-exercice"], $( "#contenu-exercice" ) 
-      
-      if exo["animation"] is "yes" then $( "#animation").show() else $( "#animation").hide()
-      
-      texte = exo['texte'] 
-      reg = /<insert ([λ().\w\? ]*)>/
-      while texte.match reg
-        lambda = reg.exec(texte)
-        insert_exp_into_div lambda[1], $("#exercice-texte")
-        texte = texte.replace reg, $("#exercice-texte").html()
-      $( "#exercice-texte" ).html("<p>#{texte}</p>")
-      
-      if ("compte-rendu" of exo)
-        texte = exo["compte-rendu"]
-        insert_exp_into_div texte, $("#compte-rendu")
+    $( "#exercice").find(" > .panel-button.exercice").attr "data-id", i
+    $( "#exercice").attr "data-solution", exo["solution"]
+    $( "#exercice").find("> .titre" ).html("<h1>#{exo['titre']}</h1>")
+    
+    if exo["contenu-eleve"] isnt ""
+      insert_exp_into_div(exo["contenu-eleve"], $("#root"))
+    else
+      $("#root" ).empty().append "<div id='root_definition' class='definition_drop'></div>"
+    
+    if exo["contenu-exercice"] isnt "" then insert_exp_into_div exo["contenu-exercice"], $( "#contenu-exercice" ) 
+    
+    if exo["animation"] is "yes" then $( "#animation").show() else $( "#animation").hide()
+    
+    texte = exo['texte'] 
+    reg = /<insert ([λ().\w\? ]*)>/
+    while texte.match reg
+      lambda = reg.exec(texte)
+      insert_exp_into_div lambda[1], $("#exercice-texte")
+      texte = texte.replace reg, $("#exercice-texte").html()
+    $( "#exercice-texte" ).html("<p>#{texte}</p>")
+    
+    if ("compte-rendu" of exo)
+      texte = exo["compte-rendu"]
+      insert_exp_into_div texte, $("#compte-rendu")
 
-      $( "#exercice").show()
+    $( "#exercice").show()
 
-    $.get "css/svg/egg.svg", (rawSvg) -> 
-      $("#egg-svg").append(document.importNode rawSvg.documentElement,true)
-      $("#egg-svg svg")[0].setAttribute('viewBox', '0 0 116 80')
-      $( "#choose-color" ).selectmenu().val("?").selectmenu('refresh')
-    , "xml"
-    
-    $.get "css/svg/open.svg", (rawSvg) -> 
-      $("#open-svg").append(document.importNode rawSvg.documentElement,true)
-      $("#open-svg svg")[0].setAttribute('viewBox', '-25 0 330 150')
-    , "xml"
-    $.get "css/svg/vieux.svg", (rawSvg) -> 
-      $("#vieux-svg").append(document.importNode rawSvg.documentElement,true)
-      $("#vieux-svg svg")[0].setAttribute('viewBox', '0 0 228 78')
-    , "xml"
-    
-    $( "#slider-animation" ).slider
-      range: "max",
-      min: 50,
-      max: 6000,
-      step: 500,
-      value: 2000,
-      slide: ( event, ui ) -> 
-        $( "#amount-animation" ).html( ui.value )
-        delta = ui.value
-        
-    $( "#amount-animation" ).html( $( "#slider-animation" ).slider( "value" ) )
-    resize = () ->
-      value = parseInt $( "#amount-zoom" ).html()
-      [simple, double] = ["#{value}px", "#{2*value}px"]
-      s =
-      """
-      .lambda.priorite.dropped, .lambda.dropped { 
-        min-width  : #{double};
-        min-height : #{simple};
-        padding-top: #{simple};
-      }
+  $.get "css/svg/egg.svg", (rawSvg) -> 
+    $("#egg-svg").append(document.importNode rawSvg.documentElement,true)
+    $("#egg-svg svg")[0].setAttribute('viewBox', '0 0 116 80')
+    $( "#choose-color" ).selectmenu().val("?").selectmenu('refresh')
+  , "xml"
+  
+  $.get "css/svg/open.svg", (rawSvg) -> 
+    $("#open-svg").append(document.importNode rawSvg.documentElement,true)
+    $("#open-svg svg")[0].setAttribute('viewBox', '-25 0 330 150')
+  , "xml"
+  $.get "css/svg/vieux.svg", (rawSvg) -> 
+    $("#vieux-svg").append(document.importNode rawSvg.documentElement,true)
+    $("#vieux-svg svg")[0].setAttribute('viewBox', '0 0 228 78')
+  , "xml"
+  
+  $( "#slider-animation" ).slider
+    range: "max",
+    min: 50,
+    max: 6000,
+    step: 500,
+    value: 2000,
+    slide: ( event, ui ) -> 
+      $( "#amount-animation" ).html( ui.value )
+      delta = ui.value
       
-      .variable.dropped { 
-        width  : #{double};
-        height : #{simple};
-      }
-      .lambda.priorite.dropped > svg, .variable.dropped > svg, .lambda.dropped > svg {
-        height : #{simple};
-      }
-      
-      .definition_drop, .application_drop {
-        width : #{simple};
-        height: #{simple};
-      }
-      """
-      $( "#restyler" ).text s
-      
-    $( "#slider-zoom" ).slider
-      range: "max"
-      min   : 1
-      max   : 100
-      step  : 1
-      value : 60
-      slide : ( event, ui ) -> 
-        $( "#amount-zoom" ).html( ui.value )
-        resize()
-         
-    $( "#amount-zoom" ).html( $( "#slider-zoom" ).slider( "value" ) )
+  $( "#amount-animation" ).html( $( "#slider-animation" ).slider( "value" ) )
+  resize = () ->
+    value = parseInt $( "#amount-zoom" ).html()
+    [simple, double] = ["#{value}px", "#{2*value}px"]
+    s =
+    """
+    .lambda.priorite.dropped, .lambda.dropped { 
+      min-width  : #{double};
+      min-height : #{simple};
+      padding-top: #{simple};
+    }
     
-    $( "#command-panel" ).draggable( {containment: "#game-container"})
+    .variable.dropped { 
+      width  : #{double};
+      height : #{simple};
+    }
+    .lambda.priorite.dropped > svg, .variable.dropped > svg, .lambda.dropped > svg {
+      height : #{simple};
+    }
     
-    $( ".item" ).draggable
-      helper : "clone"
-      start:  (event, ui) -> $(ui.helper).addClass("ui-draggable-helper")
-      stop : (event, ui) ->  $(this).show()
-      #cursorAt : {top :  50, left : 150}
-    ###########################################################################################################################################################
+    .definition_drop, .application_drop {
+      width : #{simple};
+      height: #{simple};
+    }
+    """
+    $( "#restyler" ).text s
+    
+  $( "#slider-zoom" ).slider
+    range: "max"
+    min   : 1
+    max   : 100
+    step  : 1
+    value : 60
+    slide : ( event, ui ) -> 
+      $( "#amount-zoom" ).html( ui.value )
+      resize()
+       
+  $( "#amount-zoom" ).html( $( "#slider-zoom" ).slider( "value" ) )
+  
+  $( "#command-panel" ).draggable( {containment: "#game-container"})
+  
+  $( ".item" ).draggable
+    helper : "clone"
+    start:  (event, ui) -> $(ui.helper).addClass("ui-draggable-helper")
+    stop : (event, ui) ->  $(this).show()
+    #cursorAt : {top :  50, left : 150}
+  ###########################################################################################################################################################
   #Initialisation des items, dialog, couleurs et panels
   ###########################################################################################################################################################
   #items oeuf, croco, vieux croco draggable

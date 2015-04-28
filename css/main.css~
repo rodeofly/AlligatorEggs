@@ -221,7 +221,11 @@ pre.code{
  width:4vw;
 }
 div.ui-selectmenu-menu.ui-front.ui-selectmenu-open {
+  position : absolute;
+  bottom: 100%;
+  right : 100%;
   width : 30vw;
+  height : 30vw;
 }
 .ui-selectmenu-button {
   background : rgba(255,255,255,0.5) !important;
@@ -229,11 +233,16 @@ div.ui-selectmenu-menu.ui-front.ui-selectmenu-open {
 }
  
 ul#choose-color-menu.ui-menu, ul#exercices-menu.ui-menu {
+  position: absolute;
+  left : -100%;
+  bottom  : -100%;
   background : transparent !important;
   border : 0;
-  height : 10vw;
+  height : 25vw;
+  width : 25vw;
   display : inline-flex;
   flex-flow: row wrap;
+  justify-content: flex-end;
 }
 
 .ui-menu .ui-menu-item {  
@@ -258,7 +267,7 @@ ul#choose-color-menu.ui-menu, ul#exercices-menu.ui-menu {
 #command-panel {
   position : absolute;
   top:5vw;
-  right : 50%;
+  right : 0;
   width : 10vw;
   padding : 1vw;
   border-radius : 1em;
