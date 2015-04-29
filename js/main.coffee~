@@ -122,14 +122,14 @@ $ ->
   $( "#choose-color" ).append "<option value='#{ALPHABET[index]}' data-color='#{color}' data-class='ui-icon-script' >#{ALPHABET[index]}</option>" for color,index in color_tab
   
   $( "button" ).button()
-  $( "#checkboxes" ).buttonset()
+  $( "#checkboxes, #top-panel-buttons" ).buttonset()
   
   $.widget "ui.selectmenu", $.extend {}, $.ui.selectmenu.prototype,
     _renderItem : ( ul, item ) ->
         color = var_tab[item.value]
-        li = $( "<li>", { text: item.value } ).css( "background-color", color  )
-        s = "display: block;width:100%;height:50%;background:#{color};border:solid black 1px"
-        $( "<span>", style: s).appendTo( li )
+        li = $( "<li>" ).css( "background-color", color  )
+        s = "position:absolute;top:2%;left:2%;width:96%; height:96%;color:black;background:#{color};border-radius:100%;"
+        $( "<span>", { text: item.value, style: s}).appendTo( li )
         return li.appendTo( ul )
     _renderMenu : ( ul, items ) ->
         that = this
@@ -139,7 +139,7 @@ $ ->
     
   $( "#choose-color" )
     .selectmenu
-      appendTo : "#top-panel"
+      appendTo : "#command-panel"
       open  : -> $("#game-container").addClass("stop-scrolling")
       close : -> $("#game-container").removeClass("stop-scrolling")
   $( "#choose-color" ).on "selectmenuchange", ( event, ui ) ->
@@ -154,7 +154,7 @@ $ ->
   
   $( "#exercices" )
     .selectmenu
-      appendTo : "body"
+      appendTo : "#top-panel"
       
   $( "#exercices" ).on "selectmenuchange", ( event, ui ) ->  
     i = ui.item.element.attr( "data-id" )
@@ -226,7 +226,6 @@ $ ->
        
   $( "#amount-zoom" ).html( $( "#slider-zoom" ).slider( "value" ) )
   
-  $( "#command-panel" ).draggable( {containment: "#game-container"})
   
   $( ".item" ).draggable
     helper : "clone"
@@ -656,8 +655,9 @@ $ ->
   ###########################################################################################################################################################
   # Gestion du jeu
   ###########################################################################################################################################################  
-  $( "#console" ).draggable().toggle()
-     
+  $( "#console" ).draggable({containment: "#game-container"}).toggle()
+  $( "#command-panel" ).draggable( {containment: "#game-container"})
+    
   $( "#toggle-console" ).on "click", -> $( "#console" ).toggle()
   
   #Exercice
@@ -687,9 +687,7 @@ $ ->
       
   $( "#exercice").hide()
   $("#close-exercice").on "click", ->  $("#exercice").hide()  
-  $( "#replay").on "click", () ->
-    alert $( this ).attr( "data-id" )
-    preparer_exercice $( this ).attr( "data-id" ) 
+  $( "#replay").on "click", () -> preparer_exercice $( this ).attr( "data-id" ) 
   
   $( "#exercice .check" ).on "click", ->
     local_debug = true

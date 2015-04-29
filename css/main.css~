@@ -195,7 +195,7 @@ pre.code{
   width : 100%;  
   display : inline-flex;
   flex-flow: row no-wrap;
-  justify-content: stretch;
+  justify-content: center;
 }
 #prompt {
   position : relative;
@@ -213,75 +213,78 @@ pre.code{
   padding : 5%;
 
 }
+
+/* sliders */
+#slider-animation span.ui-slider-handle.ui-state-default {background: white url(svg/chrono.svg) no-repeat scroll 50% 50%;}
+#slider-zoom  span.ui-slider-handle.ui-state-default {background: white url(svg/zoom.svg) no-repeat scroll 50% 50%;}
+
+
 /* select menu */
 #choose-color{
  position :relative;
  width:4vw;
 }
-/* sliders */
-#slider-animation span.ui-slider-handle.ui-state-default {background: white url(svg/chrono.svg) no-repeat scroll 50% 50%;}
-#slider-zoom  span.ui-slider-handle.ui-state-default {background: white url(svg/zoom.svg) no-repeat scroll 50% 50%;}
-
-/* select menu */
 #exercices{
  position :relative;
 }
+
 div.ui-selectmenu-menu.ui-front.ui-selectmenu-open {
-  position : absolute;
-  bottom: ;
-  right : 100%;
-  width : 30vw;
-  height : 30vw;
+  position : relative;
 }
 .ui-selectmenu-button {
   background : rgba(255,255,255,0.5) !important;
   color : black !important;
 }
- 
-ul#choose-color-menu.ui-menu {
-  position: absolute;
-  left : -100%;
-  bottom  : 100%;
-  background : transparent !important;
-  border : 0;
-  height : 25vw;
-  width : 25vw;
-  display : inline-flex;
-  flex-flow: row wrap;
-  justify-content: flex-end;
-}
-
-ul#exercices-menu.ui-menu {
-  position: absolute;
+ul#choose-color-menu.ui-menu, ul#exercices-menu.ui-menu {
+  position: fixed !important;
+  display : inline-block;
+  top : 0;
   left : 0;
-  top  : 0;
+  height : 100%;
+  width :  100%;
+
   background : transparent !important;
   border : 0;
-  height : 50vw;
-  width : 50vw;
-  display : inline-flex;
-  flex-flow: row wrap;
-  justify-content: flex-start;
+  
 }
 
-.ui-menu .ui-menu-item {  
-  width : 5vw;
-  height : 5vw;
+#choose-color-menu.ui-menu .ui-menu-item {
+  display : inline-block;
+  margin : 0 !important;
+  width   : 12%;
+  height  : 12%;
+  border  : solid black 3px;
+  border-radius : 100%;
+  margin : 1% !important;
+  
+}
+
+#exercices-menu.ui-menu .ui-menu-item {
+  display : inline-block;
+  margin : 0 !important;
+  width   : 12%;
+  height  : 12%;
+  border  : solid black 3px;
+  border-radius : 1em;
+  margin : 1% !important;
+  
 }
 
 #console {
-  position:absolute;
-  bottom : 0;
+  position :fixed;
   display: inline-flex;
   flex-flow : row wrap;
-  justify-content: center;
-  width : 50%;
+  justify-content: stretch;
+  width : 75%;
   background-color : rgba(0,0,0,0.5);
-  padding : 1vw;
+  padding : 1em;
   border-radius : 1em;
 }
 #console button {
-
+  min-width : 4em;
+  padding : 0;
+  margin : 0;
+  flex : 2;
 }
 #command-panel {
   position : absolute;

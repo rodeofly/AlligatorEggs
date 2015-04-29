@@ -29,7 +29,7 @@
 
   ALPHABET = "abcdefghijklmnopqrstuvwxyz?";
 
-  CSS_COLOR_NAMES = ["Blue", "Brown", "BurlyWood", "CadetBlue", "Chartreuse", "Chocolate", "Coral", "Yellow", "Crimson", "Cyan", "DarkBlue", "DarkCyan", "DarkGoldenRod", "DarkGray", "DarkGreen", "DarkKhaki", "DarkMagenta", "DarkOliveGreen", "Darkorange", "DarkOrchid", "DarkRed", "DarkSalmon", "DarkSeaGreen", "DarkSlateBlue", "DarkSlateGrey", "DeepPink", "DeepSkyBlue", "DimGray", "DimGrey", "DodgerBlue", "FireBrick", "FloralWhite", "ForestGreen", "Fuchsia", "Gainsboro", "GhostWhite", "Gold", "GoldenRod", "Gray", "Grey", "Green", "GreenYellow", "HoneyDew", "HotPink", "IndianRed", "Indigo", "Ivory", "Khaki", "Lavender", "LavenderBlush", "LawnGreen", "LemonChiffon", "LightBlue", "LightCoral", "LightCyan", "LightGoldenRodYellow", "LightGray", "LightGrey", "LightGreen", "LightPink", "LightSalmon", "LightSeaGreen", "LightSkyBlue", "LightSlateGray", "LightSlateGrey", "LightSteelBlue", "LightYellow", "Lime", "LimeGreen", "Linen", "Magenta", "Maroon", "MediumAquaMarine", "MediumBlue", "MediumOrchid", "MediumPurple", "MediumSeaGreen", "MediumSlateBlue", "MediumSpringGreen", "MediumTurquoise", "MediumVioletRed", "MidnightBlue", "MintCream", "MistyRose", "Moccasin", "NavajoWhite", "Navy", "OldLace", "Olive", "OliveDrab", "Orange", "OrangeRed", "Orchid", "PaleGoldenRod", "PaleGreen", "PaleTurquoise", "PaleVioletRed", "PapayaWhip", "PeachPuff", "Peru", "Pink", "Plum", "PowderBlue", "Purple", "Red", "RosyBrown", "RoyalBlue", "SaddleBrown", "Salmon", "SandyBrown", "SeaGreen", "SeaShell", "Sienna", "Silver", "SkyBlue", "SlateBlue", "SlateGray", "SlateGrey", "Snow", "SpringGreen", "SteelBlue", "Tan", "Teal", "Thistle", "Tomato", "Turquoise", "Violet", "Wheat", "White", "WhiteSmoke", "YellowGreen"];
+  CSS_COLOR_NAMES = ["Blue", "Brown", "BurlyWood", "CadetBlue", "Chartreuse", "Chocolate", "Coral", "Yellow", "Crimson", "Cyan", "DarkBlue", "DarkCyan", "DarkGoldenRod", "DarkGray", "DarkGreen", "DarkKhaki", "DarkMagenta", "DarkOliveGreen", "Darkorange", "DarkOrchid", "DarkRed", "DarkSalmon", "DarkSeaGreen", "DarkSlateBlue", "DarkSlateGrey", "DeepPink", "White", "DimGray", "DimGrey", "DodgerBlue", "FireBrick", "FloralWhite", "ForestGreen", "Fuchsia", "Gainsboro", "GhostWhite", "Gold", "GoldenRod", "Gray", "Grey", "Green", "GreenYellow", "HoneyDew", "HotPink", "IndianRed", "Indigo", "Ivory", "Khaki", "Lavender", "LavenderBlush", "LawnGreen", "LemonChiffon", "LightBlue", "LightCoral", "LightCyan", "LightGoldenRodYellow", "LightGray", "LightGrey", "LightGreen", "LightPink", "LightSalmon", "LightSeaGreen", "LightSkyBlue", "LightSlateGray", "LightSlateGrey", "LightSteelBlue", "LightYellow", "Lime", "LimeGreen", "Linen", "Magenta", "Maroon", "MediumAquaMarine", "MediumBlue", "MediumOrchid", "MediumPurple", "MediumSeaGreen", "MediumSlateBlue", "MediumSpringGreen", "MediumTurquoise", "MediumVioletRed", "MidnightBlue", "MintCream", "MistyRose", "Moccasin", "NavajoWhite", "Navy", "OldLace", "Olive", "OliveDrab", "Orange", "OrangeRed", "Orchid", "PaleGoldenRod", "PaleGreen", "PaleTurquoise", "PaleVioletRed", "PapayaWhip", "PeachPuff", "Peru", "Pink", "Plum", "PowderBlue", "Purple", "Red", "RosyBrown", "RoyalBlue", "SaddleBrown", "Salmon", "SandyBrown", "SeaGreen", "SeaShell", "Sienna", "Silver", "SkyBlue", "SlateBlue", "SlateGray", "SlateGrey", "Snow", "SpringGreen", "SteelBlue", "Tan", "Teal", "Thistle", "Tomato", "Turquoise", "Violet", "Wheat", "White", "WhiteSmoke", "YellowGreen"];
 
   FUNCTION = {
     "ZERO": "(λf.λx.x)",
@@ -151,16 +151,15 @@
       $("#choose-color").append("<option value='" + ALPHABET[index] + "' data-color='" + color + "' data-class='ui-icon-script' >" + ALPHABET[index] + "</option>");
     }
     $("button").button();
-    $("#checkboxes").buttonset();
+    $("#checkboxes, #top-panel-buttons").buttonset();
     $.widget("ui.selectmenu", $.extend({}, $.ui.selectmenu.prototype, {
       _renderItem: function(ul, item) {
         var li, s;
         color = var_tab[item.value];
-        li = $("<li>", {
-          text: item.value
-        }).css("background-color", color);
-        s = "display: block;width:100%;height:50%;background:" + color + ";border:solid black 1px";
+        li = $("<li>").css("background-color", color);
+        s = "position:absolute;top:2%;left:2%;width:96%; height:96%;color:black;background:" + color + ";border-radius:100%;";
         $("<span>", {
+          text: item.value,
           style: s
         }).appendTo(li);
         return li.appendTo(ul);
@@ -175,7 +174,7 @@
       }
     }));
     $("#choose-color").selectmenu({
-      appendTo: "#top-panel",
+      appendTo: "#command-panel",
       open: function() {
         return $("#game-container").addClass("stop-scrolling");
       },
@@ -192,7 +191,7 @@
       return $("#color").css("background", color).attr("data-variable", variable).attr("data-color", color);
     });
     $("#exercices").selectmenu({
-      appendTo: "body"
+      appendTo: "#top-panel"
     });
     $("#exercices").on("selectmenuchange", function(event, ui) {
       var i;
@@ -244,9 +243,6 @@
       }
     });
     $("#amount-zoom").html($("#slider-zoom").slider("value"));
-    $("#command-panel").draggable({
-      containment: "#game-container"
-    });
     $(".item").draggable({
       helper: "clone",
       start: function(event, ui) {
@@ -811,7 +807,12 @@
         }
       });
     };
-    $("#console").draggable().toggle();
+    $("#console").draggable({
+      containment: "#game-container"
+    }).toggle();
+    $("#command-panel").draggable({
+      containment: "#game-container"
+    });
     $("#toggle-console").on("click", function() {
       return $("#console").toggle();
     });

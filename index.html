@@ -27,8 +27,10 @@
         <![endif]-->
         <div id="game-container">       
               <div id="top-panel">
-                <button id="toggle-console">C</button>
-                <button id="toggle-theory">T</button>
+                <div id="top-panel-buttons">
+                  <input type="checkbox"  id="toggle-console"/><label for="toggle-console">Console</label>
+                  <input type="checkbox"  id="toggle-theory" /><label for="toggle-theory" >Theory</label>
+                </div>
                 <select id="exercices" style="z-index:100;"><option value="Exercices">Exercices</option></select>
               </div>  
               <div id ="panels">        
@@ -53,6 +55,7 @@
               </div>
               <div id="console">            
                   <input  type="text" id="prompt" name="prompt" />
+                  <button class="panel-button" id="clear" data-type="clear" ></button>
                   <button id="draw" class="panel-button" data-type="draw" >Inserer</button>
                   <button class="panel-button" data-type="read"  >Lire</button>
                   <button class="panel-button" data-type="open"      >(</button>
