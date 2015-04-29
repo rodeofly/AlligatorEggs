@@ -8,7 +8,7 @@ interval = (ms, func) -> setInterval func, ms
 [color_tab, ahead_vars, var_tab, debug, infobox, tags, id, delta] = [ [], [], {}, false, false, true, 0, 550 ]
 
 ALPHABET = "abcdefghijklmnopqrstuvwxyz?"
-CSS_COLOR_NAMES = ["Blue","Brown","BurlyWood","CadetBlue","Chartreuse","Chocolate","Coral","Yellow","Crimson","Cyan","DarkBlue","DarkCyan","DarkGoldenRod","DarkGray","DarkGreen","DarkKhaki","DarkMagenta","DarkOliveGreen","Darkorange","DarkOrchid","DarkRed","DarkSalmon","DarkSeaGreen","DarkSlateBlue","DarkSlateGrey","DeepPink","DeepSkyBlue","DimGray","DimGrey","DodgerBlue","FireBrick","FloralWhite","ForestGreen","Fuchsia","Gainsboro","GhostWhite","Gold","GoldenRod","Gray","Grey","Green","GreenYellow","HoneyDew","HotPink","IndianRed","Indigo","Ivory","Khaki","Lavender","LavenderBlush","LawnGreen","LemonChiffon","LightBlue","LightCoral","LightCyan","LightGoldenRodYellow","LightGray","LightGrey","LightGreen","LightPink","LightSalmon","LightSeaGreen","LightSkyBlue","LightSlateGray","LightSlateGrey","LightSteelBlue","LightYellow","Lime","LimeGreen","Linen","Magenta","Maroon","MediumAquaMarine","MediumBlue","MediumOrchid","MediumPurple","MediumSeaGreen","MediumSlateBlue","MediumSpringGreen","MediumTurquoise","MediumVioletRed","MidnightBlue","MintCream","MistyRose","Moccasin","NavajoWhite","Navy","OldLace","Olive","OliveDrab","Orange","OrangeRed","Orchid","PaleGoldenRod","PaleGreen","PaleTurquoise","PaleVioletRed","PapayaWhip","PeachPuff","Peru","Pink","Plum","PowderBlue","Purple","Red","RosyBrown","RoyalBlue","SaddleBrown","Salmon","SandyBrown","SeaGreen","SeaShell","Sienna","Silver","SkyBlue","SlateBlue","SlateGray","SlateGrey","Snow","SpringGreen","SteelBlue","Tan","Teal","Thistle","Tomato","Turquoise","Violet","Wheat","White","WhiteSmoke","YellowGreen"]
+CSS_COLOR_NAMES = ["Blue","Brown","BurlyWood","CadetBlue","Chartreuse","Chocolate","Coral","Yellow","Crimson","Cyan","DarkBlue","DarkCyan","DarkGoldenRod","DarkGray","DarkGreen","DarkKhaki","DarkMagenta","DarkOliveGreen","Darkorange","DarkOrchid","DarkRed","DarkSalmon","DarkSeaGreen","DarkSlateBlue","DarkSlateGrey","DeepPink","White","DimGray","DimGrey","DodgerBlue","FireBrick","FloralWhite","ForestGreen","Fuchsia","Gainsboro","GhostWhite","Gold","GoldenRod","Gray","Grey","Green","GreenYellow","HoneyDew","HotPink","IndianRed","Indigo","Ivory","Khaki","Lavender","LavenderBlush","LawnGreen","LemonChiffon","LightBlue","LightCoral","LightCyan","LightGoldenRodYellow","LightGray","LightGrey","LightGreen","LightPink","LightSalmon","LightSeaGreen","LightSkyBlue","LightSlateGray","LightSlateGrey","LightSteelBlue","LightYellow","Lime","LimeGreen","Linen","Magenta","Maroon","MediumAquaMarine","MediumBlue","MediumOrchid","MediumPurple","MediumSeaGreen","MediumSlateBlue","MediumSpringGreen","MediumTurquoise","MediumVioletRed","MidnightBlue","MintCream","MistyRose","Moccasin","NavajoWhite","Navy","OldLace","Olive","OliveDrab","Orange","OrangeRed","Orchid","PaleGoldenRod","PaleGreen","PaleTurquoise","PaleVioletRed","PapayaWhip","PeachPuff","Peru","Pink","Plum","PowderBlue","Purple","Red","RosyBrown","RoyalBlue","SaddleBrown","Salmon","SandyBrown","SeaGreen","SeaShell","Sienna","Silver","SkyBlue","SlateBlue","SlateGray","SlateGrey","Snow","SpringGreen","SteelBlue","Tan","Teal","Thistle","Tomato","Turquoise","Violet","Wheat","White","WhiteSmoke","YellowGreen"]
 FUNCTION =
   "ZERO"  : "(λf.λx.x)"
   "ONE"   : "(λf.λx.(f x))"
@@ -31,15 +31,22 @@ FUNCTION =
   "ISZERO"     : "(λn.n (λx.(λa.λb.b)) (λa.λb.a))"
   "LEQ"        : "(λc.λp. (λq.q (λx.(λd.λe.e)) (λd.λe.d)) ((λm.λa. (a  (λn.λf.λx. n (λg.λh.h (g f)) (λu.x) (λu.u))) m) c p))"
   "Y"          : "(λr. ((λf.λg.λx. (f g g) x) r) ((λf.λg.λx. (f g g) x) r))"
-  "FACT"       : " λr.((λf.(λg.(λx.( (f g g ) x ) ) ) r ) (λf.(λg.(λx.( (f g g ) x ) ) ) r ) ) λk.(λj.(((( λn.(n λx.(λa.(λb.(b ) ) ) λa.(λb.(a ) ) ) j ) λi.( λh.(λl.(h l ) ) ) λi.(( λs.(λt.(λu.( s (t u ) ) ) ) ) (r ( λc.(λd.(λe.(c λk.(λo.(o (k d ) ) ) λq.(e ) λq.(q ) ) ) ) n ) ) ) ) ) ) ) "
+  "PAIR"  : "(λx.λy.λz.z x y)"
+  "FIRST" : "(λp.p (λx.λy.x))"
+  "SECOND": "(λp.p (λx.λy.y))"
+  "NIL"   : "((λx.λy.λz.z x y) (λa.λb.a) (λa.λb.a))"
+  "ISNIL" : "(λp.p (λx.λy.x))"
+  "CONS"  : "(λh.λt. (λx.λy.λz.z x y) (λa.λb.b) ((λx.λy.λz.z x y) h t))"
+  "HEAD"  : "(λz. (λp.p (λx.λy.x)) ((λp.p (λx.λy.y)) z))"
+  "TAIL"  : "(λz. (λp.p (λx.λy.y)) ((λp.p (λx.λy.y)) z))"
 EXERCICES =
   "a" :
     "titre"            : 'Les items : "Le vieil alligator & les œufs"'
-    "texte"            : "<p>Voilà un vieil alligator avec des œufs ! Le vieil alligator n'a plus faim, il a assez mangé.</p><p>Tous ce qu'il fait, c'est prendre soin de sa famille : ici ce sont des œufs !</p><p>Les œufs vont éclore et donner de nouvelles familles d'alligators.</p><p>Fais glisser un vieil alligator dans le panel, puis fais glisser le premier œuf sur le bout de la queue. Enfin, un à un, glisse des œufs les uns sur les autres pour les ajouter !</p>"
-    "contenu-exercice" : "(f g h i i )"
-    "contenu-eleve"    : ""
-    "compte-rendu"     : "λ?"
-    "solution"         : "(f g h i i ) "
+    "texte"            : "<p>Voilà un vieil alligator avec des œufs ! Le vieil alligator n'a plus faim, il a assez mangé.</p><p>Tous ce qu'il fait, c'est prendre soin de sa famille : ici ce sont des œufs et un autre vieil alligator qui garde deux oeufs!</p><p>Les œufs vont éclore et donner de nouvelles familles d'alligators.</p><p>Fais glisser un vieil alligator dans le panel, puis fais glisser le premier œuf sur le bout de la queue. Enfin, un à un, glisse des œufs et le vieil alligator les uns sur les autres pour les ajouter !</p>"
+    "contenu-exercice" : "(f g h (i i) )"
+    "contenu-eleve"    : "(?)"
+    "compte-rendu"     : "()"
+    "solution"         : "(f g h (i i) ) "
 
   "b" :
     "titre"            : 'Les items : "Les alligators affamés"'
@@ -69,8 +76,8 @@ EXERCICES =
     "titre"            : 'Les familles (3)'
     "texte"            : "<p>Voici une grande famille ! Nous avons un alligator jaune, un vert et un rose qui gardent cette famille. Ils gardent trois choses : un œuf vert, un vieux crocodile , et un œuf rose. Le vieil alligator, lui, garde un œuf jaune et un œuf vert.</p><p>Note bien que les œufs n'utilisent que les couleurs des alligators qui les surveillent . On ne peut pas avoir un œuf bleu sans qu'il y ait un alligator bleu au-dessus pour le garder.</p><p>Peux recréer cette famille ?</p>"
     "contenu-exercice" : "λh.λe.λg.(e (h e) g)"
-    "contenu-eleve"    : "λh.λe.λg.(e (h e) g)"
-    "compte-rendu"     : "λ?"
+    "contenu-eleve"    : "λh.λe.λg.?"
+    "compte-rendu"     : "λ?. "
     "solution"         : "λh.(λe.(λg.(e (h e ) g ) ) ) "
 
   "f" :
@@ -78,7 +85,7 @@ EXERCICES =
     "texte"            : "<p>Attention, ça va se compliquer !</p><p>Voici deux familles, l'une à coté de l'autre. L'alligator vert est affamé, et il y a cette famille jaune juste en face de lui... Comme elle semble appétissante! La suite, tu la connais ?! Appuye sur le bouton (&#9658;).</p><p>Malheureusement , les yeux du crocodile vert étaient plus grands que son ventre. Il trop a mangé ! En mourant, il s'en va au paradis des alligator (ouf !). Mais, l'histoire ne se arrête pas là ; parce qu'une fois l'alligator vert mort, l'oeuf vert commence à éclore... Et étonnamment, il éclot exactement en ce que l'alligator vert avait mangé. C'est le miracle de la vie ! Maintenant, nous avons une nouvelle famille: un crocodile rouge gardant un alligator jaune et un oeuf rouge, et l'alligator jaune qui garde son œuf jaune. Mais cet alligator jaune à faim , et il y a un bel œuf rouge en face de lui. On y va encore une fois (&#9658;).</p><p>Pauvre alligator. Même un seul œuf est trop gros pour son estomac! L'alligator jaune meurt... mais encore une fois , l'œuf jaune commence à éclore ...Et il éclot dans exactement ce que l'alligator jaune avait mangé !</p><p>Maintenant, il n'y a plus rien pour quiconque à manger, donc nous pouvons arrêter là.</p>"
     "contenu-exercice" : "λe.(λf.(e f ) ) λh.(h ) "
     "contenu-eleve"    : ""
-    "solution"         : "λf.(f ) "
+    "solution"         : ""
     "animation"        : "yes"
 
   "g" :
@@ -86,7 +93,7 @@ EXERCICES =
     "texte"            : "<p>La règle de l'alimentation dit que s'il y a des familles côte-à-côté, l'alligator le plus en haut à gauche de la famille mange à sa droite.Puis , ce crocodile meurt . Mais si il gardait des oeufs de la même couleur que lui, chacun de ces oeufs va éclorent en ce qu'il a mangé</p>.<p>En continuant, l'alligator orange, mange la famille jaune. Ensuite, l'alligator vert en haut à gauche veut manger la famille à sa droite. Mais avant qu'elle ne puisse le faire , nous devons nous pencher sur la règle de couleur !</p><p>La règle de couleur dit que si un alligator est sur ​​le point de manger une famille, et que s'il y a une couleur qui apparaît dans les deux familles, nous devons changer cette couleur dans une famille avec une autre couleur. Ici, vert et rouge apparaissent à la fois la première et la seconde famille. Le changement de couleur est automatique. Une fois qu'ils ne partagent plus les mêmes couleurs, nous pouvons manger! Et manger!Et manger! Et manger, jusqu'à ce qu'il n'y ai rien de plus qui puisse être mangé .</p>"
     "contenu-exercice" : "λz.(λe.(z z e ) ) λe.(λf.(e f ) ) λh.(h ) "
     "contenu-eleve"    : ""
-    "solution"         : "λc.(c ) "
+    "solution"         : ""
     "animation"        : "yes"
 
   "h" :
@@ -98,14 +105,14 @@ EXERCICES =
 <p>Lorsque un vieux crocodile est juste gardait une seule chose , il meurt.</p><p>Pour finir, l'alligator rouge mange la famille jaune, et il ne reste plus rien qui puisse être mangé.</p>"
     "contenu-exercice" : "(λe.(e ) λf.(f ) ) λe.(e ) "
     "contenu-eleve"    : ""
-    "solution"         : "λe.(e ) "
+    "solution"         : ""
     "animation"        : "yes"
 
   "i" :
     "titre"            : 'Challenge !'
     "texte"            : "<p>Voici deux familles. Elles s'appellent «Vrai» et «Faux» :</p><insert λe.(λf.(e ) ) λe.(λf.(f ) ) ><p>Et ici, une famille appelée «Non» : <insert λh.(h λe.(λf.( ? ) ) λe.(λf.( ? ) ) ) ></p><p>Lorsque «Non» mange «Vrai», il produit «Faux». Et lorsque «Non» mange «Faux», il produit «Vrai». De quelles couleurs devraient être les deux œufs?</p>"
     "contenu-exercice" : ""
-    "contenu-eleve"    : "λh.(h λe.(λf.( ? ) ) λe.(λf.( ? ) ) ) (λe.λf.e) "
+    "contenu-eleve"    : "λh.(h λe.(λf.( ? ) ) λe.(λf.( ? ) ) ) (λe.λf.?) "
     "compte-rendu"     : "λh.(h λe.(λf.( ? ) ) λe.(λf.( ? ) ) ) "
     "solution"         : "λh.(h λe.(λf.( f ) ) λe.(λf.( e ) ) ) "
     "parse"            : "yes"
@@ -430,7 +437,7 @@ $ ->
 
     
   make_dropped_droppable = () ->
-    $( ".application_drop, .definition_drop, [data-variable='?']" ).droppable
+    $( ".application_drop, .definition_drop, [data-variable='?']:not(#color)" ).droppable
       hoverClass: "ui-state-hover"
       accept : ".item"
       drop : ( event, ui ) ->

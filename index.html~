@@ -55,8 +55,9 @@
               </div>
               <div id="console">            
                   <input  type="text" id="prompt" name="prompt" />
-                  <button id="draw" class="panel-button" data-type="draw" >Inserer</button>
-                  <button class="panel-button" data-type="read"  >Lire</button>
+                  <button class="panel-button" id="clear" data-type="clear" ></button>
+                  <button id="draw" class="panel-button" data-type="draw" >&UpTeeArrow; </button>
+                  <button class="panel-button" data-type="read"  >&DownTeeArrow; </button>
                   <button class="panel-button" data-type="open"      >(</button>
                   <button class="panel-button" data-type="close"     >)</button>
                   <button class="panel-button" data-type="autoclose" >auto-close</button>
