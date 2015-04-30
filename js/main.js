@@ -548,35 +548,31 @@
       return $("#help").dialog("open");
     };
     find_action_pointer = function(root) {
-      var local_debug, pointer, stay, voisins, _ref1;
-      _ref1 = [[], true, false], ahead_vars = _ref1[0], stay = _ref1[1], local_debug = _ref1[2];
+      var local_debug, pointer, voisins, _ref1;
+      _ref1 = [[], false], ahead_vars = _ref1[0], local_debug = _ref1[1];
       pointer = $(root).children(".lambda:first()");
-      while (stay && pointer.length) {
+      while (pointer.length > 0) {
         if (local_debug) {
           alert("stay for a loop with " + (pointer.attr('data-variable')));
         }
         if (pointer.hasClass("priorite")) {
-          children(pointer.children(":not(svg)").length);
-          if (children === 1) {
-            stay = false;
-          } else {
-            pointer = pointer.children(".lambda:first()");
+          if (pointer.children(":not(svg)").length === 1) {
+            break;
           }
+          pointer = pointer.children(".lambda:first()");
         } else {
           voisins = pointer.next().length;
           if (voisins > 0) {
-            stay = false;
-          } else {
-            ahead_vars.push(pointer.attr("data-variable"));
-            pointer = pointer.children(".lambda").first();
+            break;
           }
+          ahead_vars.push(pointer.attr("data-variable"));
+          pointer = pointer.children(".lambda").first();
         }
       }
       return pointer;
     };
     color_rule_check = function(pointer) {
       var application, application_vars, function_vars, get_vars, intersect, intersection, item, _ref1;
-      application = pointer.next();
       get_vars = function(tree) {
         var palette;
         palette = [];
@@ -585,12 +581,13 @@
         });
         return palette.unique();
       };
-      _ref1 = [get_vars(pointer), get_vars(application)], function_vars = _ref1[0], application_vars = _ref1[1];
       intersect = function(a, b) {
         return a.filter(function(n) {
           return b.indexOf(n) !== -1;
         });
       };
+      application = pointer.next();
+      _ref1 = [get_vars(pointer), get_vars(application)], function_vars = _ref1[0], application_vars = _ref1[1];
       intersection = intersect(application_vars, function_vars);
       intersection = (function() {
         var _k, _len2, _results;

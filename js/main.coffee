@@ -489,36 +489,30 @@ $ ->
     $( "#help" ).dialog( "open")    
  
   find_action_pointer = (root) ->
-    [ahead_vars, stay, local_debug] = [ [], true, false ]
+    [ahead_vars, local_debug] = [ [], false]
     pointer = $(root).children(".lambda:first()")
-
-    while ((stay) and (pointer.length)) # TOP-LEFT RULE
+    while (pointer.length > 0) # TOP-LEFT RULE
       alert "stay for a loop with #{pointer.attr('data-variable')}" if local_debug
-      if (pointer.hasClass "priorite") #On tombe sur un croco blanc
-        children pointer.children(":not(svg)").length  #il y a des crocos de couleurs dessous
-        if children is 1 #il n'y en a qu'un -> ce croco blanc ne sert à rien
-          stay = false
-        else #sinon on cherche un croco dessous
-          pointer = pointer.children(".lambda:first()")
-      else   #On tombe sur un croco de couleur
+      if (pointer.hasClass "priorite")  # On tombe sur un croco blanc
+        break if (pointer.children(":not(svg)").length is 1) #il n'y en a qu'un -> ce croco blanc ne sert à rien
+        pointer = pointer.children(".lambda:first()")        #sinon on cherche un croco dessous
+      else   # On tombe sur un croco de couleur
         voisins = pointer.next().length
-        if  voisins > 0 #il a des voisins a manger, mangeage !
-          stay = false
-        else
-          ahead_vars.push pointer.attr("data-variable") #il n'en a pas, on cherche un croco dessous
-          pointer = pointer.children(".lambda").first()
+        break if  voisins > 0 # Il a des voisins a manger, mangeage !
+        ahead_vars.push pointer.attr("data-variable") # Il n'en a pas, on cherche un croco dessous mais on reserve la couleur
+        pointer = pointer.children(".lambda").first()
     return pointer
   
   color_rule_check = (pointer) ->
-    application = pointer.next()
     get_vars = (tree) ->
       palette = []
-      tree.find( "[data-variable]" ).andSelf().filter("[data-variable]").not(".lambda.priorite").each -> 
-        palette.push $( this ).attr("data-variable")
+      tree.find( "[data-variable]" ).andSelf().filter("[data-variable]").not(".lambda.priorite").each -> palette.push $( this ).attr("data-variable")
       palette.unique()
+    intersect = (a,b) -> a.filter (n) -> b.indexOf(n) isnt -1
+    application = pointer.next()
     [function_vars, application_vars] = [get_vars( pointer ), get_vars( application )]
     #On regarde s'il y a des couleurs en commun
-    intersect = (a,b) -> a.filter (n) -> b.indexOf(n) isnt -1
+    
     intersection = intersect(application_vars, function_vars)
     
     #Mais on ne doit pas prendre celle qui se trouvaient au dessus dans la fonction

@@ -82,7 +82,7 @@ EXERCICES =
 
   "f" :
     "titre"            : 'Manger'
-    "texte"            : "<p>Attention, ça va se compliquer !</p><p>Voici deux familles, l'une à coté de l'autre. L'alligator vert est affamé, et il y a cette famille jaune juste en face de lui... Comme elle semble appétissante! La suite, tu la connais ?! Appuye sur le bouton (&#9658;).</p><p>Malheureusement , les yeux du crocodile vert étaient plus grands que son ventre. Il trop a mangé ! En mourant, il s'en va au paradis des alligators (ouf !). Mais, l'histoire ne se arrête pas là ; parce qu'une fois l'alligator vert mort, l'œuf vert commence à éclore... Et étonnamment, il éclot exactement en ce que l'alligator vert avait mangé. C'est le miracle de la vie ! Maintenant, nous avons une nouvelle famille: un crocodile rouge gardant un alligator jaune et un œuf rouge, et l'alligator jaune qui garde son œuf jaune. Mais cet alligator jaune à faim , et il y a un bel œuf rouge en face de lui. On y va encore une fois (&#9658;).</p><p>Pauvre alligator. Même un seul œuf est trop gros pour son estomac! L'alligator jaune meurt... mais encore une fois , l'œuf jaune commence à éclore ...Et il éclot dans exactement ce que l'alligator jaune avait mangé !</p><p>Maintenant, il n'y a plus rien pour quiconque à manger, donc nous pouvons arrêter là.</p>"
+    "texte"            : "<p>Attention, ça va se compliquer !</p><p>Voici deux familles, l'une à coté de l'autre. L'alligator vert est affamé, et il y a cette famille jaune juste en face de lui... Comme elle semble appétissante! La suite, tu la connais ?! Appuye sur le bouton (&#9658;).</p><p>Malheureusement , les yeux du crocodile vert étaient plus grands que son ventre. Il trop a mangé ! En mourant, il s'en va au paradis des alligator (ouf !). Mais, l'histoire ne se arrête pas là ; parce qu'une fois l'alligator vert mort, l'oeuf vert commence à éclore... Et étonnamment, il éclot exactement en ce que l'alligator vert avait mangé. C'est le miracle de la vie ! Maintenant, nous avons une nouvelle famille: un crocodile rouge gardant un alligator jaune et un oeuf rouge, et l'alligator jaune qui garde son œuf jaune. Mais cet alligator jaune à faim , et il y a un bel œuf rouge en face de lui. On y va encore une fois (&#9658;).</p><p>Pauvre alligator. Même un seul œuf est trop gros pour son estomac! L'alligator jaune meurt... mais encore une fois , l'œuf jaune commence à éclore ...Et il éclot dans exactement ce que l'alligator jaune avait mangé !</p><p>Maintenant, il n'y a plus rien pour quiconque à manger, donc nous pouvons arrêter là.</p>"
     "contenu-exercice" : "λe.(λf.(e f ) ) λh.(h ) "
     "contenu-eleve"    : ""
     "solution"         : ""
@@ -90,7 +90,7 @@ EXERCICES =
 
   "g" :
     "titre"            : 'La règle du "je te mange"'
-    "texte"            : "<p>La règle de l'alimentation dit que s'il y a des familles côte-à-côté, l'alligator le plus en haut à gauche de la famille mange à sa droite. Puis, ce crocodile meurt . Mais si il gardait des œufs de la même couleur que lui, chacun de ces œufs va éclore en ce qu'il a mangé</p>.<p>En continuant, l'alligator orange mange la famille jaune. Ensuite, l'alligator vert en haut à gauche veut manger la famille à sa droite. Mais avant qu'il ne puisse le faire , nous devons nous pencher sur la règle de couleur !</p><p>La règle de couleur dit que si un alligator est sur ​​le point de manger une famille, et que s'il y a une couleur qui apparaît dans les deux familles, nous devons changer cette couleur dans une famille avec une autre couleur. Ici, vert et rouge apparaissent à la fois la première et la seconde famille. Le changement de couleur est automatique. Une fois qu'ils ne partagent plus les mêmes couleurs, nous pouvons manger! Et manger! Et manger! Et manger, jusqu'à ce qu'il n'y ait rien de plus qui puisse être mangé .</p>"
+    "texte"            : "<p>La règle de l'alimentation dit que s'il y a des familles côte-à-côté, l'alligator le plus en haut à gauche de la famille mange à sa droite.Puis , ce crocodile meurt . Mais si il gardait des oeufs de la même couleur que lui, chacun de ces oeufs va éclorent en ce qu'il a mangé</p>.<p>En continuant, l'alligator orange, mange la famille jaune. Ensuite, l'alligator vert en haut à gauche veut manger la famille à sa droite. Mais avant qu'elle ne puisse le faire , nous devons nous pencher sur la règle de couleur !</p><p>La règle de couleur dit que si un alligator est sur ​​le point de manger une famille, et que s'il y a une couleur qui apparaît dans les deux familles, nous devons changer cette couleur dans une famille avec une autre couleur. Ici, vert et rouge apparaissent à la fois la première et la seconde famille. Le changement de couleur est automatique. Une fois qu'ils ne partagent plus les mêmes couleurs, nous pouvons manger! Et manger!Et manger! Et manger, jusqu'à ce qu'il n'y ai rien de plus qui puisse être mangé .</p>"
     "contenu-exercice" : "λz.(λe.(z z e ) ) λe.(λf.(e f ) ) λh.(h ) "
     "contenu-eleve"    : ""
     "solution"         : ""
@@ -100,7 +100,7 @@ EXERCICES =
     "titre"            : 'La règle du vieil alligator'
     "texte"            : "<p>Il ne reste plus qu'une seule règle dans ce jeu, et elle est en lien avec les vieux alligators :</p>
 <p>L'alligator supérieur gauche ici n'a pas faim. Il ne va rien manger du tout. Tout ce dont il se soucie est sa famille. Alors, comment meurt-il?</p>
-<p>Il meurt quand il garde seulement une seule chose. À l'heure actuelle, il est à la fois gardien d'une famille verte et d'une famille rouge. Ils ont besoin de lui pour prendre soin d'eux. Mais l'alligator vert a faim: il mange la famille rouge ...</p>
+<p>Il meurt quand il garde seulement une seule chose. À l'heure actuelle, Il est à la fois gardien d'une famille verte et d'une famille rouge. Ils ont besoin de lui pour prendre soin d'eux. Mais l'alligator vert a faim: il mange la famille rouge ...</p>
 <p>Maintenant , le vieux crocodile ne garde plus qu'une seule famille. Cette famille peut prendre soin d'elle-même. Il n'est par conséquent plus nécessaire. Donc , il vieillit et meurt: C'est la vieille règle de l'âge!</p>
 <p>Lorsque un vieux crocodile est juste gardait une seule chose , il meurt.</p><p>Pour finir, l'alligator rouge mange la famille jaune, et il ne reste plus rien qui puisse être mangé.</p>"
     "contenu-exercice" : "(λe.(e ) λf.(f ) ) λe.(e ) "
@@ -110,7 +110,7 @@ EXERCICES =
 
   "i" :
     "titre"            : 'Challenge !'
-    "texte"            : "<p>Voici deux familles. Elles s'appellent «Vrai» et «Faux» :</p><insert λe.(λf.(e ) ) λe.(λf.(f ) ) ><p>Et ici, une famille appelée «Non» : <insert λh.(h λe.(λf.( ? ) ) λe.(λf.( ? ) ) ) ></p><p>Lorsque «Non» mange «Vrai», il produit «Faux». Et lorsque «Non» mange «Faux», il produit «Vrai». De quelles couleurs devraient être les deux œufs pour que cela se passe ainsi?</p>"
+    "texte"            : "<p>Voici deux familles. Elles s'appellent «Vrai» et «Faux» :</p><insert λe.(λf.(e ) ) λe.(λf.(f ) ) ><p>Et ici, une famille appelée «Non» : <insert λh.(h λe.(λf.( ? ) ) λe.(λf.( ? ) ) ) ></p><p>Lorsque «Non» mange «Vrai», il produit «Faux». Et lorsque «Non» mange «Faux», il produit «Vrai». De quelles couleurs devraient être les deux œufs?</p>"
     "contenu-exercice" : ""
     "contenu-eleve"    : "λh.(h λe.(λf.( ? ) ) λe.(λf.( ? ) ) ) (λe.λf.?) "
     "compte-rendu"     : "λh.(h λe.(λf.( ? ) ) λe.(λf.( ? ) ) ) "
@@ -210,7 +210,7 @@ $ ->
       width  : #{double};
       height : #{simple};
     }
-    .lambda.priorite.dropped > svg, .variable.dropped > svg, .lambda.dropped > svg {
+    .lambda.priorite.dropped > .svg, .variable.dropped > .svg, .lambda.dropped > .svg {
       height : #{simple};
     }
     
@@ -304,7 +304,7 @@ $ ->
 ###########################################################################################################################################################
   get_lambda_from = (root) ->
     exp = root.clone()
-    exp.find("svg, .definition_drop, .application_drop").remove()
+    exp.find("svg, .svg, .definition_drop, .application_drop").remove()
     exp = exp.html()
     exp = exp.replace /<div(?: style="[\w \;\:\-]*")? id="\d*" class="variable[\w \_\-]*" data-variable="([\w\?])" data-color="\w+"(?: style="[\w \;\:\-]*")?>\s*<\/div>/g, "$1 "
     exp = exp.replace /<div(?: style="[\w \;\:\-]*")? id="\d*" class="lambda[\w \_\-]*" data-variable="([\w\?])" data-color="\w+"(?: style="[\w \;\:\-]*")?>/g, "λ$1.("
@@ -489,36 +489,30 @@ $ ->
     $( "#help" ).dialog( "open")    
  
   find_action_pointer = (root) ->
-    [ahead_vars, stay, local_debug] = [ [], true, false ]
+    [ahead_vars, local_debug] = [ [], false]
     pointer = $(root).children(".lambda:first()")
-
-    while ((stay) and (pointer.length)) # TOP-LEFT RULE
+    while (pointer.length > 0) # TOP-LEFT RULE
       alert "stay for a loop with #{pointer.attr('data-variable')}" if local_debug
-      if (pointer.hasClass "priorite") #On tombe sur un croco blanc
-        children pointer.children(":not(svg)").length  #il y a des crocos de couleurs dessous
-        if children is 1 #il n'y en a qu'un -> ce croco blanc ne sert à rien
-          stay = false
-        else #sinon on cherche un croco dessous
-          pointer = pointer.children(".lambda:first()")
-      else   #On tombe sur un croco de couleur
+      if (pointer.hasClass "priorite")  # On tombe sur un croco blanc
+        break if (pointer.children(":not(svg)").length is 1) #il n'y en a qu'un -> ce croco blanc ne sert à rien
+        pointer = pointer.children(".lambda:first()")        #sinon on cherche un croco dessous
+      else   # On tombe sur un croco de couleur
         voisins = pointer.next().length
-        if  voisins > 0
-          stay = false
-        else
-          ahead_vars.push pointer.attr("data-variable")
-          pointer = pointer.children(".lambda").first()
+        break if  voisins > 0 # Il a des voisins a manger, mangeage !
+        ahead_vars.push pointer.attr("data-variable") # Il n'en a pas, on cherche un croco dessous mais on reserve la couleur
+        pointer = pointer.children(".lambda").first()
     return pointer
   
   color_rule_check = (pointer) ->
-    application = pointer.next()
     get_vars = (tree) ->
       palette = []
-      tree.find( "[data-variable]" ).andSelf().filter("[data-variable]").not(".lambda.priorite").each -> 
-        palette.push $( this ).attr("data-variable")
+      tree.find( "[data-variable]" ).andSelf().filter("[data-variable]").not(".lambda.priorite").each -> palette.push $( this ).attr("data-variable")
       palette.unique()
+    intersect = (a,b) -> a.filter (n) -> b.indexOf(n) isnt -1
+    application = pointer.next()
     [function_vars, application_vars] = [get_vars( pointer ), get_vars( application )]
     #On regarde s'il y a des couleurs en commun
-    intersect = (a,b) -> a.filter (n) -> b.indexOf(n) isnt -1
+    
     intersection = intersect(application_vars, function_vars)
     
     #Mais on ne doit pas prendre celle qui se trouvaient au dessus dans la fonction
@@ -570,7 +564,7 @@ $ ->
           found.attr("data-variable", palette[index])
           found.find("> svg").each ( index2 ) ->
             help( "Règle de la couleur", $(this).closest(".dropped").attr("id") ) if infobox
-            $(this).hide().show delta, ->
+            $(this). $(this).fadeTo(600, 1.show delta, ->
               step3.resolve(pointer) if index2 is n-1 
             $(this).find(".skin").css("fill", var_tab[palette[index]]) 
       else
