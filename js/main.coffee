@@ -489,39 +489,24 @@ $ ->
     $( "#help" ).dialog( "open")    
  
   find_action_pointer = (root) ->
-    local_debug = false
-    ahead_vars = []
+    [ahead_vars, stay, local_debug] = [ [], true, false ]
     pointer = $(root).children(".lambda:first()")
-    stay = true
-    # Top-left RULE
-    while ((stay) and (pointer.length))
+
+    while ((stay) and (pointer.length)) # TOP-LEFT RULE
       alert "stay for a loop with #{pointer.attr('data-variable')}" if local_debug
-      #On tombe sur un croco blanc
-      if (pointer.hasClass "priorite")
-        alert "Croco blanc !" if local_debug
-        #il y a des crocos de couleurs dessous
-        if pointer.children(":not(svg)").length is 1
-          #il n'y en a qu'un -> ce croco blanc ne sert à rien
+      if (pointer.hasClass "priorite") #On tombe sur un croco blanc
+        children pointer.children(":not(svg)").length  #il y a des crocos de couleurs dessous
+        if children is 1 #il n'y en a qu'un -> ce croco blanc ne sert à rien
           stay = false
-        else
+        else #sinon on cherche un croco dessous
           pointer = pointer.children(".lambda:first()")
-        continue
-      #On tombe sur un croco de couleur
-      if (pointer.hasClass "lambda") and (not pointer.hasClass "priorite")
-        alert "Croco #{pointer.attr('data-variable')} !" if local_debug
-        ahead_vars.push pointer.attr("data-variable")
-        if pointer.next().length > 0
-          ahead_vars.pop()
+      else   #On tombe sur un croco de couleur
+        voisins = pointer.next().length
+        if  voisins > 0 #il a des voisins a manger, mangeage !
           stay = false
         else
-          pointer = pointer.find(".lambda").first()
-        continue
-      # On tombe sur un oeuf
-      if (pointer.hasClass "variable")      
-        alert "Oeuf #{pointer.attr('data-variable')} !" if local_debug
-        ahead_vars.push pointer.attr("data-variable")  
-        pointer = pointer.next()
-        continue
+          ahead_vars.push pointer.attr("data-variable") #il n'en a pas, on cherche un croco dessous
+          pointer = pointer.children(".lambda").first()
     return pointer
   
   color_rule_check = (pointer) ->

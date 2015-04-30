@@ -548,46 +548,28 @@
       return $("#help").dialog("open");
     };
     find_action_pointer = function(root) {
-      var local_debug, pointer, stay;
-      local_debug = false;
-      ahead_vars = [];
+      var local_debug, pointer, stay, voisins, _ref1;
+      _ref1 = [[], true, false], ahead_vars = _ref1[0], stay = _ref1[1], local_debug = _ref1[2];
       pointer = $(root).children(".lambda:first()");
-      stay = true;
       while (stay && pointer.length) {
         if (local_debug) {
           alert("stay for a loop with " + (pointer.attr('data-variable')));
         }
         if (pointer.hasClass("priorite")) {
-          if (local_debug) {
-            alert("Croco blanc !");
-          }
-          if (pointer.children(":not(svg)").length === 1) {
+          children(pointer.children(":not(svg)").length);
+          if (children === 1) {
             stay = false;
           } else {
             pointer = pointer.children(".lambda:first()");
           }
-          continue;
-        }
-        if ((pointer.hasClass("lambda")) && (!pointer.hasClass("priorite"))) {
-          if (local_debug) {
-            alert("Croco " + (pointer.attr('data-variable')) + " !");
-          }
-          ahead_vars.push(pointer.attr("data-variable"));
-          if (pointer.next().length > 0) {
-            ahead_vars.pop();
+        } else {
+          voisins = pointer.next().length;
+          if (voisins > 0) {
             stay = false;
           } else {
-            pointer = pointer.find(".lambda").first();
+            ahead_vars.push(pointer.attr("data-variable"));
+            pointer = pointer.children(".lambda").first();
           }
-          continue;
-        }
-        if (pointer.hasClass("variable")) {
-          if (local_debug) {
-            alert("Oeuf " + (pointer.attr('data-variable')) + " !");
-          }
-          ahead_vars.push(pointer.attr("data-variable"));
-          pointer = pointer.next();
-          continue;
         }
       }
       return pointer;
