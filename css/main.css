@@ -211,9 +211,10 @@ pre.code{
   width : 90%;
   border : solid black 1px;
   padding : 5%;
-
 }
-
+.item.svg-container {
+  position:relative;
+}
 /* sliders */
 #slider-animation span.ui-slider-handle.ui-state-default {background: white url(svg/chrono.svg) no-repeat scroll 50% 50%;}
 #slider-zoom  span.ui-slider-handle.ui-state-default {background: white url(svg/zoom.svg) no-repeat scroll 50% 50%;}
@@ -226,6 +227,7 @@ pre.code{
 }
 #exercices{
  position :relative;
+ width:10vw;
 }
 
 div.ui-selectmenu-menu.ui-front.ui-selectmenu-open {
@@ -389,8 +391,9 @@ ul#choose-color-menu.ui-menu, ul#exercices-menu.ui-menu {
   height: 100%;
 }
 svg {
-  height : 2.5vw;
-  width : 6vw;
+  position:relative;
+  height : 100%;
+  width : 100%;
 }
 
 .lambda.priorite.dropped, .lambda.dropped {
@@ -417,7 +420,7 @@ svg {
   height : 60px;
 }
 
-.lambda.priorite.dropped > svg, .variable.dropped > svg, .lambda.dropped > svg {
+.svg-container {
   width:100%;
   height : 60px;
   position : absolute;

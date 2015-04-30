@@ -118,9 +118,9 @@ EXERCICES =
     "parse"            : "yes"
 
 $ ->
-   #########################################################################################################################################################
-  #Preparation html - Construction de la console
-  ###########################################################################################################################################################
+  ###############################################
+  #Preparation html - Construction de la console#
+  ###############################################
   for letter,index in ALPHABET
     color_tab.push CSS_COLOR_NAMES[index]
     var_tab["#{letter}"] = CSS_COLOR_NAMES[index]
@@ -153,7 +153,7 @@ $ ->
     [color, variable] = [ui.item.element.attr("data-color"),ui.item.value]
     $( "#panel-lambda" ).attr("data-variable", variable).html("λ#{variable}")
     $( "#panel-variable").attr("data-variable", variable).html("#{variable}")
-    $( "#egg-svg, #open-svg" ).find(".skin").css("fill", color)
+    $( ".item#egg-svg > svg, .item#open-svg > svg" ).find(".skin").css("fill", color)
     $("#color")
       .css( "background"   , color )
       .attr("data-variable", variable)
@@ -169,32 +169,20 @@ $ ->
     preparer_exercice i
     
   $.get "css/svg/egg.svg", (rawSvg) -> 
-    $("#egg-svg").append(document.importNode rawSvg.documentElement,true)
-    $("#egg-svg svg")[0].setAttribute('viewBox', '0 0 118 80')
-    $( "#choose-color" ).selectmenu().val("?").selectmenu('refresh')
+    $( ".item#egg-svg").append(document.importNode rawSvg.documentElement,true)
+    $( ".item#egg-svg svg")[0].setAttribute('viewBox', '0 0 118 80')
+    $( ".item#choose-color" ).selectmenu().val("?").selectmenu('refresh')
   , "xml"
   
   $.get "css/svg/open.svg", (rawSvg) -> 
-    $("#open-svg").append(document.importNode rawSvg.documentElement,true)
-    $("#open-svg svg")[0].setAttribute('viewBox', '0 0 300 124')
+    $( ".item#open-svg").append(document.importNode rawSvg.documentElement,true)
+    $( ".item#open-svg svg")[0].setAttribute('viewBox', '0 0 300 124')
   , "xml"
   $.get "css/svg/vieux.svg", (rawSvg) -> 
-    $("#vieux-svg").append(document.importNode rawSvg.documentElement,true)
-    $("#vieux-svg svg")[0].setAttribute('viewBox', '0 0 300 124')
+    $( ".item#vieux-svg").append(document.importNode rawSvg.documentElement,true)
+    $( ".item#vieux-svg svg")[0].setAttribute('viewBox', '0 0 300 124')
   , "xml"
-  
-  $( "#slider-animation" ).slider
-    range: "max",
-    min: 50,
-    max: 6000,
-    step: 500,
-    value: 2000,
-    slide: ( event, ui ) -> 
-      $( "#amount-animation" ).html( ui.value )
-      delta = ui.value
-      
-  $( "#amount-animation" ).html( $( "#slider-animation" ).slider( "value" ) )
-  
+    
   resize = () ->
     value = parseInt $( "#amount-zoom" ).html()
     [simple, double] = ["#{value}px", "#{2*value}px"]
@@ -205,15 +193,13 @@ $ ->
       min-height : #{simple};
       padding-top: #{simple};
     }
-    
     .variable.dropped { 
       width  : #{double};
       height : #{simple};
     }
-    .lambda.priorite.dropped > .svg, .variable.dropped > .svg, .lambda.dropped > .svg {
+    .dropped .svg-container {
       height : #{simple};
     }
-    
     .definition_drop, .application_drop {
       width : #{simple};
       height: #{simple};
@@ -229,30 +215,37 @@ $ ->
     value : 60
     slide : ( event, ui ) -> 
       $( "#amount-zoom" ).html( ui.value )
-      resize()
-       
+      resize()          
   $( "#amount-zoom" ).html( $( "#slider-zoom" ).slider( "value" ) )
-  
+  $("#slider-zoom").slider("value", 40)
+  $( "#slider-animation" ).slider
+    range: "max",
+    min: 50,
+    max: 6000,
+    step: 500,
+    value: 2000,
+    slide: ( event, ui ) -> 
+      $( "#amount-animation" ).html( ui.value )
+      delta = ui.value    
+  $( "#amount-animation" ).html( $( "#slider-animation" ).slider( "value" ) )
   
   $( ".item" ).draggable
     helper : "clone"
     start:  (event, ui) -> $(ui.helper).addClass("ui-draggable-helper")
     stop : (event, ui) ->  $(this).show()
     #cursorAt : {top :  50, left : 150}
-  ###########################################################################################################################################################
-  #Initialisation des items, dialog, couleurs et panels
-  ###########################################################################################################################################################
+  ######################################################
+  #Initialisation des items, dialog, couleurs et panels#
+  ######################################################
   #items oeuf, croco, vieux croco draggable
   $( "#infobox" ).on "click", (element) -> 
     infobox = $(this).toggle(this.checked).prop( "checked" )
   
   $( "#tags" ).on "click", -> 
-    tags = $(this).toggle(this.checked).prop( "checked" )
-    if not tags
-      $(".variable.dropped, .lambda.dropped").addClass( "hide_pseudo" )
-    else
-      $(".variable.dropped, .lambda.dropped").removeClass( "hide_pseudo" )
-  $( "#tags" ).trigger "click"   
+    [selection, tags] = [$(".variable.dropped, .lambda.dropped"), $(this).toggle(this.checked).prop( "checked" )]
+    if not tags then selection.addClass( "hide_pseudo" ) else selection.removeClass( "hide_pseudo" )
+  $( "#tags" ).trigger "click" 
+      
   #Gestion du panel
   $( ".panel-button" ).on "click", ->
     switch $( this ).attr("data-type")
@@ -299,12 +292,27 @@ $ ->
    
   $('#prompt').keypress (key) -> insert_exp_into_div($( "#prompt").val(),$("#root")) if key.which is 13
 
+ 
+  insert_item = (element) ->
+    if (element.hasClass "lambda") and (element.hasClass "priorite") 
+      $( ".item#vieux-svg").clone().removeClass("item").prependTo element
+    else
+      variable = element.attr "data-variable"
+      element.attr "data-color", "#{var_tab[variable]}"
+      if element.hasClass "variable"    
+        $( ".item#egg-svg > svg" ).find(".skin").css("fill", element.attr "data-color")
+        $( ".item#egg-svg ").clone().removeClass("item").prependTo element
+      else
+        $( ".item#open-svg > svg").find(".skin").css("fill", element.attr "data-color")
+        $( ".item#open-svg").clone().removeClass("item").prependTo element
+    element.addClass("definition_dropped") if variable is "?"
+
  #########################################################################################################################################################
   #Parser une expression
 ###########################################################################################################################################################
   get_lambda_from = (root) ->
     exp = root.clone()
-    exp.find("svg, .svg, .definition_drop, .application_drop").remove()
+    exp.find("svg, .svg-container, .definition_drop, .application_drop").remove()
     exp = exp.html()
     exp = exp.replace /<div(?: style="[\w \;\:\-]*")? id="\d*" class="variable[\w \_\-]*" data-variable="([\w\?])" data-color="\w+"(?: style="[\w \;\:\-]*")?>\s*<\/div>/g, "$1 "
     exp = exp.replace /<div(?: style="[\w \;\:\-]*")? id="\d*" class="lambda[\w \_\-]*" data-variable="([\w\?])" data-color="\w+"(?: style="[\w \;\:\-]*")?>/g, "λ$1.("
@@ -383,20 +391,10 @@ $ ->
     root.empty().append $( expression )
     #Insert alligators
     $( root ).find(".dropped").each ->
-      $( this ).attr "id", "#{id += 1}"
-      if ($( this ).hasClass "lambda") and ($( this ).hasClass "priorite") 
-        $( "#vieux-svg").clone().contents().prependTo $(this)
-      else
-        variable = $( this ).attr "data-variable"
-        $( this ).attr "data-color", "#{var_tab[variable]}"
-        if $( this ).hasClass "variable"
-          $( "#egg-svg").find(".skin").css("fill", $(this).attr "data-color")
-          $( "#egg-svg").clone().contents().prependTo  $(this)
-        else
-          $( "#open-svg").find(".skin").css("fill", $(this).attr "data-color")
-          $( "#open-svg").clone().contents().prependTo  $(this)
-      $(this).addClass("definition_dropped") if variable is "?"
+      $(this).attr "id", "#{id += 1}" 
+      insert_item $(this)
     make_dropped_droppable()
+    
   ###########################################################################################################################################################
   #Construction graphique
   ###########################################################################################################################################################
@@ -415,17 +413,9 @@ $ ->
     lambda = $('<div/>').html(lambda).contents()
     if type isnt "variable"
       $( lambda ).prepend "<div class='definition_drop'></div>"
-    switch type
-      when "variable"
-        $( "#egg-svg").find(".skin").css("fill",color)
-        $( "#egg-svg").clone().contents().prependTo $(lambda)
-      when "lambda"
-        $( "#open-svg").find(".skin").css("fill",color)
-        $( "#open-svg").clone().contents().prependTo $(lambda)
-      when "lambda priorite"
-        $( "#vieux-svg").clone().contents().prependTo $(lambda)
+    insert_item $(lambda)
     if droppable.attr("data-variable") is "?" 
-        droppable.find("> svg").remove()
+        droppable.find("> svg, > .svg-container").remove()
         droppable.after($(lambda))
         droppable.remove()
     else
@@ -434,8 +424,7 @@ $ ->
       else
         droppable.parent().after $(lambda)
       droppable.remove()
-
-    
+        
   make_dropped_droppable = () ->
     $( ".application_drop, .definition_drop, [data-variable='?']:not(#color)" ).droppable
       hoverClass: "ui-state-hover"
@@ -443,30 +432,24 @@ $ ->
       drop : ( event, ui ) ->
         inserer ui.draggable, $(this)
         make_dropped_droppable()
-
   make_dropped_droppable()
   ###########################################################################################################################################################
   #gestion d'une etape
   ###########################################################################################################################################################  
 
   looping = false
-  $( "#animation" ).on "click", (event) ->
-    event.stopPropagation()
-    event.preventDefault()
-    go_one_step( "#contenu-exercice" )
+  $( "#go" ).on "click", (event) ->
+    $( ".animation" ).prop("disabled",true)
+    looping = false
+    go_one_step("#root")
+    
+  $( "#animation" ).on "click", (event) -> go_one_step( "#contenu-exercice" )
   
   $("#stop").click () -> 
     $( ".animation" ).prop("disabled",false)  
     looping = false
     $( "#slider-animation" ).slider( "option", "disabled", false )    
-            
-  $( "#go" ).on "click", (event) ->
-    event.stopPropagation()
-    event.preventDefault()
-    $( ".animation" ).prop("disabled",true)
-    looping = false
-    go_one_step("#root")
-  
+             
   $( "#repeat" ).on "click", ->
     $( ".animation" ).prop("disabled",true)
     looping = true
@@ -482,7 +465,7 @@ $ ->
   help = (message, element) ->
     $( "#help" ).dialog "option",
       position :
-        my: "left bottom"
+        my: "center bottom"
         at: "center top"
         of: "##{element}"
     $( "#help" ).html message
@@ -494,7 +477,7 @@ $ ->
     while (pointer.length > 0) # TOP-LEFT RULE
       alert "stay for a loop with #{pointer.attr('data-variable')}" if local_debug
       if (pointer.hasClass "priorite")  # On tombe sur un croco blanc
-        break if (pointer.children(":not(svg)").length is 1) #il n'y en a qu'un -> ce croco blanc ne sert à rien
+        break if (pointer.children(":not(.svg-container)").length is 1) #il n'y en a qu'un -> ce croco blanc ne sert à rien
         pointer = pointer.children(".lambda:first()")        #sinon on cherche un croco dessous
       else   # On tombe sur un croco de couleur
         voisins = pointer.next().length
@@ -511,10 +494,8 @@ $ ->
     intersect = (a,b) -> a.filter (n) -> b.indexOf(n) isnt -1
     application = pointer.next()
     [function_vars, application_vars] = [get_vars( pointer ), get_vars( application )]
-    #On regarde s'il y a des couleurs en commun
-    
-    intersection = intersect(application_vars, function_vars)
-    
+    #On regarde s'il y a des couleurs en commun  
+    intersection = intersect(application_vars, function_vars) 
     #Mais on ne doit pas prendre celle qui se trouvaient au dessus dans la fonction
     intersection = (item for item in intersection when item not in ahead_vars)  
     #alert "[#{function_vars}], [#{application_vars}], [#{intersection}]"
@@ -533,42 +514,47 @@ $ ->
     
     #STEP 1 : 
     action_croco = find_action_pointer root
-    if action_croco.length > 0
-      step1.resolve(action_croco)
-    else
-      alert "Plus rien à faire !"
+    if action_croco.length > 0 then step1.resolve(action_croco) else alert "Plus rien à faire !"
    
     #STEP 2 : regle du vieil alligator inutile
     step1.done (pointer) ->  
-      if (pointer.hasClass "priorite") and (pointer.children(":not(svg)").length < 2)
-        help( "Ce vieil alligator ne sert plus à rien !", pointer.attr "id") if infobox
-        pointer.find("svg").first().find("g#layer1").attr("transform", "rotate(180,140,65)").animate {opacity : 0 }, delta, ->
-          $(this).closest(".lambda.priorite").replaceWith $(this).closest(".lambda.priorite").contents()
-          $(this).closest("svg").remove()
+      if (pointer.hasClass "priorite") and (pointer.children(":not(.svg-container)").length < 2)
+        help( "Ce vieil alligator ne sert plus à rien !", pointer.attr("id")) if infobox
+        svgContainer = pointer.children(".svg-container")
+        svgContainer.find("svg g#layer1").attr("transform", "rotate(180 125 75)")
+        svgContainer.fadeTo delta, 0, ->
+          $(this).find("svg").remove()
+          $(this).parent().replaceWith $(this).parent().contents()
+          $(this).remove()
           step2.resolve(pointer)
       else
         step2.resolve(pointer)
-
-    
+        
     #STEP 3 : regle de la couleur
     step2.done (pointer) ->
       [function_vars, application_vars, intersection] = color_rule_check(pointer)
       if intersection.length > 0
+        help( "Ce vieil alligator ne sert plus à rien !", pointer.attr("id")) if infobox
         application = pointer.next()
         palette = (item for item in ALPHABET[0..24] when item not in function_vars.concat application_vars)
         palette = palette[0..intersection.length-1]    
         #Pour chacune des couleurs de la fonction on va echanger dans l'application avec une couleur disponible de la palette
-        for $var, index in intersection
-          found = application.find( "[data-variable='#{$var}']").andSelf().filter("[data-variable='#{$var}']")
-          n = found.length
-          found.attr("data-variable", palette[index])
-          found.find("> svg").each ( index2 ) ->
-            help( "Règle de la couleur", $(this).closest(".dropped").attr("id") ) if infobox
-            $(this). $(this).fadeTo(600, 1.show delta, ->
-              step3.resolve(pointer) if index2 is n-1 
-            $(this).find(".skin").css("fill", var_tab[palette[index]]) 
+        elements = $()
+        for letter, letter_index in intersection
+          selection = application.find( "[data-variable='#{letter}']").andSelf().filter("[data-variable='#{letter}']")
+          if selection.length > 0
+            selection.each -> $(this).attr("data-variable", palette[letter_index])
+            elements = elements.add( selection )       
+        elements.each (index_element) ->
+          element = $(this)   
+          element.find("> .svg-container").fadeTo delta, 0.25, ->
+            $( this ).find(".skin").css("fill", var_tab[element.attr "data-variable"])
+            $( this ).fadeTo delta, 1, ->
+              if index_element is (elements.length-1)
+                step3.resolve(pointer) 
       else
         step3.resolve(pointer)
+    
     #STEP 4 : regle du mangeage d'application
     step3.done (pointer) ->
       if (pointer.hasClass "lambda") and (pointer.attr("data-color") isnt "white") and (pointer.next().length > 0)
@@ -579,23 +565,23 @@ $ ->
         applicationClone = application.clone()
         help("Manger", pointer.attr "id") if infobox
         j = 0
-        if delta > 0
-          bust_a_move = interval 50, -> pointer.children("svg").css("z-index":"9000").find("#jaw").attr("transform", "rotate(#{-10+Math.floor 6*Math.cos(j++)}) translate(-100,20)")
+        bust_a_move = interval 50, -> pointer.find("> .svg-container > svg").css("z-index":"9000").find("#jaw").attr("transform", "rotate(#{-10+Math.floor 6*Math.cos(j++)}) translate(-100,20)") if delta > 0
         application = pointer.next()
         application.css('visibility','hidden')
           .clone().prependTo(pointer)
           .css({border:"dashed black 1px",visibility:"visible",position:"absolute",top:"0px",left:"100%"})
           .animate {"min-width":"0px",padding:"0px", height: '1vw', width: "1vw", top:"0", left:"60%"} , delta, ->
             #On fait disparaitre l'application et son clone
-            $(this).find("> svg").remove() 
+            $(this).find("svg").remove() 
             $(this).remove() 
-            application.find("> svg").remove() 
+            application.find("svg").remove() 
             application.remove()
             clearInterval bust_a_move if delta > 0
-            pointer.children("svg").find("g#layer1").attr("transform", "rotate(180 125 75)")
+            pointer.children(".svg-container").find("svg g#layer1").attr("transform", "rotate(180 125 75)")
             help("Partir", pointer.attr "id") if infobox
-            pointer.children("svg").animate {"opacity" : 0}, delta, ->
-              $(this).closest("svg").remove()
+            pointer.children(".svg-container").animate {"opacity" : 0}, delta, ->
+              $(this).find("svg").remove()
+              $(this).remove()
               step4.resolve(pointer, applicationClone)
       else
         if looping
@@ -615,16 +601,15 @@ $ ->
         def_egg = $.Deferred()
         eggs.each (index, element) ->
           $(this).animate { opacity: 0} , delta, ->
-            $(this).find("> svg").remove() 
+            $(this).children(".svg-container").find("svg").remove() 
             $(this).remove()
             if index is n-1
               def_egg.resolve()  
           $(this).after application.clone().css(opacity: 0).animate {opacity: 1}, delta, ->
             if index is n-1
-              pointer.find("> svg").remove() 
+              pointer.children(".svg-container").find("svg").remove() 
               pointer.replaceWith pointer.contents()
-              def_clone.resolve()
-          
+              def_clone.resolve()       
         $.when(def_egg,def_clone).done -> 
           if looping
             go_one_step(root)
@@ -683,7 +668,7 @@ $ ->
       alert "Super ! Si tu as tout compris, passe à l'exo suivant. Sinon rejoue !"
     else
       alert "Raté ! Essaye encore, n'oublie pas de cliquer sur 'rejouer'"
-      alert "[debug soluce : #{solution} ; eleve : #{resultat}]" if local_debug
+      #alert "[debug soluce : #{solution} ; eleve : #{resultat}]" if local_debug
 
   #Pour l'article
   $( "#theory" ).toggle()

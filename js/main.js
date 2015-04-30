@@ -140,7 +140,7 @@
   };
 
   $(function() {
-    var color, color_rule_check, find_action_pointer, get_lambda_from, go_one_step, help, index, inserer, insert_exp_into_div, key, letter, looping, make_dropped_droppable, preparer_exercice, resize, value, _i, _j, _len, _len1;
+    var color, color_rule_check, find_action_pointer, get_lambda_from, go_one_step, help, index, inserer, insert_exp_into_div, insert_item, key, letter, looping, make_dropped_droppable, preparer_exercice, resize, value, _i, _j, _len, _len1;
     for (index = _i = 0, _len = ALPHABET.length; _i < _len; index = ++_i) {
       letter = ALPHABET[index];
       color_tab.push(CSS_COLOR_NAMES[index]);
@@ -194,7 +194,7 @@
       _ref1 = [ui.item.element.attr("data-color"), ui.item.value], color = _ref1[0], variable = _ref1[1];
       $("#panel-lambda").attr("data-variable", variable).html("λ" + variable);
       $("#panel-variable").attr("data-variable", variable).html("" + variable);
-      $("#egg-svg, #open-svg").find(".skin").css("fill", color);
+      $(".item#egg-svg > svg, .item#open-svg > svg").find(".skin").css("fill", color);
       return $("#color").css("background", color).attr("data-variable", variable).attr("data-color", color);
     });
     $("#exercices").selectmenu({
@@ -207,35 +207,23 @@
       return preparer_exercice(i);
     });
     $.get("css/svg/egg.svg", function(rawSvg) {
-      $("#egg-svg").append(document.importNode(rawSvg.documentElement, true));
-      $("#egg-svg svg")[0].setAttribute('viewBox', '0 0 118 80');
-      return $("#choose-color").selectmenu().val("?").selectmenu('refresh');
+      $(".item#egg-svg").append(document.importNode(rawSvg.documentElement, true));
+      $(".item#egg-svg svg")[0].setAttribute('viewBox', '0 0 118 80');
+      return $(".item#choose-color").selectmenu().val("?").selectmenu('refresh');
     }, "xml");
     $.get("css/svg/open.svg", function(rawSvg) {
-      $("#open-svg").append(document.importNode(rawSvg.documentElement, true));
-      return $("#open-svg svg")[0].setAttribute('viewBox', '0 0 300 124');
+      $(".item#open-svg").append(document.importNode(rawSvg.documentElement, true));
+      return $(".item#open-svg svg")[0].setAttribute('viewBox', '0 0 300 124');
     }, "xml");
     $.get("css/svg/vieux.svg", function(rawSvg) {
-      $("#vieux-svg").append(document.importNode(rawSvg.documentElement, true));
-      return $("#vieux-svg svg")[0].setAttribute('viewBox', '0 0 300 124');
+      $(".item#vieux-svg").append(document.importNode(rawSvg.documentElement, true));
+      return $(".item#vieux-svg svg")[0].setAttribute('viewBox', '0 0 300 124');
     }, "xml");
-    $("#slider-animation").slider({
-      range: "max",
-      min: 50,
-      max: 6000,
-      step: 500,
-      value: 2000,
-      slide: function(event, ui) {
-        $("#amount-animation").html(ui.value);
-        return delta = ui.value;
-      }
-    });
-    $("#amount-animation").html($("#slider-animation").slider("value"));
     resize = function() {
       var double, s, simple, _ref1;
       value = parseInt($("#amount-zoom").html());
       _ref1 = [value + "px", (2 * value) + "px"], simple = _ref1[0], double = _ref1[1];
-      s = ".lambda.priorite.dropped, .lambda.dropped { \n  min-width  : " + double + ";\n  min-height : " + simple + ";\n  padding-top: " + simple + ";\n}\n\n.variable.dropped { \n  width  : " + double + ";\n  height : " + simple + ";\n}\n.lambda.priorite.dropped > svg, .variable.dropped > svg, .lambda.dropped > svg {\n  height : " + simple + ";\n}\n\n.definition_drop, .application_drop {\n  width : " + simple + ";\n  height: " + simple + ";\n}";
+      s = ".lambda.priorite.dropped, .lambda.dropped { \n  min-width  : " + double + ";\n  min-height : " + simple + ";\n  padding-top: " + simple + ";\n}\n.variable.dropped { \n  width  : " + double + ";\n  height : " + simple + ";\n}\n.dropped .svg-container {\n  height : " + simple + ";\n}\n.definition_drop, .application_drop {\n  width : " + simple + ";\n  height: " + simple + ";\n}";
       return $("#restyler").text(s);
     };
     $("#slider-zoom").slider({
@@ -250,6 +238,19 @@
       }
     });
     $("#amount-zoom").html($("#slider-zoom").slider("value"));
+    $("#slider-zoom").slider("value", 40);
+    $("#slider-animation").slider({
+      range: "max",
+      min: 50,
+      max: 6000,
+      step: 500,
+      value: 2000,
+      slide: function(event, ui) {
+        $("#amount-animation").html(ui.value);
+        return delta = ui.value;
+      }
+    });
+    $("#amount-animation").html($("#slider-animation").slider("value"));
     $(".item").draggable({
       helper: "clone",
       start: function(event, ui) {
@@ -262,12 +263,14 @@
     $("#infobox").on("click", function(element) {
       return infobox = $(this).toggle(this.checked).prop("checked");
     });
+    $("#infobox").trigger("click");
     $("#tags").on("click", function() {
-      tags = $(this).toggle(this.checked).prop("checked");
+      var selection, _ref1;
+      _ref1 = [$(".variable.dropped, .lambda.dropped"), $(this).toggle(this.checked).prop("checked")], selection = _ref1[0], tags = _ref1[1];
       if (!tags) {
-        return $(".variable.dropped, .lambda.dropped").addClass("hide_pseudo");
+        return selection.addClass("hide_pseudo");
       } else {
-        return $(".variable.dropped, .lambda.dropped").removeClass("hide_pseudo");
+        return selection.removeClass("hide_pseudo");
       }
     });
     $("#tags").trigger("click");
@@ -331,10 +334,29 @@
         return insert_exp_into_div($("#prompt").val(), $("#root"));
       }
     });
+    insert_item = function(element) {
+      var variable;
+      if ((element.hasClass("lambda")) && (element.hasClass("priorite"))) {
+        $(".item#vieux-svg").clone().removeClass("item").prependTo(element);
+      } else {
+        variable = element.attr("data-variable");
+        element.attr("data-color", "" + var_tab[variable]);
+        if (element.hasClass("variable")) {
+          $(".item#egg-svg > svg").find(".skin").css("fill", element.attr("data-color"));
+          $(".item#egg-svg ").clone().removeClass("item").prependTo(element);
+        } else {
+          $(".item#open-svg > svg").find(".skin").css("fill", element.attr("data-color"));
+          $(".item#open-svg").clone().removeClass("item").prependTo(element);
+        }
+      }
+      if (variable === "?") {
+        return element.addClass("definition_dropped");
+      }
+    };
     get_lambda_from = function(root) {
       var exp;
       exp = root.clone();
-      exp.find("svg, .definition_drop, .application_drop").remove();
+      exp.find("svg, .svg-container, .definition_drop, .application_drop").remove();
       exp = exp.html();
       exp = exp.replace(/<div(?: style="[\w \;\:\-]*")? id="\d*" class="variable[\w \_\-]*" data-variable="([\w\?])" data-color="\w+"(?: style="[\w \;\:\-]*")?>\s*<\/div>/g, "$1 ");
       exp = exp.replace(/<div(?: style="[\w \;\:\-]*")? id="\d*" class="lambda[\w \_\-]*" data-variable="([\w\?])" data-color="\w+"(?: style="[\w \;\:\-]*")?>/g, "λ$1.(");
@@ -425,24 +447,8 @@
       expression = $('<div/>').html(expression).contents();
       root.empty().append($(expression));
       $(root).find(".dropped").each(function() {
-        var variable;
         $(this).attr("id", "" + (id += 1));
-        if (($(this).hasClass("lambda")) && ($(this).hasClass("priorite"))) {
-          $("#vieux-svg").clone().contents().prependTo($(this));
-        } else {
-          variable = $(this).attr("data-variable");
-          $(this).attr("data-color", "" + var_tab[variable]);
-          if ($(this).hasClass("variable")) {
-            $("#egg-svg").find(".skin").css("fill", $(this).attr("data-color"));
-            $("#egg-svg").clone().contents().prependTo($(this));
-          } else {
-            $("#open-svg").find(".skin").css("fill", $(this).attr("data-color"));
-            $("#open-svg").clone().contents().prependTo($(this));
-          }
-        }
-        if (variable === "?") {
-          return $(this).addClass("definition_dropped");
-        }
+        return insert_item($(this));
       });
       return make_dropped_droppable();
     };
@@ -465,20 +471,9 @@
       if (type !== "variable") {
         $(lambda).prepend("<div class='definition_drop'></div>");
       }
-      switch (type) {
-        case "variable":
-          $("#egg-svg").find(".skin").css("fill", color);
-          $("#egg-svg").clone().contents().prependTo($(lambda));
-          break;
-        case "lambda":
-          $("#open-svg").find(".skin").css("fill", color);
-          $("#open-svg").clone().contents().prependTo($(lambda));
-          break;
-        case "lambda priorite":
-          $("#vieux-svg").clone().contents().prependTo($(lambda));
-      }
+      insert_item($(lambda));
       if (droppable.attr("data-variable") === "?") {
-        droppable.find("> svg").remove();
+        droppable.find("> svg, > .svg-container").remove();
         droppable.after($(lambda));
         return droppable.remove();
       } else {
@@ -502,22 +497,18 @@
     };
     make_dropped_droppable();
     looping = false;
+    $("#go").on("click", function(event) {
+      $(".animation").prop("disabled", true);
+      looping = false;
+      return go_one_step("#root");
+    });
     $("#animation").on("click", function(event) {
-      event.stopPropagation();
-      event.preventDefault();
       return go_one_step("#contenu-exercice");
     });
     $("#stop").click(function() {
       $(".animation").prop("disabled", false);
       looping = false;
       return $("#slider-animation").slider("option", "disabled", false);
-    });
-    $("#go").on("click", function(event) {
-      event.stopPropagation();
-      event.preventDefault();
-      $(".animation").prop("disabled", true);
-      looping = false;
-      return go_one_step("#root");
     });
     $("#repeat").on("click", function() {
       $(".animation").prop("disabled", true);
@@ -539,7 +530,7 @@
     help = function(message, element) {
       $("#help").dialog("option", {
         position: {
-          my: "left bottom",
+          my: "center bottom",
           at: "center top",
           of: "#" + element
         }
@@ -556,7 +547,7 @@
           alert("stay for a loop with " + (pointer.attr('data-variable')));
         }
         if (pointer.hasClass("priorite")) {
-          if (pointer.children(":not(svg)").length === 1) {
+          if (pointer.children(":not(.svg-container)").length === 1) {
             break;
           }
           pointer = pointer.children(".lambda:first()");
@@ -624,15 +615,17 @@
         alert("Plus rien à faire !");
       }
       step1.done(function(pointer) {
-        if ((pointer.hasClass("priorite")) && (pointer.children(":not(svg)").length < 2)) {
+        var svgContainer;
+        if ((pointer.hasClass("priorite")) && (pointer.children(":not(.svg-container)").length < 2)) {
           if (infobox) {
             help("Ce vieil alligator ne sert plus à rien !", pointer.attr("id"));
           }
-          return pointer.find("svg").first().find("g#layer1").attr("transform", "rotate(180,140,65)").animate({
-            opacity: 0
-          }, delta, function() {
-            $(this).closest(".lambda.priorite").replaceWith($(this).closest(".lambda.priorite").contents());
-            $(this).closest("svg").remove();
+          svgContainer = pointer.children(".svg-container");
+          svgContainer.find("svg g#layer1").attr("transform", "rotate(180 125 75)");
+          return svgContainer.fadeTo(delta, 0, function() {
+            $(this).find("svg").remove();
+            $(this).parent().replaceWith($(this).parent().contents());
+            $(this).remove();
             return step2.resolve(pointer);
           });
         } else {
@@ -640,9 +633,12 @@
         }
       });
       step2.done(function(pointer) {
-        var $var, application, application_vars, found, function_vars, intersection, item, n, palette, _k, _len2, _ref1, _results;
+        var application, application_vars, elements, function_vars, intersection, item, letter_index, palette, selection, _k, _len2, _ref1;
         _ref1 = color_rule_check(pointer), function_vars = _ref1[0], application_vars = _ref1[1], intersection = _ref1[2];
         if (intersection.length > 0) {
+          if (infobox) {
+            help("Ce vieil alligator ne sert plus à rien !", pointer.attr("id"));
+          }
           application = pointer.next();
           palette = (function() {
             var _k, _len2, _ref2, _results;
@@ -657,25 +653,29 @@
             return _results;
           })();
           palette = palette.slice(0, +(intersection.length - 1) + 1 || 9e9);
-          _results = [];
-          for (index = _k = 0, _len2 = intersection.length; _k < _len2; index = ++_k) {
-            $var = intersection[index];
-            found = application.find("[data-variable='" + $var + "']").andSelf().filter("[data-variable='" + $var + "']");
-            n = found.length;
-            found.attr("data-variable", palette[index]);
-            _results.push(found.find("> svg").each(function(index2) {
-              if (infobox) {
-                help("Règle de la couleur", $(this).closest(".dropped").attr("id"));
-              }
-              $(this).hide().show(delta, function() {
-                if (index2 === n - 1) {
+          elements = $();
+          for (letter_index = _k = 0, _len2 = intersection.length; _k < _len2; letter_index = ++_k) {
+            letter = intersection[letter_index];
+            selection = application.find("[data-variable='" + letter + "']").andSelf().filter("[data-variable='" + letter + "']");
+            if (selection.length > 0) {
+              selection.each(function() {
+                return $(this).attr("data-variable", palette[letter_index]);
+              });
+              elements = elements.add(selection);
+            }
+          }
+          return elements.each(function(index_element) {
+            var element;
+            element = $(this);
+            return element.find("> .svg-container").fadeTo(delta, 0.25, function() {
+              $(this).find(".skin").css("fill", var_tab[element.attr("data-variable")]);
+              return $(this).fadeTo(delta, 1, function() {
+                if (index_element === (elements.length - 1)) {
                   return step3.resolve(pointer);
                 }
               });
-              return $(this).find(".skin").css("fill", var_tab[palette[index]]);
-            }));
-          }
-          return _results;
+            });
+          });
         } else {
           return step3.resolve(pointer);
         }
@@ -691,13 +691,13 @@
             help("Manger", pointer.attr("id"));
           }
           j = 0;
-          if (delta > 0) {
-            bust_a_move = interval(50, function() {
-              return pointer.children("svg").css({
+          bust_a_move = interval(50, function() {
+            if (delta > 0) {
+              return pointer.find("> .svg-container > svg").css({
                 "z-index": "9000"
               }).find("#jaw").attr("transform", "rotate(" + (-10 + Math.floor(6 * Math.cos(j++))) + ") translate(-100,20)");
-            });
-          }
+            }
+          });
           application = pointer.next();
           return application.css('visibility', 'hidden').clone().prependTo(pointer).css({
             border: "dashed black 1px",
@@ -713,21 +713,22 @@
             top: "0",
             left: "60%"
           }, delta, function() {
-            $(this).find("> svg").remove();
+            $(this).find("svg").remove();
             $(this).remove();
-            application.find("> svg").remove();
+            application.find("svg").remove();
             application.remove();
             if (delta > 0) {
               clearInterval(bust_a_move);
             }
-            pointer.children("svg").find("g#layer1").attr("transform", "rotate(180 125 75)");
+            pointer.children(".svg-container").find("svg g#layer1").attr("transform", "rotate(180 125 75)");
             if (infobox) {
               help("Partir", pointer.attr("id"));
             }
-            return pointer.children("svg").animate({
+            return pointer.children(".svg-container").animate({
               "opacity": 0
             }, delta, function() {
-              $(this).closest("svg").remove();
+              $(this).find("svg").remove();
+              $(this).remove();
               return step4.resolve(pointer, applicationClone);
             });
           });
@@ -754,7 +755,7 @@
             $(this).animate({
               opacity: 0
             }, delta, function() {
-              $(this).find("> svg").remove();
+              $(this).children(".svg-container").find("svg").remove();
               $(this).remove();
               if (index === n - 1) {
                 return def_egg.resolve();
@@ -766,7 +767,7 @@
               opacity: 1
             }, delta, function() {
               if (index === n - 1) {
-                pointer.find("> svg").remove();
+                pointer.children(".svg-container").find("svg").remove();
                 pointer.replaceWith(pointer.contents());
                 return def_clone.resolve();
               }
@@ -851,10 +852,7 @@
       if (resultat === solution) {
         return alert("Super ! Si tu as tout compris, passe à l'exo suivant. Sinon rejoue !");
       } else {
-        alert("Raté ! Essaye encore, n'oublie pas de cliquer sur 'rejouer'");
-        if (local_debug) {
-          return alert("[debug soluce : " + solution + " ; eleve : " + resultat + "]");
-        }
+        return alert("Raté ! Essaye encore, n'oublie pas de cliquer sur 'rejouer'");
       }
     });
     $("#theory").toggle();

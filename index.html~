@@ -60,7 +60,7 @@
                   <button class="panel-button" data-type="read"  >&DownTeeArrow; </button>
                   <button class="panel-button" data-type="open"      >(</button>
                   <button class="panel-button" data-type="close"     >)</button>
-                  <button class="panel-button" data-type="autoclose" >auto-close</button>
+                  <button class="panel-button" data-type="autoclose" >auto-)</button>
                   <button id="panel-lambda"   class="panel-button" data-type="lambda"   data-variable="a">λa</button>
                   <button id="panel-variable" class="panel-button" data-type="variable" data-variable="a">a</button>            
               </div>
@@ -80,9 +80,9 @@
                   <div id="color" data-variable="" data-color="">
                     <select name="choose-color" id="choose-color"></select>
                   </div> 
-                  <div id="vieux-svg" class="item vieux-croco"></div>
-                  <div id="egg-svg"   class="item egg"></div>
-                  <div id="open-svg"  class="item croco"></div>      
+                  <div id="vieux-svg" class="item svg-container vieux-croco"></div>
+                  <div id="egg-svg"   class="item svg-container egg"></div>
+                  <div id="open-svg"  class="item svg-container croco"></div>      
               </div>      
         </div>
         <div id="theory">
