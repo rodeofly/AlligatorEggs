@@ -140,7 +140,7 @@
   };
 
   $(function() {
-    var color, color_rule_check, find_action_pointer, get_lambda_from, go_one_step, help, index, inserer, insert_exp_into_div, insert_item, key, letter, looping, make_dropped_droppable, preparer_exercice, resize, value, _i, _j, _len, _len1;
+    var color, color_rule_check, egg_def, find_action_pointer, get_lambda_from, go_one_step, help, index, inserer, insert_exp_into_div, insert_item, key, letter, looping, make_dropped_droppable, open_def, preparer_exercice, resize, value, _i, _j, _len, _len1;
     for (index = _i = 0, _len = ALPHABET.length; _i < _len; index = ++_i) {
       letter = ALPHABET[index];
       color_tab.push(CSS_COLOR_NAMES[index]);
@@ -157,8 +157,32 @@
       color = color_tab[index];
       $("#choose-color").append("<option value='" + ALPHABET[index] + "' data-color='" + color + "' data-class='ui-icon-script' >" + ALPHABET[index] + "</option>");
     }
-    $("button").button();
-    $("#checkboxes, #top-panel-buttons").buttonset();
+    open_def = $.Deferred();
+    egg_def = $.Deferred();
+    $.get("css/svg/egg.svg", function(rawSvg) {
+      $(".item#egg-svg").append(document.importNode(rawSvg.documentElement, true));
+      $(".item#egg-svg svg")[0].setAttribute('viewBox', '0 0 118 80');
+      return egg_def.resolve();
+    }, "xml");
+    $.get("css/svg/open.svg", function(rawSvg) {
+      $(".item#open-svg").append(document.importNode(rawSvg.documentElement, true));
+      $(".item#open-svg svg")[0].setAttribute('viewBox', '0 0 300 124');
+      return open_def.resolve();
+    }, "xml");
+    $.get("css/svg/vieux.svg", function(rawSvg) {
+      $(".item#vieux-svg").append(document.importNode(rawSvg.documentElement, true));
+      return $(".item#vieux-svg svg")[0].setAttribute('viewBox', '0 0 300 124');
+    }, "xml");
+    $.when(open_def, egg_def).done(function() {
+      return $("#choose-color").trigger("selectmenuchange");
+    });
+    resize = function() {
+      var double, s, simple, _ref1;
+      value = parseInt($("#amount-zoom").html());
+      _ref1 = [value + "px", (2 * value) + "px"], simple = _ref1[0], double = _ref1[1];
+      s = ".lambda.priorite.dropped, .lambda.dropped { \n  min-width  : " + double + ";\n  min-height : " + simple + ";\n  padding-top: " + simple + ";\n}\n.variable.dropped { \n  width  : " + double + ";\n  height : " + simple + ";\n}\n.dropped .svg-container {\n  height : " + simple + ";\n}\n.definition_drop, .application_drop {\n  width : " + simple + ";\n  height: " + simple + ";\n}";
+      return $("#restyler").text(s);
+    };
     $.widget("ui.selectmenu", $.extend({}, $.ui.selectmenu.prototype, {
       _renderItem: function(ul, item) {
         var li, s;
@@ -190,8 +214,12 @@
       }
     });
     $("#choose-color").on("selectmenuchange", function(event, ui) {
-      var variable, _ref1;
-      _ref1 = [ui.item.element.attr("data-color"), ui.item.value], color = _ref1[0], variable = _ref1[1];
+      var variable, _ref1, _ref2;
+      if (ui != null) {
+        _ref1 = [ui.item.element.attr("data-color"), ui.item.value], color = _ref1[0], variable = _ref1[1];
+      } else {
+        _ref2 = ["Blue", "a"], color = _ref2[0], variable = _ref2[1];
+      }
       $("#panel-lambda").attr("data-variable", variable).html("λ" + variable);
       $("#panel-variable").attr("data-variable", variable).html("" + variable);
       $(".item#egg-svg > svg, .item#open-svg > svg").find(".skin").css("fill", color);
@@ -206,39 +234,19 @@
       $("#replay").attr("data-id", i);
       return preparer_exercice(i);
     });
-    $.get("css/svg/egg.svg", function(rawSvg) {
-      $(".item#egg-svg").append(document.importNode(rawSvg.documentElement, true));
-      $(".item#egg-svg svg")[0].setAttribute('viewBox', '0 0 118 80');
-      return $(".item#choose-color").selectmenu().val("?").selectmenu('refresh');
-    }, "xml");
-    $.get("css/svg/open.svg", function(rawSvg) {
-      $(".item#open-svg").append(document.importNode(rawSvg.documentElement, true));
-      return $(".item#open-svg svg")[0].setAttribute('viewBox', '0 0 300 124');
-    }, "xml");
-    $.get("css/svg/vieux.svg", function(rawSvg) {
-      $(".item#vieux-svg").append(document.importNode(rawSvg.documentElement, true));
-      return $(".item#vieux-svg svg")[0].setAttribute('viewBox', '0 0 300 124');
-    }, "xml");
-    resize = function() {
-      var double, s, simple, _ref1;
-      value = parseInt($("#amount-zoom").html());
-      _ref1 = [value + "px", (2 * value) + "px"], simple = _ref1[0], double = _ref1[1];
-      s = ".lambda.priorite.dropped, .lambda.dropped { \n  min-width  : " + double + ";\n  min-height : " + simple + ";\n  padding-top: " + simple + ";\n}\n.variable.dropped { \n  width  : " + double + ";\n  height : " + simple + ";\n}\n.dropped .svg-container {\n  height : " + simple + ";\n}\n.definition_drop, .application_drop {\n  width : " + simple + ";\n  height: " + simple + ";\n}";
-      return $("#restyler").text(s);
-    };
     $("#slider-zoom").slider({
       range: "max",
       min: 1,
       max: 100,
       step: 1,
-      value: 60,
+      value: 40,
       slide: function(event, ui) {
         $("#amount-zoom").html(ui.value);
         return resize();
       }
     });
-    $("#amount-zoom").html($("#slider-zoom").slider("value"));
-    $("#slider-zoom").slider("value", 40);
+    $("#amount-zoom").html("40");
+    resize();
     $("#slider-animation").slider({
       range: "max",
       min: 50,
@@ -251,6 +259,8 @@
       }
     });
     $("#amount-animation").html($("#slider-animation").slider("value"));
+    $("button").button();
+    $("#checkboxes, #top-panel-buttons").buttonset();
     $(".item").draggable({
       helper: "clone",
       start: function(event, ui) {
@@ -333,6 +343,79 @@
       if (key.which === 13) {
         return insert_exp_into_div($("#prompt").val(), $("#root"));
       }
+    });
+    $("#console").draggable({
+      containment: "#game-container"
+    }).toggle();
+    $("#command-panel").draggable({
+      containment: "#game-container"
+    });
+    $("#toggle-console").on("click", function() {
+      return $("#console").toggle();
+    });
+    preparer_exercice = function(id) {
+      var exo, lambda, reg, texte;
+      $(".animation").prop("disabled", false);
+      exo = EXERCICES[id];
+      $("#replay").attr("data-id", id);
+      $("#exercice").attr("data-solution", exo["solution"]);
+      $("#exercice").find("> .titre").html("<h1>" + exo['titre'] + "</h1>");
+      if (exo["contenu-eleve"] !== "") {
+        insert_exp_into_div(exo["contenu-eleve"], $("#root"));
+      } else {
+        $("#root").empty().append("<div id='root_definition' class='definition_drop'></div>");
+      }
+      if (exo["contenu-exercice"] !== "") {
+        insert_exp_into_div(exo["contenu-exercice"], $("#contenu-exercice"));
+      }
+      if (exo["animation"] === "yes") {
+        $("#animation").show();
+      } else {
+        $("#animation").hide();
+      }
+      texte = exo['texte'];
+      reg = /<insert ([λ().\w\? ]*)>/;
+      while (texte.match(reg)) {
+        lambda = reg.exec(texte);
+        insert_exp_into_div(lambda[1], $("#exercice-texte"));
+        texte = texte.replace(reg, $("#exercice-texte").html());
+      }
+      $("#exercice-texte").html("<p>" + texte + "</p>");
+      if ("compte-rendu" in exo) {
+        texte = exo["compte-rendu"];
+        insert_exp_into_div(texte, $("#compte-rendu"));
+      }
+      return $("#exercice").show();
+    };
+    $("#exercice").hide();
+    $("#close-exercice").on("click", function() {
+      return $("#exercice").hide();
+    });
+    $("#replay").on("click", function() {
+      return preparer_exercice($(this).attr("data-id"));
+    });
+    $("#exercice .check").on("click", function() {
+      var local_debug, resultat, solution;
+      local_debug = true;
+      solution = $("#exercice").attr("data-solution");
+      resultat = get_lambda_from($("#compte-rendu"));
+      if (resultat === solution) {
+        return alert("Super ! Si tu as tout compris, passe à l'exo suivant. Sinon rejoue !");
+      } else {
+        return alert("Raté ! Essaye encore, n'oublie pas de cliquer sur 'rejouer'");
+      }
+    });
+    $("#theory").toggle();
+    $("#toggle-theory").on("click", function() {
+      return $("#theory").toggle();
+    });
+    $("#play").on("click", function() {
+      return $("#game-container").dialog("open");
+    });
+    $(".run-previous-code").on("click", function() {
+      var js;
+      js = CoffeeScript.compile($(this).prev(":first").text());
+      return eval(js);
     });
     insert_item = function(element) {
       var variable;
@@ -593,7 +676,7 @@
       })();
       return [function_vars, application_vars, intersection];
     };
-    go_one_step = function(root, button) {
+    return go_one_step = function(root, button) {
       var action_croco, local_debug, step1, step2, step3, step4;
       local_debug = false;
       $(".animation").prop("disabled", true);
@@ -794,79 +877,6 @@
         }
       });
     };
-    $("#console").draggable({
-      containment: "#game-container"
-    }).toggle();
-    $("#command-panel").draggable({
-      containment: "#game-container"
-    });
-    $("#toggle-console").on("click", function() {
-      return $("#console").toggle();
-    });
-    preparer_exercice = function(id) {
-      var exo, lambda, reg, texte;
-      $(".animation").prop("disabled", false);
-      exo = EXERCICES[id];
-      $("#replay").attr("data-id", id);
-      $("#exercice").attr("data-solution", exo["solution"]);
-      $("#exercice").find("> .titre").html("<h1>" + exo['titre'] + "</h1>");
-      if (exo["contenu-eleve"] !== "") {
-        insert_exp_into_div(exo["contenu-eleve"], $("#root"));
-      } else {
-        $("#root").empty().append("<div id='root_definition' class='definition_drop'></div>");
-      }
-      if (exo["contenu-exercice"] !== "") {
-        insert_exp_into_div(exo["contenu-exercice"], $("#contenu-exercice"));
-      }
-      if (exo["animation"] === "yes") {
-        $("#animation").show();
-      } else {
-        $("#animation").hide();
-      }
-      texte = exo['texte'];
-      reg = /<insert ([λ().\w\? ]*)>/;
-      while (texte.match(reg)) {
-        lambda = reg.exec(texte);
-        insert_exp_into_div(lambda[1], $("#exercice-texte"));
-        texte = texte.replace(reg, $("#exercice-texte").html());
-      }
-      $("#exercice-texte").html("<p>" + texte + "</p>");
-      if ("compte-rendu" in exo) {
-        texte = exo["compte-rendu"];
-        insert_exp_into_div(texte, $("#compte-rendu"));
-      }
-      return $("#exercice").show();
-    };
-    $("#exercice").hide();
-    $("#close-exercice").on("click", function() {
-      return $("#exercice").hide();
-    });
-    $("#replay").on("click", function() {
-      return preparer_exercice($(this).attr("data-id"));
-    });
-    $("#exercice .check").on("click", function() {
-      var local_debug, resultat, solution;
-      local_debug = true;
-      solution = $("#exercice").attr("data-solution");
-      resultat = get_lambda_from($("#compte-rendu"));
-      if (resultat === solution) {
-        return alert("Super ! Si tu as tout compris, passe à l'exo suivant. Sinon rejoue !");
-      } else {
-        return alert("Raté ! Essaye encore, n'oublie pas de cliquer sur 'rejouer'");
-      }
-    });
-    $("#theory").toggle();
-    $("#toggle-theory").on("click", function() {
-      return $("#theory").toggle();
-    });
-    $("#play").on("click", function() {
-      return $("#game-container").dialog("open");
-    });
-    return $(".run-previous-code").on("click", function() {
-      var js;
-      js = CoffeeScript.compile($(this).prev(":first").text());
-      return eval(js);
-    });
   });
 
 }).call(this);

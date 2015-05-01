@@ -128,61 +128,30 @@ $ ->
   $( "#console"   ).append "<button id='#{key}' class='panel-button' data-type='fonction' data-lambda='#{value}'>#{key}</button>" for key,value of FUNCTION
   $( "#choose-color" ).append "<option value='#{ALPHABET[index]}' data-color='#{color}' data-class='ui-icon-script' >#{ALPHABET[index]}</option>" for color,index in color_tab
   
-  $( "button" ).button()
-  $( "#checkboxes, #top-panel-buttons" ).buttonset()
-  
-  $.widget "ui.selectmenu", $.extend {}, $.ui.selectmenu.prototype,
-    _renderItem : ( ul, item ) ->
-        color = var_tab[item.value]
-        li = $( "<li>" ).css( "background-color", color  )
-        s = "position:absolute;top:2%;left:2%;width:96%; height:96%;color:black;background:#{color};border-radius:100%;"
-        $( "<span>", { text: item.value, style: s}).appendTo( li )
-        return li.appendTo( ul )
-    _renderMenu : ( ul, items ) ->
-        that = this
-        $.each items, ( index, item ) ->
-          that._renderItemData( ul, item )
-          $("#color").css("background" , item.element.attr("data-color")).attr("data-variable",item.value).attr "data-color", item.element.attr "data-color"
-    
-  $( "#choose-color" )
-    .selectmenu
-      appendTo : "#command-panel"
-      open  : -> $("#game-container").addClass("stop-scrolling")
-      close : -> $("#game-container").removeClass("stop-scrolling")
-  $( "#choose-color" ).on "selectmenuchange", ( event, ui ) ->
-    [color, variable] = [ui.item.element.attr("data-color"),ui.item.value]
-    $( "#panel-lambda" ).attr("data-variable", variable).html("λ#{variable}")
-    $( "#panel-variable").attr("data-variable", variable).html("#{variable}")
-    $( ".item#egg-svg > svg, .item#open-svg > svg" ).find(".skin").css("fill", color)
-    $("#color")
-      .css( "background"   , color )
-      .attr("data-variable", variable)
-      .attr("data-color"   , color )
-  
-  $( "#exercices" )
-    .selectmenu
-      appendTo : "#top-panel"
-      
-  $( "#exercices" ).on "selectmenuchange", ( event, ui ) ->  
-    i = ui.item.element.attr( "data-id" )
-    $( "#replay").attr "data-id", i
-    preparer_exercice i
-    
+  open_def = $.Deferred()
+  egg_def = $.Deferred()
   $.get "css/svg/egg.svg", (rawSvg) -> 
     $( ".item#egg-svg").append(document.importNode rawSvg.documentElement,true)
     $( ".item#egg-svg svg")[0].setAttribute('viewBox', '0 0 118 80')
-    $( ".item#choose-color" ).selectmenu().val("?").selectmenu('refresh')
+    egg_def.resolve()
   , "xml"
   
   $.get "css/svg/open.svg", (rawSvg) -> 
     $( ".item#open-svg").append(document.importNode rawSvg.documentElement,true)
     $( ".item#open-svg svg")[0].setAttribute('viewBox', '0 0 300 124')
+    open_def.resolve()
   , "xml"
   $.get "css/svg/vieux.svg", (rawSvg) -> 
     $( ".item#vieux-svg").append(document.importNode rawSvg.documentElement,true)
     $( ".item#vieux-svg svg")[0].setAttribute('viewBox', '0 0 300 124')
   , "xml"
-    
+
+  
+  ###############################################
+  #Interface                            #
+  ###############################################
+  $.when(open_def,egg_def).done -> $( "#choose-color").trigger "selectmenuchange"
+  
   resize = () ->
     value = parseInt $( "#amount-zoom" ).html()
     [simple, double] = ["#{value}px", "#{2*value}px"]
@@ -206,18 +175,56 @@ $ ->
     }
     """
     $( "#restyler" ).text s
+  
+  $.widget "ui.selectmenu", $.extend {}, $.ui.selectmenu.prototype,
+    _renderItem : ( ul, item ) ->
+        color = var_tab[item.value]
+        li = $( "<li>" ).css( "background-color", color  )
+        s = "position:absolute;top:2%;left:2%;width:96%; height:96%;color:black;background:#{color};border-radius:100%;"
+        $( "<span>", { text: item.value, style: s}).appendTo( li )
+        return li.appendTo( ul )
+    _renderMenu : ( ul, items ) ->
+        that = this
+        $.each items, ( index, item ) ->
+          that._renderItemData( ul, item )
+          $("#color").css("background" , item.element.attr("data-color")).attr("data-variable",item.value).attr "data-color", item.element.attr "data-color"
     
+  $( "#choose-color" )
+    .selectmenu
+      appendTo : "#command-panel"
+      open  : -> $("#game-container").addClass("stop-scrolling")
+      close : -> $("#game-container").removeClass("stop-scrolling")
+  $( "#choose-color" ).on "selectmenuchange", ( event, ui ) ->
+    if ui?
+      [color, variable] = [ui.item.element.attr("data-color"),ui.item.value]
+    else
+      [color, variable] = ["Blue","a"]
+    $( "#panel-lambda" ).attr("data-variable", variable).html("λ#{variable}")
+    $( "#panel-variable").attr("data-variable", variable).html("#{variable}")
+    $( ".item#egg-svg > svg, .item#open-svg > svg" ).find(".skin").css("fill", color)
+    $("#color")
+      .css( "background"   , color )
+      .attr("data-variable", variable)
+      .attr("data-color"   , color )
+  
+  $( "#exercices" ).selectmenu( appendTo : "#top-panel" )    
+  $( "#exercices" ).on "selectmenuchange", ( event, ui ) -> 
+    i = ui.item.element.attr( "data-id" )
+    $( "#replay").attr "data-id", i
+    preparer_exercice i
+      
   $( "#slider-zoom" ).slider
     range: "max"
     min   : 1
     max   : 100
     step  : 1
-    value : 60
+    value : 40
     slide : ( event, ui ) -> 
       $( "#amount-zoom" ).html( ui.value )
       resize()          
-  $( "#amount-zoom" ).html( $( "#slider-zoom" ).slider( "value" ) )
-  $("#slider-zoom").slider("value", 40)
+  $( "#amount-zoom" ).html("40")
+  resize()
+  
   $( "#slider-animation" ).slider
     range: "max",
     min: 50,
@@ -229,6 +236,8 @@ $ ->
       delta = ui.value    
   $( "#amount-animation" ).html( $( "#slider-animation" ).slider( "value" ) )
   
+  $( "button" ).button()
+  $( "#checkboxes, #top-panel-buttons" ).buttonset()
   $( ".item" ).draggable
     helper : "clone"
     start:  (event, ui) -> $(ui.helper).addClass("ui-draggable-helper")
@@ -292,7 +301,67 @@ $ ->
    
   $('#prompt').keypress (key) -> insert_exp_into_div($( "#prompt").val(),$("#root")) if key.which is 13
 
- 
+  ###########################################################################################################################################################
+  # Gestion du jeu
+  ###########################################################################################################################################################  
+  $( "#console" ).draggable({containment: "#game-container"}).toggle()
+  $( "#command-panel" ).draggable( {containment: "#game-container"})
+    
+  $( "#toggle-console" ).on "click", -> $( "#console" ).toggle()
+  
+  #Exercice
+  preparer_exercice = (id) ->
+    $( ".animation" ).prop("disabled",false)
+    exo = EXERCICES[id]   
+    $( "#replay").attr "data-id", id
+    $( "#exercice").attr "data-solution", exo["solution"]
+    $( "#exercice").find("> .titre" ).html("<h1>#{exo['titre']}</h1>")   
+    if exo["contenu-eleve"] isnt ""
+      insert_exp_into_div(exo["contenu-eleve"], $("#root"))
+    else
+      $("#root" ).empty().append "<div id='root_definition' class='definition_drop'></div>"   
+    if exo["contenu-exercice"] isnt "" then insert_exp_into_div exo["contenu-exercice"], $( "#contenu-exercice" )   
+    if exo["animation"] is "yes" then $( "#animation").show() else $( "#animation").hide()    
+    texte = exo['texte'] 
+    reg = /<insert ([λ().\w\? ]*)>/
+    while texte.match reg
+      lambda = reg.exec(texte)
+      insert_exp_into_div lambda[1], $("#exercice-texte")
+      texte = texte.replace reg, $("#exercice-texte").html()
+    $( "#exercice-texte" ).html("<p>#{texte}</p>")   
+    if ("compte-rendu" of exo)
+      texte = exo["compte-rendu"]
+      insert_exp_into_div texte, $("#compte-rendu")
+    $( "#exercice").show()
+      
+  $( "#exercice").hide()
+  $("#close-exercice").on "click", ->  $("#exercice").hide()  
+  $( "#replay").on "click", () -> preparer_exercice $( this ).attr( "data-id" ) 
+  
+  $( "#exercice .check" ).on "click", ->
+    local_debug = true
+    solution = $( "#exercice" ).attr("data-solution")
+    resultat = get_lambda_from $("#compte-rendu")
+    if resultat is solution
+      alert "Super ! Si tu as tout compris, passe à l'exo suivant. Sinon rejoue !"
+    else
+      alert "Raté ! Essaye encore, n'oublie pas de cliquer sur 'rejouer'"
+      #alert "[debug soluce : #{solution} ; eleve : #{resultat}]" if local_debug
+
+  #Pour l'article
+  $( "#theory" ).toggle()
+  $( "#toggle-theory" ).on("click", -> $( "#theory" ).toggle())
+  $("#play").on "click", -> $("#game-container").dialog("open")
+
+  $( ".run-previous-code" ).on "click", ->
+    js = CoffeeScript.compile($( this ).prev( ":first" ).text())
+    eval(js)
+  ###############################################################
+  # LAMBDA CALCULUS START FROM 
+  ###############################################################
+  ###############################################################
+  #Insert svg container as first child of an element, very specific to crocodile svg #
+  ###############################################################
   insert_item = (element) ->
     if (element.hasClass "lambda") and (element.hasClass "priorite") 
       $( ".item#vieux-svg").clone().removeClass("item").prependTo element
@@ -307,9 +376,9 @@ $ ->
         $( ".item#open-svg").clone().removeClass("item").prependTo element
     element.addClass("definition_dropped") if variable is "?"
 
- #########################################################################################################################################################
-  #Parser une expression
-###########################################################################################################################################################
+  ###############################################################################
+  #Parse expression from a dom of div - svg container are removed previously#
+  ###############################################################################
   get_lambda_from = (root) ->
     exp = root.clone()
     exp.find("svg, .svg-container, .definition_drop, .application_drop").remove()
@@ -320,7 +389,7 @@ $ ->
     exp = exp.replace(/<\/div>/g , ") ")
     exp = exp.replace(/\s{2,}/g, " ")
  ###########################################################################################################################################################
-  #Inserer une expression
+  #Insert expression in root from lambda expression exp, create dom and insert svg container
   ###########################################################################################################################################################
   insert_exp_into_div = (exp, root) ->
     expression = exp
@@ -623,58 +692,4 @@ $ ->
           go_one_step(root)
         else 
           $( ".animation" ).prop("disabled",false)
-  ###########################################################################################################################################################
-  # Gestion du jeu
-  ###########################################################################################################################################################  
-  $( "#console" ).draggable({containment: "#game-container"}).toggle()
-  $( "#command-panel" ).draggable( {containment: "#game-container"})
-    
-  $( "#toggle-console" ).on "click", -> $( "#console" ).toggle()
   
-  #Exercice
-  preparer_exercice = (id) ->
-    $( ".animation" ).prop("disabled",false)
-    exo = EXERCICES[id]   
-    $( "#replay").attr "data-id", id
-    $( "#exercice").attr "data-solution", exo["solution"]
-    $( "#exercice").find("> .titre" ).html("<h1>#{exo['titre']}</h1>")   
-    if exo["contenu-eleve"] isnt ""
-      insert_exp_into_div(exo["contenu-eleve"], $("#root"))
-    else
-      $("#root" ).empty().append "<div id='root_definition' class='definition_drop'></div>"   
-    if exo["contenu-exercice"] isnt "" then insert_exp_into_div exo["contenu-exercice"], $( "#contenu-exercice" )   
-    if exo["animation"] is "yes" then $( "#animation").show() else $( "#animation").hide()    
-    texte = exo['texte'] 
-    reg = /<insert ([λ().\w\? ]*)>/
-    while texte.match reg
-      lambda = reg.exec(texte)
-      insert_exp_into_div lambda[1], $("#exercice-texte")
-      texte = texte.replace reg, $("#exercice-texte").html()
-    $( "#exercice-texte" ).html("<p>#{texte}</p>")   
-    if ("compte-rendu" of exo)
-      texte = exo["compte-rendu"]
-      insert_exp_into_div texte, $("#compte-rendu")
-    $( "#exercice").show()
-      
-  $( "#exercice").hide()
-  $("#close-exercice").on "click", ->  $("#exercice").hide()  
-  $( "#replay").on "click", () -> preparer_exercice $( this ).attr( "data-id" ) 
-  
-  $( "#exercice .check" ).on "click", ->
-    local_debug = true
-    solution = $( "#exercice" ).attr("data-solution")
-    resultat = get_lambda_from $("#compte-rendu")
-    if resultat is solution
-      alert "Super ! Si tu as tout compris, passe à l'exo suivant. Sinon rejoue !"
-    else
-      alert "Raté ! Essaye encore, n'oublie pas de cliquer sur 'rejouer'"
-      #alert "[debug soluce : #{solution} ; eleve : #{resultat}]" if local_debug
-
-  #Pour l'article
-  $( "#theory" ).toggle()
-  $( "#toggle-theory" ).on("click", -> $( "#theory" ).toggle())
-  $("#play").on "click", -> $("#game-container").dialog("open")
-
-  $( ".run-previous-code" ).on "click", ->
-    js = CoffeeScript.compile($( this ).prev( ":first" ).text())
-    eval(js)
