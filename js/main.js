@@ -140,7 +140,7 @@
   };
 
   $(function() {
-    var color, color_rule_check, egg_def, find_action_pointer, get_lambda_from, go_one_step, help, index, inserer, insert_exp_into_div, insert_item, key, letter, looping, make_dropped_droppable, open_def, preparer_exercice, resize, value, _i, _j, _len, _len1;
+    var color, color_rule_check, egg_def, find_action_pointer, get_lambda_from, go_one_step, help, index, inserer, insert_exp_into_div, insert_item, key, letter, looping, make_dropped_droppable, open_def, preparer_exercice, render_viewport, replace_egg, resize, sys, value, _i, _j, _len, _len1;
     for (index = _i = 0, _len = ALPHABET.length; _i < _len; index = ++_i) {
       letter = ALPHABET[index];
       color_tab.push(CSS_COLOR_NAMES[index]);
@@ -183,6 +183,36 @@
       s = ".lambda.priorite.dropped, .lambda.dropped { \n  min-width  : " + double + ";\n  min-height : " + simple + ";\n  padding-top: " + simple + ";\n}\n.variable.dropped { \n  width  : " + double + ";\n  height : " + simple + ";\n}\n.dropped .svg-container {\n  height : " + simple + ";\n}\n.definition_drop, .application_drop {\n  width : " + simple + ";\n  height: " + simple + ";\n}";
       return $("#restyler").text(s);
     };
+
+    /*
+    render_viewport = (root_id) ->
+      id = 0
+      local_debug = false
+      particles = $( "#{root_id}" ).find(".dropped")
+      sys = arbor.ParticleSystem({friction:0.5, stiffness:1000, repulsion:1000})
+      sys.parameters
+          stiffness: 900
+          repulsion: 2000
+          gravity: true
+          dt: 0.015
+     
+      alert particles.length if local_debug     
+      if particles.length > 0
+        particles.each ->
+          particle = $(this)
+          if particle.hasClass("priorite")
+            [id, type, variable, color] = [particle.attr("id"), "priorite", particle.attr("data-variable"), particle.attr("data-color")]
+          else if particle.hasClass("variable")
+            [id, type, variable, color] = [particle.attr("id"), "variable", particle.attr("data-variable"), particle.attr("data-color")]
+          else if particle.hasClass("lambda")
+              [id, type, variable, color] = [particle.attr("id"), "lambda", particle.attr("data-variable"), particle.attr("data-color")]
+          alert "#{id}/#{particle.attr('id')}, #{variable}/#{particle.attr('data-variable')}, #{type}:#{type}, #{color}/#{particle.attr('data-color')}" if local_debug 
+          sys.addNode("#{id}",{'color' : color,'shape' : 'dot','label' : variable })
+          if $( this ).parent().length > 0
+            sys.addEdge(id, $( this ).parent().attr("id"))
+      sys.renderer = Renderer("#viewport") 
+      alert "woot" if local_debug
+     */
     $.widget("ui.selectmenu", $.extend({}, $.ui.selectmenu.prototype, {
       _renderItem: function(ul, item) {
         var li, s;
@@ -650,7 +680,7 @@
       get_vars = function(tree) {
         var palette;
         palette = [];
-        tree.find("[data-variable]").andSelf().filter("[data-variable]").not(".lambda.priorite").each(function() {
+        tree.find("[data-variable]").addBack().filter("[data-variable]").not(".lambda.priorite").each(function() {
           return palette.push($(this).attr("data-variable"));
         });
         return palette.unique();
@@ -676,39 +706,128 @@
       })();
       return [function_vars, application_vars, intersection];
     };
+    sys = arbor.ParticleSystem({
+      friction: 0.5,
+      stiffness: 1000,
+      repulsion: 1000
+    });
+    sys.parameters({
+      stiffness: 900,
+      repulsion: 2000,
+      gravity: true,
+      dt: 0.015
+    });
+    render_viewport = function() {
+      return {
+        init: function(pointer) {
+          var local_debug, particles;
+          local_debug = false;
+          particles = $("#root").find(".dropped");
+          if (local_debug) {
+            alert(particles.length);
+          }
+          if (particles.length > 0) {
+            particles.each(function() {
+              var label, origin, particle, particle_id, type, variable, _ref1, _ref2, _ref3;
+              particle = $(this);
+              particle_id = particle.attr("id");
+              if (particle.hasClass("priorite")) {
+                _ref1 = ["()", particle.attr("data-variable"), particle.attr("data-color")], type = _ref1[0], variable = _ref1[1], color = _ref1[2];
+              } else if (particle.hasClass("variable")) {
+                _ref2 = ["", particle.attr("data-variable"), particle.attr("data-color")], type = _ref2[0], variable = _ref2[1], color = _ref2[2];
+              } else if (particle.hasClass("lambda")) {
+                _ref3 = ["  λ", particle.attr("data-variable"), particle.attr("data-color")], type = _ref3[0], variable = _ref3[1], color = _ref3[2];
+              }
+              label = "" + type + variable + ":" + particle_id + "  ";
+              sys.addNode("" + particle_id, {
+                'color': color,
+                'shape': 'dot',
+                'label': label
+              });
+              if (particle.next(":not(.svg-container)").length > 0) {
+                origin = particle.next(":not(.svg-container)").attr("id");
+                sys.addEdge(origin, "" + particle_id);
+              }
+              return sys.addEdge(particle.parent().attr("id"), "" + particle_id);
+            });
+          }
+          sys.renderer = Renderer("#viewport");
+          if (local_debug) {
+            return alert("woot");
+          }
+        }
+      };
+    };
+    replace_egg = function(egg, pointer, application) {
+      var local_debug;
+      local_debug = false;
+      sys.pruneNode(egg.attr("id"));
+      return application.find(".dropped").addBack().each(function() {
+        var element, element_id, label, origin, type, variable, _ref1, _ref2, _ref3;
+        element = $(this);
+        element_id = element.attr("id");
+        if (element.hasClass("priorite")) {
+          _ref1 = ["()", element.attr("data-variable"), element.attr("data-color")], type = _ref1[0], variable = _ref1[1], color = _ref1[2];
+        } else if (element.hasClass("variable")) {
+          _ref2 = ["", element.attr("data-variable"), element.attr("data-color")], type = _ref2[0], variable = _ref2[1], color = _ref2[2];
+        } else if (element.hasClass("lambda")) {
+          _ref3 = ["  λ", element.attr("data-variable"), element.attr("data-color")], type = _ref3[0], variable = _ref3[1], color = _ref3[2];
+        }
+        label = "" + type + variable + ":" + element_id + "  ";
+        sys.addNode("" + element_id, {
+          'color': color,
+          'shape': 'dot',
+          'label': label
+        });
+        if ($(this).next(":not(.svg-container)").length > 0) {
+          origin = $(this).next(":not(.svg-container)").attr("id");
+          sys.addEdge(origin, "" + element_id);
+        }
+        if ($(this).parent().length > 0) {
+          origin = $(this).parent().attr("id");
+          sys.addEdge(origin, "" + element_id);
+        } else {
+          origin = pointer.parent().attr("id");
+          sys.addEdge(origin, "" + element_id);
+        }
+        return console.log(id + ":" + $(this).parent().attr("id") + ":" + $(this).next(":not(.svg-container)").attr("id"));
+      });
+    };
+    $("#toggle-shape").on("click", function() {
+      return render_viewport().init($("#root"));
+    });
     return go_one_step = function(root, button) {
-      var action_croco, local_debug, step1, step2, step3, step4;
+      var action_croco, local_debug, step0, step1, step2, step3, step4;
       local_debug = false;
       $(".animation").prop("disabled", true);
       $(root + " .application_drop, " + root + " .definition_drop").remove();
-      $(root).find(".dropped").each(function(i) {
-        if (i == null) {
-          i = 0;
-        }
-        return $(this).attr("id", id += 1);
-      });
+      step0 = $.Deferred();
       step1 = $.Deferred();
       step2 = $.Deferred();
       step3 = $.Deferred();
       step4 = $.Deferred();
-      action_croco = find_action_pointer(root);
-      if (action_croco.length > 0) {
-        step1.resolve(action_croco);
-      } else {
-        alert("Plus rien à faire !");
-      }
+      step0.done(function(pointer) {
+        render_viewport().init(pointer);
+        return step1.resolve(pointer);
+      });
       step1.done(function(pointer) {
-        var svgContainer;
+        var firstchild, firstsibling, svgContainer;
         if ((pointer.hasClass("priorite")) && (pointer.children(":not(.svg-container)").length < 2)) {
           if (infobox) {
             help("Ce vieil alligator ne sert plus à rien !", pointer.attr("id"));
           }
+          firstchild = pointer.children(":not(.svg-container)").first().attr("id");
+          firstsibling = pointer.siblings(":not(.svg-container)").attr("id");
+          if (firstsibling != null) {
+            sys.addEdge(firstsibling, firstchild);
+          }
+          sys.addEdge(pointer.parent().attr("id"), firstchild);
+          sys.pruneNode(pointer.attr("id"));
           svgContainer = pointer.children(".svg-container");
           svgContainer.find("svg g#layer1").attr("transform", "rotate(180 125 75)");
           return svgContainer.fadeTo(delta, 0, function() {
-            $(this).find("svg").remove();
-            $(this).parent().replaceWith($(this).parent().contents());
-            $(this).remove();
+            pointer.children(".svg-container").find("svg").remove();
+            pointer.replaceWith(pointer.contents());
             return step2.resolve(pointer);
           });
         } else {
@@ -720,7 +839,7 @@
         _ref1 = color_rule_check(pointer), function_vars = _ref1[0], application_vars = _ref1[1], intersection = _ref1[2];
         if (intersection.length > 0) {
           if (infobox) {
-            help("Ce vieil alligator ne sert plus à rien !", pointer.attr("id"));
+            help("Règle de la couleur !", pointer.attr("id"));
           }
           application = pointer.next();
           palette = (function() {
@@ -739,17 +858,28 @@
           elements = $();
           for (letter_index = _k = 0, _len2 = intersection.length; _k < _len2; letter_index = ++_k) {
             letter = intersection[letter_index];
-            selection = application.find("[data-variable='" + letter + "']").andSelf().filter("[data-variable='" + letter + "']");
+            selection = application.find("[data-variable='" + letter + "']").addBack().filter("[data-variable='" + letter + "']");
             if (selection.length > 0) {
               selection.each(function() {
-                return $(this).attr("data-variable", palette[letter_index]);
+                $(this).attr("data-variable", palette[letter_index]);
+                return $(this).attr("data-color", var_tab[$(this).attr("data-variable")]);
               });
               elements = elements.add(selection);
             }
           }
           return elements.each(function(index_element) {
-            var element;
+            var element, element_id, label, variable;
             element = $(this);
+            element_id = element.attr("id");
+            color = element.attr("data-color");
+            variable = element.attr("data-variable");
+            label = variable + ":" + id;
+            sys.tweenNode(element_id, {
+              data: {
+                color: color,
+                label: label
+              }
+            });
             return element.find("> .svg-container").fadeTo(delta, 0.25, function() {
               $(this).find(".skin").css("fill", var_tab[element.attr("data-variable")]);
               return $(this).fadeTo(delta, 1, function() {
@@ -770,6 +900,12 @@
           variable = pointer.attr("data-variable");
           application = pointer.next();
           applicationClone = application.clone();
+          if (application.next(":not(.svg-container)").length > 0) {
+            sys.addEdge(application.next(":not(.svg-container)").attr("id"), pointer.attr("id"));
+          }
+          application.find(".dropped").addBack().each(function() {
+            return sys.pruneNode($(this).attr("id"));
+          });
           if (infobox) {
             help("Manger", pointer.attr("id"));
           }
@@ -823,8 +959,15 @@
           }
         }
       });
-      return step4.done(function(pointer, application) {
-        var def_clone, def_egg, eggs, n, variable;
+      step4.done(function(pointer, application) {
+        var def_clone, def_egg, eggs, firstchild, firstsibling, n, variable;
+        firstchild = pointer.children(":not(.svg-container)").first().attr("id");
+        firstsibling = pointer.siblings(":not(.svg-container)").attr("id");
+        if (firstsibling != null) {
+          sys.addEdge(firstsibling, firstchild);
+        }
+        sys.addEdge(pointer.parent().attr("id"), firstchild);
+        sys.pruneNode(pointer.attr("id"));
         variable = pointer.attr("data-variable");
         if (infobox) {
           help("éclosion", pointer.attr("id"));
@@ -835,6 +978,10 @@
           def_clone = $.Deferred();
           def_egg = $.Deferred();
           eggs.each(function(index, element) {
+            application.find(".dropped").addBack().each(function() {
+              return $(this).attr("id", id += 1);
+            });
+            replace_egg($(this), pointer, application);
             $(this).animate({
               opacity: 0
             }, delta, function() {
@@ -876,6 +1023,12 @@
           }
         }
       });
+      action_croco = find_action_pointer(root);
+      if (action_croco.length > 0) {
+        return step0.resolve(action_croco);
+      } else {
+        return alert("Plus rien à faire !");
+      }
     };
   });
 

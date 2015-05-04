@@ -18,6 +18,10 @@
         <script src="js/vendor/jquery-ui.min.js"></script>
         <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
         <script src="js/vendor/jquery.ui.touch-punch.min.js"></script>
+        <script src="js/vendor/arbor-tween.js"></script>
+        <script src="js/vendor/arbor.js"></script>
+        <script src="js/vendor/arbor-graphics.js"></script>
+        <script src="js/vendor/renderer.js"></script>
     </head>
     <body>
         <style id="restyler" type="text/css"></style>
@@ -29,6 +33,7 @@
                 <div id="top-panel-buttons">
                   <input type="checkbox"  id="toggle-console"/><label for="toggle-console">Console</label>
                   <input type="checkbox"  id="toggle-theory" /><label for="toggle-theory" >Theory</label>
+                  <input type="checkbox"  id="toggle-shape" /><label for="toggle-shape" >Shape</label>
                 </div>
                 <select id="exercices" style="z-index:100;"><option value="Exercices">Exercices</option></select>
               </div>  
@@ -52,6 +57,7 @@
                   </div>    
                   <div id="help"></div>
               </div>
+              <canvas id="viewport" width="1000" height="400"></canvas>     
               <div id="console">            
                   <input  type="text" id="prompt" name="prompt" />
                   <button class="panel-button" id="clear" data-type="clear" ></button>
@@ -82,7 +88,8 @@
                   <div id="vieux-svg" class="item svg-container vieux-croco"></div>
                   <div id="egg-svg"   class="item svg-container egg"></div>
                   <div id="open-svg"  class="item svg-container croco"></div>      
-              </div>      
+              </div> 
+              
         </div>
         <div id="theory">
             <div class="header-container">

@@ -176,6 +176,41 @@ $ ->
     """
     $( "#restyler" ).text s
   
+  ###
+  render_viewport = (root_id) ->
+    id = 0
+    local_debug = false
+    particles = $( "#{root_id}" ).find(".dropped")
+    sys = arbor.ParticleSystem({friction:0.5, stiffness:1000, repulsion:1000})
+    sys.parameters
+        stiffness: 900
+        repulsion: 2000
+        gravity: true
+        dt: 0.015
+ 
+    alert particles.length if local_debug     
+    if particles.length > 0
+      particles.each ->
+        particle = $(this)
+        if particle.hasClass("priorite")
+          [id, type, variable, color] = [particle.attr("id"), "priorite", particle.attr("data-variable"), particle.attr("data-color")]
+        else if particle.hasClass("variable")
+          [id, type, variable, color] = [particle.attr("id"), "variable", particle.attr("data-variable"), particle.attr("data-color")]
+        else if particle.hasClass("lambda")
+            [id, type, variable, color] = [particle.attr("id"), "lambda", particle.attr("data-variable"), particle.attr("data-color")]
+        alert "#{id}/#{particle.attr('id')}, #{variable}/#{particle.attr('data-variable')}, #{type}:#{type}, #{color}/#{particle.attr('data-color')}" if local_debug 
+        sys.addNode("#{id}",{'color' : color,'shape' : 'dot','label' : variable })
+        if $( this ).parent().length > 0
+          sys.addEdge(id, $( this ).parent().attr("id"))
+    sys.renderer = Renderer("#viewport") 
+    alert "woot" if local_debug
+  ###
+    
+
+    
+
+    
+
   $.widget "ui.selectmenu", $.extend {}, $.ui.selectmenu.prototype,
     _renderItem : ( ul, item ) ->
         color = var_tab[item.value]
@@ -308,6 +343,7 @@ $ ->
   $( "#command-panel" ).draggable( {containment: "#game-container"})
     
   $( "#toggle-console" ).on "click", -> $( "#console" ).toggle()
+  
   
   #Exercice
   preparer_exercice = (id) ->
@@ -558,7 +594,7 @@ $ ->
   color_rule_check = (pointer) ->
     get_vars = (tree) ->
       palette = []
-      tree.find( "[data-variable]" ).andSelf().filter("[data-variable]").not(".lambda.priorite").each -> palette.push $( this ).attr("data-variable")
+      tree.find( "[data-variable]" ).addBack().filter("[data-variable]").not(".lambda.priorite").each -> palette.push $( this ).attr("data-variable")
       palette.unique()
     intersect = (a,b) -> a.filter (n) -> b.indexOf(n) isnt -1
     application = pointer.next()
@@ -569,32 +605,116 @@ $ ->
     intersection = (item for item in intersection when item not in ahead_vars)  
     #alert "[#{function_vars}], [#{application_vars}], [#{intersection}]"
     return [function_vars, application_vars, intersection]
-    
+  
+  
+  sys = arbor.ParticleSystem({friction:0.5, stiffness:1000, repulsion:1000})
+  sys.parameters
+    stiffness: 900
+    repulsion: 2000
+    gravity: true
+    dt: 0.015
+  
+  
+     
+      
+      
+  
+  render_viewport = () ->
+    init : (pointer) ->
+      local_debug = false
+      particles = $( "#root" ).find(".dropped")      
+      alert particles.length if local_debug     
+      if particles.length > 0
+        particles.each ->
+          particle = $(this)
+          particle_id = particle.attr "id"
+          if particle.hasClass("priorite")
+            [type, variable, color] = ["()", particle.attr("data-variable"), particle.attr("data-color")]
+          else if particle.hasClass("variable")
+            [type, variable, color] = ["", particle.attr("data-variable"), particle.attr("data-color")]
+          else if particle.hasClass("lambda")
+            [type, variable, color] = ["  λ", particle.attr("data-variable"), particle.attr("data-color")]
+          #alert "#{id}/#{particle.attr('id')}, #{variable}/#{particle.attr('data-variable')}, #{type}:#{type}, #{color}/#{particle.attr('data-color')}" if local_debug 
+          label = "#{type}#{variable}:#{particle_id}  "
+          sys.addNode("#{particle_id}",{'color' : color,'shape' : 'dot','label' : label })
+          if particle.next(":not(.svg-container)").length>0
+            origin = particle.next(":not(.svg-container)").attr("id")
+            sys.addEdge(origin,"#{particle_id}")
+          sys.addEdge(particle.parent().attr("id"), "#{particle_id}")
+      sys.renderer = Renderer("#viewport") 
+      alert "woot" if local_debug
+      
+   
+        
+  
+  replace_egg = (egg , pointer, application) ->
+    local_debug = false
+    sys.pruneNode( egg.attr("id") )
+    application.find(".dropped").addBack().each ->
+      element = $(this)
+      element_id = element.attr("id")
+      if element.hasClass("priorite")
+        [type, variable, color] = ["()", element.attr("data-variable"), element.attr("data-color")]
+      else if element.hasClass("variable")
+        [type, variable, color] = ["", element.attr("data-variable"), element.attr("data-color")]
+      else if element.hasClass("lambda")
+        [type, variable, color] = ["  λ", element.attr("data-variable"), element.attr("data-color")]
+      #alert "#{id}/#{particle.attr('id')}, #{variable}/#{particle.attr('data-variable')}, #{type}:#{type}, #{color}/#{particle.attr('data-color')}" if local_debug 
+      label = "#{type}#{variable}:#{element_id}  "
+      sys.addNode("#{element_id}",{'color' : color,'shape' : 'dot','label' : label })
+
+      if $(this).next(":not(.svg-container)").length>0
+        origin = $(this).next(":not(.svg-container)").attr("id")
+        sys.addEdge(origin, "#{element_id}")
+      if $(this).parent().length > 0
+        origin = $(this).parent().attr("id")
+        sys.addEdge(origin, "#{element_id}")
+      else
+        origin = pointer.parent().attr("id")
+        sys.addEdge(origin, "#{element_id}")
+      console.log id + ":" + $(this).parent().attr("id") + ":" + $(this).next(":not(.svg-container)").attr("id")
+      
+  
+  $( "#toggle-shape" ).on "click", ->  render_viewport().init($("#root"))
+  
   go_one_step = (root, button) ->
     local_debug = false
+    
     $( ".animation" ).prop("disabled",true)
+    
     $( "#{root} .application_drop, #{root} .definition_drop" ).remove()
-    $(root).find( ".dropped" ).each (i = 0) -> $(this).attr "id", id+=1
-   
+    #$(root).find( ".dropped" ).each (i = 0) -> $(this).attr "id", id+=1
+    step0 = $.Deferred()
     step1 = $.Deferred()
     step2 = $.Deferred()
     step3 = $.Deferred()
     step4 = $.Deferred()
     
-    #STEP 1 : 
-    action_croco = find_action_pointer root
-    if action_croco.length > 0 then step1.resolve(action_croco) else alert "Plus rien à faire !"
-   
+    
+
+    step0.done (pointer) ->
+      render_viewport().init(pointer)
+      step1.resolve(pointer)
+      
+      
+    
     #STEP 2 : regle du vieil alligator inutile
     step1.done (pointer) ->  
       if (pointer.hasClass "priorite") and (pointer.children(":not(.svg-container)").length < 2)
         help( "Ce vieil alligator ne sert plus à rien !", pointer.attr("id")) if infobox
+        
+        firstchild  = pointer.children(":not(.svg-container)").first().attr("id")
+        firstsibling= pointer.siblings(":not(.svg-container)").attr("id")
+        if firstsibling?
+          sys.addEdge( firstsibling, firstchild)
+        sys.addEdge(pointer.parent().attr("id"), firstchild)
+        sys.pruneNode( pointer.attr("id") )
+
         svgContainer = pointer.children(".svg-container")
         svgContainer.find("svg g#layer1").attr("transform", "rotate(180 125 75)")
         svgContainer.fadeTo delta, 0, ->
-          $(this).find("svg").remove()
-          $(this).parent().replaceWith $(this).parent().contents()
-          $(this).remove()
+          pointer.children(".svg-container").find("svg").remove() 
+          pointer.replaceWith pointer.contents()    
           step2.resolve(pointer)
       else
         step2.resolve(pointer)
@@ -603,19 +723,30 @@ $ ->
     step2.done (pointer) ->
       [function_vars, application_vars, intersection] = color_rule_check(pointer)
       if intersection.length > 0
-        help( "Ce vieil alligator ne sert plus à rien !", pointer.attr("id")) if infobox
+
+        help( "Règle de la couleur !", pointer.attr("id")) if infobox
         application = pointer.next()
         palette = (item for item in ALPHABET[0..24] when item not in function_vars.concat application_vars)
         palette = palette[0..intersection.length-1]    
         #Pour chacune des couleurs de la fonction on va echanger dans l'application avec une couleur disponible de la palette
         elements = $()
         for letter, letter_index in intersection
-          selection = application.find( "[data-variable='#{letter}']").andSelf().filter("[data-variable='#{letter}']")
+          selection = application.find( "[data-variable='#{letter}']").addBack().filter("[data-variable='#{letter}']")
           if selection.length > 0
-            selection.each -> $(this).attr("data-variable", palette[letter_index])
+            selection.each ->
+              $(this).attr("data-variable", palette[letter_index])
+              $(this).attr("data-color", var_tab[$(this).attr("data-variable")])
             elements = elements.add( selection )       
         elements.each (index_element) ->
-          element = $(this)   
+          element = $(this)
+          element_id = element.attr("id")
+
+      
+          color = element.attr "data-color"
+          variable = element.attr "data-variable"
+          label = "#{variable}:#{id}"
+          sys.tweenNode(element_id, {data : {color: color, label : label}} )
+          
           element.find("> .svg-container").fadeTo delta, 0.25, ->
             $( this ).find(".skin").css("fill", var_tab[element.attr "data-variable"])
             $( this ).fadeTo delta, 1, ->
@@ -627,20 +758,30 @@ $ ->
     #STEP 4 : regle du mangeage d'application
     step3.done (pointer) ->
       if (pointer.hasClass "lambda") and (pointer.attr("data-color") isnt "white") and (pointer.next().length > 0)
+
         #on retire la variable courante des variables precedemment rencontrées
         ahead_vars.pop()
         variable = pointer.attr("data-variable")
         application = pointer.next()
         applicationClone = application.clone()
+        
+        
+
+        if application.next(":not(.svg-container)").length > 0
+          sys.addEdge(application.next(":not(.svg-container)").attr("id"), pointer.attr("id"))
+        application.find(".dropped").addBack().each ->
+          sys.pruneNode( $(this).attr("id") )
+          
+        
         help("Manger", pointer.attr "id") if infobox
         j = 0
         bust_a_move = interval 50, -> pointer.find("> .svg-container > svg").css("z-index":"9000").find("#jaw").attr("transform", "rotate(#{-10+Math.floor 6*Math.cos(j++)}) translate(-100,20)") if delta > 0
-        application = pointer.next()
+        application = pointer.next()        
         application.css('visibility','hidden')
           .clone().prependTo(pointer)
           .css({border:"dashed black 1px",visibility:"visible",position:"absolute",top:"0px",left:"100%"})
           .animate {"min-width":"0px",padding:"0px", height: '1vw', width: "1vw", top:"0", left:"60%"} , delta, ->
-            #On fait disparaitre l'application et son clone
+            #On fait disparaitre l'application et son clone            
             $(this).find("svg").remove() 
             $(this).remove() 
             application.find("svg").remove() 
@@ -659,7 +800,16 @@ $ ->
           $( ".animation" ).prop("disabled",false)
   
     #STEP 5 : regle de l'eclosion des oeufs
-    step4.done (pointer, application) ->
+    step4.done (pointer, application) ->      
+
+      firstchild  = pointer.children(":not(.svg-container)").first().attr("id")
+      firstsibling= pointer.siblings(":not(.svg-container)").attr("id")
+      if firstsibling?
+        sys.addEdge( firstsibling, firstchild)
+      sys.addEdge(pointer.parent().attr("id"), firstchild)
+      sys.pruneNode( pointer.attr("id") )
+
+      
       #On va faire reapparaitre l'application à chaque oeuf
       variable = pointer.attr "data-variable"
       help("éclosion", pointer.attr "id") if infobox
@@ -669,27 +819,37 @@ $ ->
         def_clone = $.Deferred()
         def_egg = $.Deferred()
         eggs.each (index, element) ->
+          application.find(".dropped").addBack().each -> $(this).attr "id", id += 1
+          replace_egg($(this) , pointer, application)
           $(this).animate { opacity: 0} , delta, ->
             $(this).children(".svg-container").find("svg").remove() 
             $(this).remove()
             if index is n-1
-              def_egg.resolve()  
+              def_egg.resolve()
           $(this).after application.clone().css(opacity: 0).animate {opacity: 1}, delta, ->
-            if index is n-1
+            if index is n-1          
               pointer.children(".svg-container").find("svg").remove() 
               pointer.replaceWith pointer.contents()
               def_clone.resolve()       
-        $.when(def_egg,def_clone).done -> 
+        
+        $.when(def_egg,def_clone).done ->      
           if looping
             go_one_step(root)
           else 
             $( ".animation" ).prop("disabled",false)
       else
         help( "Aucun oeuf", pointer.attr "id") if infobox
-        pointer.find("> svg").remove()
+
+        pointer.find("> svg").remove()        
         pointer.replaceWith pointer.contents()
-        if looping
+        if looping  
           go_one_step(root)
         else 
           $( ".animation" ).prop("disabled",false)
+    
+    action_croco = find_action_pointer root 
+    if action_croco.length > 0
+      step0.resolve(action_croco)
+    else
+     alert "Plus rien à faire !"      
   

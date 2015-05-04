@@ -219,6 +219,14 @@ pre.code{
 #slider-animation span.ui-slider-handle.ui-state-default {background: white url(svg/chrono.svg) no-repeat scroll 50% 50%;}
 #slider-zoom  span.ui-slider-handle.ui-state-default {background: white url(svg/zoom.svg) no-repeat scroll 50% 50%;}
 
+#viewport {
+ background : rgba(0,0,0,0.5);
+ position : absolute;
+ height : 80%;
+ width : 50%;
+ top : 0;
+ right : 0vw;
+}
 
 /* select menu */
 
@@ -294,7 +302,7 @@ ul#choose-color-menu.ui-menu, ul#exercices-menu.ui-menu {
 #command-panel {
   position : absolute;
   top:5vw;
-  right : 0;
+  right : 50%;
   width : 10vw;
   padding : 1vw;
   border-radius : 1em;
