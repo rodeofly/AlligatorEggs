@@ -222,7 +222,7 @@ pre.code{
 #viewport {
  background : rgba(0,0,0,0.5);
  position : absolute;
- height : 50vw;
+ height : 40vw;
  width : 50vw;
  top : 0;
  right : 0vw;
@@ -458,7 +458,7 @@ svg {
 }
 
 .variable.dropped::before {
-  content: attr(data-variable);
+  content: attr(data-variable)+':'+attr(id);
   position: absolute;
   z-index: 100;
 }
@@ -466,7 +466,7 @@ svg {
   content : none;
 }
 .lambda.dropped::before {
-  content: attr(data-variable);
+  content: attr(data-variable)':'attr(id);
   position: absolute;
   left : 50%;
   top : 0;

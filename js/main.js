@@ -140,7 +140,7 @@
   };
 
   $(function() {
-    var color, color_rule_check, egg_def, find_action_pointer, get_lambda_from, go_one_step, help, index, inserer, insert_exp_into_div, insert_item, key, letter, looping, make_dropped_droppable, open_def, preparer_exercice, render_viewport, resize, sys, transform_div_to_node, value, _i, _j, _len, _len1;
+    var color, color_rule_check, create_edges_for_heritier, egg_def, find_action_pointer, get_lambda_from, go_one_step, help, index, inserer, insert_exp_into_div, insert_item, key, letter, looping, make_dropped_droppable, open_def, preparer_exercice, render_viewport, resize, sys, transform_div_to_node, value, _i, _j, _len, _len1;
     for (index = _i = 0, _len = ALPHABET.length; _i < _len; index = ++_i) {
       letter = ALPHABET[index];
       color_tab.push(CSS_COLOR_NAMES[index]);
@@ -671,10 +671,10 @@
       pointer = $(root).children(".lambda:first()");
       while (pointer.length > 0) {
         if (local_debug) {
-          alert("stay for a loop with " + (pointer.attr('data-variable')));
+          console.log("stay for a loop with " + (pointer.attr('data-variable')));
         }
         if (pointer.hasClass("priorite")) {
-          if (pointer.children(":not(.svg-container)").length === 1) {
+          if (pointer.children(".dropped").length === 1) {
             break;
           }
           pointer = pointer.children(".lambda:first()");
@@ -737,6 +737,64 @@
         'label': label
       });
     };
+    create_edges_for_heritier = function(ancestor, mode) {
+      var heritier, local_debug, next, parent, previous;
+      if (mode == null) {
+        mode = "normal";
+      }
+      local_debug = true;
+      if (local_debug) {
+        console.log("create_edges_for en mode " + mode);
+      }
+      switch (mode) {
+        case "self":
+          heritier = ancestor;
+          break;
+        default:
+          heritier = ancestor.children(".dropped").first();
+      }
+      if (local_debug) {
+        console.log("heritier du defunt " + (ancestor.attr('id')) + " : " + heritier);
+      }
+      if (heritier.length) {
+        heritier = heritier.attr("id");
+        previous = ancestor.prev(".dropped");
+        if (previous.length > 0) {
+          sys.addEdge(heritier, previous.attr("id"));
+          if (local_debug) {
+            console.log(previous.attr("id") + " p-> " + heritier);
+          }
+        }
+        switch (mode) {
+          case "priorite":
+            next = ancestor.next(".dropped").next(".dropped");
+            break;
+          default:
+            next = ancestor.next(".dropped");
+        }
+        if (next.length > 0) {
+          sys.addEdge(next.attr("id"), heritier);
+          if (local_debug) {
+            console.log(next.attr("id") + " next-> " + heritier);
+          }
+        }
+        parent = ancestor.parent();
+        if (local_debug) {
+          console.log(parent.attr("id") + " parent-> " + heritier);
+        }
+        if (parent.attr("id") !== "root") {
+          sys.addEdge(parent.attr("id"), heritier);
+        }
+      } else {
+        console.log("pas d'heritier pour " + (ancestor.attr('id')) + " !");
+      }
+      if ((ancestor.length > 0) && (mode !== "self")) {
+        sys.pruneNode(ancestor.attr("id"));
+      }
+      if (local_debug) {
+        return console.log("create_edges_for over !");
+      }
+    };
     render_viewport = function() {
       return {
         init: function(pointer) {
@@ -751,7 +809,7 @@
               var parent, particle, target;
               particle = $(this);
               transform_div_to_node(particle);
-              target = particle.prev(":not(.svg-container)");
+              target = particle.prev(".dropped");
               if (target.length > 0) {
                 return sys.addEdge("" + (particle.attr('id')), target.attr("id"));
               } else {
@@ -765,31 +823,20 @@
           return sys.renderer = Renderer("#viewport");
         },
         step2: function(pointer) {
-          var firstchild, local_debug, parent, target;
+          var local_debug;
           local_debug = true;
           if (local_debug) {
-            console.log("step 2");
+            console.log("step 2 : LE CROCO BLANC !");
           }
-          firstchild = pointer.children(":not(.svg-container)").first().attr("id");
-          target = pointer.prev(":not(.svg-container)");
-          if (target.length > 0) {
-            sys.addEdge(target.attr("id"), firstchild);
-          }
-          parent = pointer.parent();
-          if (parent.attr("id") !== "root") {
-            sys.addEdge(parent.attr("id"), firstchild);
-          }
-          return sys.pruneNode(pointer.attr("id"));
+          return create_edges_for_heritier(pointer);
         },
         step3: function(element) {
-          var element_id, label, local_debug, variable;
+          var element_id, label, local_debug, variable, _ref1;
           local_debug = true;
           if (local_debug) {
-            console.log("step 3");
+            console.log("step 3 : LA REGLE DE LA COULEUR !");
           }
-          element_id = element.attr("id");
-          color = element.attr("data-color");
-          variable = element.attr("data-variable");
+          _ref1 = [element.attr("id"), element.attr("data-color"), element.attr("data-variable")], element_id = _ref1[0], color = _ref1[1], variable = _ref1[2];
           label = variable + ":" + element_id;
           sys.tweenNode(element_id, {
             data: {
@@ -802,95 +849,36 @@
           }
         },
         step4: function(pointer, application) {
-          var heritier, local_debug, parent, source, target;
+          var local_debug;
           local_debug = true;
           if (local_debug) {
-            console.log("step 4");
+            console.log("step 4 : ON MANGE L'APPLICATION !");
           }
-          application.find(".dropped").addBack().each(function() {
+          application.find(".dropped").addBack(".dropped").each(function() {
+            console.log("prune node " + ($(this).attr('id')));
             return sys.pruneNode($(this).attr("id"));
           });
-          heritier = pointer.children(":not(.svg-container)").attr("id");
-          console.log("heritier du defunt " + (pointer.attr('id')) + " : " + heritier);
-          target = pointer.prev(":not(.svg-container)");
-          if (target.length > 0) {
-            sys.addEdge(heritier, target.attr("id"));
-            if (local_debug) {
-              console.log(target.attr("id") + " p-> " + heritier);
-            }
-          }
-          source = pointer.next(":not(.svg-container)").next(":not(.svg-container)");
-          if (source.length > 0) {
-            sys.addEdge(source.attr("id"), heritier);
-            if (local_debug) {
-              console.log(source.attr("id") + " n-> " + heritier);
-            }
-          }
-          parent = pointer.parent();
-          if (parent.attr("id") !== "root") {
-            sys.addEdge(parent.attr("id"), heritier);
-          }
-          sys.pruneNode(pointer.attr("id"));
+          create_edges_for_heritier(pointer, "priorite");
           if (local_debug) {
             return console.log("step 4 over !");
           }
         },
         step5: function(egg, application) {
-          var application_id, local_debug;
+          var local_debug;
           local_debug = true;
           if (local_debug) {
-            console.log("step 5");
+            console.log("step 5 : ECLOSION DES OEUFS !");
           }
-          if (application.length) {
-            application_id = application.attr("id");
-            application.find(".dropped").addBack().each(function() {
+          if (application.length > 0) {
+            application.find(".dropped").addBack(".dropped").each(function() {
               return transform_div_to_node($(this));
             });
-            application.find(".dropped").addBack().each(function() {
-              var element, heritier, parent, s, source, target;
-              element = $(this);
-              switch (element.attr("id")) {
-                case application_id:
-                  if (local_debug) {
-                    console.log("application root:{element.attr('id')}");
-                  }
-                  heritier = application_id;
-                  s = egg;
-                  break;
-                default:
-                  if (local_debug) {
-                    console.log("application element:" + (element.attr('id')));
-                  }
-                  heritier = element.attr("id");
-                  s = element;
-              }
-              target = s.prev(":not(.svg-container)");
-              if (target.length > 0) {
-                if (local_debug) {
-                  console.log(heritier + " prev-> " + target.attr("id"));
-                }
-                sys.addEdge(heritier, target.attr("id"));
-              }
-              source = s.next(":not(.svg-container)");
-              if (source.length > 0) {
-                if (local_debug) {
-                  console.log(source.attr("id") + " next-> " + heritier);
-                }
-                sys.addEdge(source.attr("id"), heritier);
-              }
-              parent = s.parent();
-              if (local_debug) {
-                console.log(parent.attr("id") + " parent-> " + heritier);
-              }
-              if (parent.attr("id") !== "root") {
-                return sys.addEdge(parent.attr("id"), heritier);
-              }
+            application.find(".dropped").addBack(".dropped").each(function() {
+              return create_edges_for_heritier($(this), "self");
             });
+            sys.addEdge(application.attr("id"), egg.attr("id"));
+            return create_edges_for_heritier(egg);
           }
-          if (local_debug) {
-            console.log("step 5 is over !");
-          }
-          return sys.pruneNode(egg.attr("id"));
         }
       };
     };
@@ -912,7 +900,7 @@
       });
       step1.done(function(pointer) {
         var svgContainer;
-        if ((pointer.hasClass("priorite")) && (pointer.children(":not(.svg-container)").length < 2)) {
+        if ((pointer.hasClass("priorite")) && (pointer.children(".dropped").length < 2)) {
           if (infobox) {
             help("Ce vieil alligator ne sert plus à rien !", pointer.attr("id"));
           }
@@ -921,6 +909,7 @@
           svgContainer.find("svg g#layer1").attr("transform", "rotate(180 125 75)");
           return svgContainer.fadeTo(delta, 0, function() {
             pointer.children(".svg-container").find("svg").remove();
+            pointer.children(".svg-container").remove();
             pointer.replaceWith(pointer.contents());
             return step2.resolve(pointer);
           });
@@ -1047,21 +1036,15 @@
         variable = pointer.attr("data-variable");
         eggs = pointer.find(".variable[data-variable=" + variable + "]");
         pointer.children(".svg-container").find("svg").remove();
+        pointer.children(".svg-container").remove();
         pointer.replaceWith(pointer.contents());
-        eggs.each(function() {
-          var egg;
-          egg = $(this);
-          app.find(".dropped").addBack().each(function() {
-            return $(this).attr("id", id += 1);
-          });
-          return render_viewport().step5(egg, app);
-        });
         n = eggs.length;
         if (n > 0) {
           def_clone = $.Deferred();
           def_egg = $.Deferred();
           eggs.each(function(index, element) {
-            $(this).animate({
+            var appClone;
+            $(this).clone().animate({
               opacity: 0
             }, delta, function() {
               $(this).children(".svg-container").find("svg").remove();
@@ -1070,7 +1053,12 @@
                 return def_egg.resolve();
               }
             });
-            return $(this).after(app.clone().css({
+            appClone = app.clone();
+            appClone.find(".dropped").addBack().each(function() {
+              return $(this).attr("id", id += 1);
+            });
+            $(this).append(appClone);
+            appClone.css({
               opacity: 0
             }).animate({
               opacity: 1
@@ -1078,7 +1066,11 @@
               if (index === n - 1) {
                 return def_clone.resolve();
               }
-            }));
+            });
+            render_viewport().step5($(this), appClone);
+            $(this).children(".svg-container").find("svg").remove();
+            $(this).children(".svg-container").remove();
+            return $(this).replaceWith($(this).contents());
           });
         } else {
           if (infobox) {
