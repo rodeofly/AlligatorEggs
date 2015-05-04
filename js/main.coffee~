@@ -146,7 +146,12 @@ $ ->
     $( ".item#vieux-svg svg")[0].setAttribute('viewBox', '0 0 300 124')
   , "xml"
 
-  
+  sys = arbor.ParticleSystem({friction:0.5, stiffness:1000, repulsion:1000})
+  sys.parameters
+    stiffness: 900
+    repulsion: 2000
+    gravity: true
+    dt: 0.015
   ###############################################
   #Interface                            #
   ###############################################
@@ -309,6 +314,7 @@ $ ->
         parentheses = 0
         $("#root" ).empty().append "<div id='root_definition' class='definition_drop'></div>"
         $( "#prompt" ).val("")
+        sys.eachNode (node) -> sys.pruneNode node
         make_dropped_droppable()
       when "exemple"
         $("#prompt").val lambda_exemples[$(this).attr("data-numero")]
@@ -607,74 +613,120 @@ $ ->
     return [function_vars, application_vars, intersection]
   
   
-  sys = arbor.ParticleSystem({friction:0.5, stiffness:1000, repulsion:1000})
-  sys.parameters
-    stiffness: 900
-    repulsion: 2000
-    gravity: true
-    dt: 0.015
+ 
   
   
-     
-      
-      
+  transform_div_to_node = (div) -> 
+    node = div
+    if node.hasClass("priorite")
+      [type, variable, color] = ["()", node.attr("data-variable"), node.attr("data-color")]
+    else if node.hasClass("variable")
+      [type, variable, color] = ["", node.attr("data-variable"), node.attr("data-color")]
+    else if node.hasClass("lambda")
+      [type, variable, color] = ["  λ", node.attr("data-variable"), node.attr("data-color")]
+    label = "#{type}#{variable}:#{node.attr('id')}  "
+    sys.addNode("#{node.attr('id')}",{'color' : color,'shape' : 'dot','label' : label })
+  
   
   render_viewport = () ->
     init : (pointer) ->
-      local_debug = false
+      local_debug = true
+      console.log("init") if local_debug 
       particles = $( "#root" ).find(".dropped")      
-      alert particles.length if local_debug     
       if particles.length > 0
         particles.each ->
           particle = $(this)
-          particle_id = particle.attr "id"
-          if particle.hasClass("priorite")
-            [type, variable, color] = ["()", particle.attr("data-variable"), particle.attr("data-color")]
-          else if particle.hasClass("variable")
-            [type, variable, color] = ["", particle.attr("data-variable"), particle.attr("data-color")]
-          else if particle.hasClass("lambda")
-            [type, variable, color] = ["  λ", particle.attr("data-variable"), particle.attr("data-color")]
-          #alert "#{id}/#{particle.attr('id')}, #{variable}/#{particle.attr('data-variable')}, #{type}:#{type}, #{color}/#{particle.attr('data-color')}" if local_debug 
-          label = "#{type}#{variable}:#{particle_id}  "
-          sys.addNode("#{particle_id}",{'color' : color,'shape' : 'dot','label' : label })
-          if particle.next(":not(.svg-container)").length>0
-            origin = particle.next(":not(.svg-container)").attr("id")
-            sys.addEdge(origin,"#{particle_id}")
-          sys.addEdge(particle.parent().attr("id"), "#{particle_id}")
+          transform_div_to_node particle
+          target = particle.prev(":not(.svg-container)")
+          if target.length > 0
+            sys.addEdge("#{particle.attr('id')}", target.attr("id"))
+          else
+            parent = particle.parent()
+            sys.addEdge("#{particle.attr('id')}", parent.attr("id")) if parent.attr("id") isnt "root"
       sys.renderer = Renderer("#viewport") 
-      alert "woot" if local_debug
       
-   
-        
-  
-  replace_egg = (egg , pointer, application) ->
-    local_debug = false
-    sys.pruneNode( egg.attr("id") )
-    application.find(".dropped").addBack().each ->
-      element = $(this)
-      element_id = element.attr("id")
-      if element.hasClass("priorite")
-        [type, variable, color] = ["()", element.attr("data-variable"), element.attr("data-color")]
-      else if element.hasClass("variable")
-        [type, variable, color] = ["", element.attr("data-variable"), element.attr("data-color")]
-      else if element.hasClass("lambda")
-        [type, variable, color] = ["  λ", element.attr("data-variable"), element.attr("data-color")]
-      #alert "#{id}/#{particle.attr('id')}, #{variable}/#{particle.attr('data-variable')}, #{type}:#{type}, #{color}/#{particle.attr('data-color')}" if local_debug 
-      label = "#{type}#{variable}:#{element_id}  "
-      sys.addNode("#{element_id}",{'color' : color,'shape' : 'dot','label' : label })
+    step2 : (pointer) ->
+      local_debug = true
+      console.log("step 2") if local_debug 
+      firstchild  = pointer.children(":not(.svg-container)").first().attr("id")
+      target = pointer.prev(":not(.svg-container)")
+      if target.length > 0
+        sys.addEdge( target.attr("id"), firstchild)
+      parent = pointer.parent()
+      sys.addEdge(parent.attr("id"), firstchild) if parent.attr("id") isnt "root"
+      sys.pruneNode( pointer.attr("id") )
 
-      if $(this).next(":not(.svg-container)").length>0
-        origin = $(this).next(":not(.svg-container)").attr("id")
-        sys.addEdge(origin, "#{element_id}")
-      if $(this).parent().length > 0
-        origin = $(this).parent().attr("id")
-        sys.addEdge(origin, "#{element_id}")
-      else
-        origin = pointer.parent().attr("id")
-        sys.addEdge(origin, "#{element_id}")
-      console.log id + ":" + $(this).parent().attr("id") + ":" + $(this).next(":not(.svg-container)").attr("id")
+    step3 : (element) ->
+      local_debug = true
+      console.log("step 3") if local_debug 
+      element_id = element.attr("id")
+      color = element.attr "data-color"
+      variable = element.attr "data-variable"
+      label = "#{variable}:#{element_id}"
+      sys.tweenNode(element_id, {data :{color: color, label : label}} )
+      console.log(element_id + " change to " + label + color ) if local_debug
       
-  
+    step4 : (pointer, application) ->
+      local_debug = true
+      console.log("step 4") if local_debug        
+      application.find(".dropped").addBack().each -> sys.pruneNode( $(this).attr("id") )
+      heritier  = pointer.children(":not(.svg-container)").attr("id")
+      console.log("heritier du defunt #{pointer.attr('id')} : #{heritier}")
+
+      target = pointer.prev(":not(.svg-container)")
+      if target.length > 0
+        sys.addEdge( heritier, target.attr("id") )
+        console.log(target.attr("id") + " p-> " + heritier) if local_debug
+      source = pointer.next(":not(.svg-container)").next(":not(.svg-container)")
+      alert source.attr("id") if source.length > 0
+      if source.length > 0
+        sys.addEdge(source.attr("id"), heritier)
+        console.log(source.attr("id") + " n-> " + heritier) if local_debug
+      parent = pointer.parent()
+      sys.addEdge(parent.attr("id"), heritier) if parent.attr("id") isnt "root"
+      #On efface la tete de fonction
+      sys.pruneNode( pointer.attr("id") )
+      console.log("step 4 over !") if local_debug 
+             
+    step5 : (egg, application) ->
+      local_debug = true
+      console.log("step 5") if local_debug 
+
+      if application.length
+        application_id = application.attr("id")
+        application.find(".dropped").addBack().each -> transform_div_to_node $(this)
+        application.find(".dropped").addBack().each ->
+          element = $(this)
+          switch element.attr("id")
+            when application_id
+              console.log("application root:{element.attr('id')}") if local_debug
+              heritier = application_id
+              s = egg
+            else
+              console.log("application element:#{element.attr('id')}") if local_debug
+              heritier = element.attr("id")
+              s = element
+          
+          target = s.prev(":not(.svg-container)")
+          if target.length > 0
+            console.log(heritier + " prev-> " + target.attr("id")) if local_debug
+            sys.addEdge( heritier, target.attr("id") )
+            
+          source = s.next(":not(.svg-container)")
+          if source.length > 0
+            console.log(source.attr("id") + " next-> " + heritier) if local_debug
+            sys.addEdge(source.attr("id"), heritier)
+          
+          parent = s.parent()
+          console.log(parent.attr("id") + " parent-> " + heritier) if local_debug
+          sys.addEdge(parent.attr("id"), heritier) if parent.attr("id") isnt "root"
+
+      #On efface l'oeuf 
+      console.log("step 5 is over !") if local_debug  
+      sys.pruneNode( egg.attr("id") )
+
+      
+     
   $( "#toggle-shape" ).on "click", ->  render_viewport().init($("#root"))
   
   go_one_step = (root, button) ->
@@ -692,8 +744,7 @@ $ ->
     
     
 
-    step0.done (pointer) ->
-      render_viewport().init(pointer)
+    step0.done (pointer) ->      
       step1.resolve(pointer)
       
       
@@ -703,13 +754,8 @@ $ ->
       if (pointer.hasClass "priorite") and (pointer.children(":not(.svg-container)").length < 2)
         help( "Ce vieil alligator ne sert plus à rien !", pointer.attr("id")) if infobox
         
-
-        if pointer.next(":not(.svg-container)").length > 0
-          firstchild = pointer.find(".lambda").first().attr("id")
-          sys.addEdge(pointer.next(":not(.svg-container)").attr "id", firstchild)
-        sys.addEdge(firstchild, pointer.parent().attr "id")
-        sys.pruneNode( pointer.attr "id" )
-
+        render_viewport().step2(pointer)
+        
         svgContainer = pointer.children(".svg-container")
         svgContainer.find("svg g#layer1").attr("transform", "rotate(180 125 75)")
         svgContainer.fadeTo delta, 0, ->
@@ -739,13 +785,10 @@ $ ->
             elements = elements.add( selection )       
         elements.each (index_element) ->
           element = $(this)
-          element_id = element.attr("id")
+
 
       
-          color = element.attr "data-color"
-          variable = element.attr "data-variable"
-          label = "#{variable}:#{id}"
-          sys.tweenNode(element_id, {data : {color: color, label : label}} )
+          render_viewport().step3(element)
           
           element.find("> .svg-container").fadeTo delta, 0.25, ->
             $( this ).find(".skin").css("fill", var_tab[element.attr "data-variable"])
@@ -767,10 +810,7 @@ $ ->
         
         
 
-        if application.next(":not(.svg-container)").length > 0
-          sys.addEdge(application.next(":not(.svg-container)").attr("id"), pointer.attr("id"))
-        application.find(".dropped").addBack().each ->
-          sys.pruneNode( $(this).attr("id") )
+        render_viewport().step4(pointer, application)
           
         
         help("Manger", pointer.attr "id") if infobox
@@ -800,53 +840,46 @@ $ ->
           $( ".animation" ).prop("disabled",false)
   
     #STEP 5 : regle de l'eclosion des oeufs
-    step4.done (pointer, application) ->      
+    step4.done (pointer, app) ->      
 
-      firstchild  = pointer.children(":not(.svg-container)").first().attr("id")
-      firstsibling= pointer.siblings(":not(.svg-container)").attr("id")
-      if firstsibling?
-        sys.addEdge( firstsibling, firstchild)
-      sys.addEdge(pointer.parent().attr("id"), firstchild)
-      sys.pruneNode( pointer.attr("id") )
-
-      
       #On va faire reapparaitre l'application à chaque oeuf
-      variable = pointer.attr "data-variable"
       help("éclosion", pointer.attr "id") if infobox
+      variable = pointer.attr "data-variable"
       eggs = pointer.find( ".variable[data-variable=#{variable}]"  )
+      pointer.children(".svg-container").find("svg").remove() 
+      pointer.replaceWith pointer.contents()
+      eggs.each ->
+        egg = $(this)
+        app.find(".dropped").addBack().each -> 
+          $(this).attr "id", id += 1
+        render_viewport().step5(egg, app)
       n = eggs.length
       if n>0
         def_clone = $.Deferred()
         def_egg = $.Deferred()
         eggs.each (index, element) ->
-          application.find(".dropped").addBack().each -> $(this).attr "id", id += 1
-          replace_egg($(this) , pointer, application)
           $(this).animate { opacity: 0} , delta, ->
             $(this).children(".svg-container").find("svg").remove() 
+            
             $(this).remove()
+            
             if index is n-1
               def_egg.resolve()
-          $(this).after application.clone().css(opacity: 0).animate {opacity: 1}, delta, ->
+          $(this).after app.clone().css(opacity: 0).animate {opacity: 1}, delta, ->
             if index is n-1          
-              pointer.children(".svg-container").find("svg").remove() 
-              pointer.replaceWith pointer.contents()
-              def_clone.resolve()       
+              def_clone.resolve()
+          
+       else
+         help( "Aucun oeuf", "root") if infobox
         
-        $.when(def_egg,def_clone).done ->      
-          if looping
-            go_one_step(root)
-          else 
-            $( ".animation" ).prop("disabled",false)
-      else
-        help( "Aucun oeuf", pointer.attr "id") if infobox
-
-        pointer.find("> svg").remove()        
-        pointer.replaceWith pointer.contents()
-        if looping  
+       
+       $.when(def_egg,def_clone).done ->      
+        if looping
           go_one_step(root)
         else 
           $( ".animation" ).prop("disabled",false)
-    
+      
+      
     action_croco = find_action_pointer root 
     if action_croco.length > 0
       step0.resolve(action_croco)
