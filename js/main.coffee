@@ -602,17 +602,18 @@ $ ->
   
   create_edges_for_heritier = (ancestor, mode = "normal") ->
     local_debug = true
-    console.log("create_edges_for en mode #{mode}") if local_debug
+    console.log("CREATION DES LIENS POUR #{ancestor.attr('id')} (en mode #{mode})") if local_debug
     
     switch mode
       when "self"
         heritier = ancestor
       else
         heritier  = ancestor.children(".dropped").first()
-    console.log("heritier du defunt #{ancestor.attr('id')} : #{heritier}") if local_debug
+    
     
     if heritier.length
-      heritier = heritier.attr "id"
+      heritier = heritier.attr("id")
+      console.log("heritier du defunt #{ancestor.attr('id')} : #{heritier}") if local_debug
       previous = ancestor.prev(".dropped")
       if previous.length > 0
         sys.addEdge( heritier, previous.attr("id"), {type:"arrow",directed:true} )
@@ -634,7 +635,7 @@ $ ->
       console.log("pas d'heritier pour #{ancestor.attr('id')} !")
     #On efface la tete de fonction
     sys.pruneNode( ancestor.attr("id") ) if (ancestor.length > 0) and (mode isnt "self")
-    console.log("create_edges_for over !") if local_debug
+    console.log("FIN DE CREATION DES LIENS !") if local_debug
     
     
   render_viewport = () ->
@@ -648,10 +649,10 @@ $ ->
           transform_div_to_node particle
           target = particle.prev(".dropped")
           if target.length > 0
-            sys.addEdge("#{particle.attr('id')}", target.attr("id"), {type:"arrow",directed:true,  weigth: '1', length: '2'})
+            sys.addEdge("#{particle.attr('id')}", target.attr("id"), {type:"arrow",directed:true,  weigth: '5'})
           else
             parent = particle.parent()
-            sys.addEdge(parent.attr("id"), "#{particle.attr('id')}", {type:"arrow",directed:true,  weigth: '5', length: '1'}) if parent.attr("id") isnt "root"
+            sys.addEdge(parent.attr("id"), "#{particle.attr('id')}", {type:"arrow",directed:true,  weigth: '10'}) if parent.attr("id") isnt "root"
       sys.renderer = Renderer("#viewport") 
                
     step2 : (pointer) ->
@@ -849,13 +850,11 @@ $ ->
       
       else
         help( "Aucun oeuf", "root") if infobox
-        
-       
-      $.when(def_egg,def_clone).done ->      
-        if looping
-          go_one_step(root)
-        else 
-          $( ".animation" ).prop("disabled",false)
+   
+      if looping
+        $.when(def_egg,def_clone).done ->  go_one_step(root)
+      else 
+        $( ".animation" ).prop("disabled",false)
       
       
     action_croco = find_action_pointer root 

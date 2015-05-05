@@ -718,7 +718,7 @@
       }
       local_debug = true;
       if (local_debug) {
-        console.log("create_edges_for en mode " + mode);
+        console.log("CREATION DES LIENS POUR " + (ancestor.attr('id')) + " (en mode " + mode + ")");
       }
       switch (mode) {
         case "self":
@@ -727,11 +727,11 @@
         default:
           heritier = ancestor.children(".dropped").first();
       }
-      if (local_debug) {
-        console.log("heritier du defunt " + (ancestor.attr('id')) + " : " + heritier);
-      }
       if (heritier.length) {
         heritier = heritier.attr("id");
+        if (local_debug) {
+          console.log("heritier du defunt " + (ancestor.attr('id')) + " : " + heritier);
+        }
         previous = ancestor.prev(".dropped");
         if (previous.length > 0) {
           sys.addEdge(heritier, previous.attr("id"), {
@@ -775,7 +775,7 @@
         sys.pruneNode(ancestor.attr("id"));
       }
       if (local_debug) {
-        return console.log("create_edges_for over !");
+        return console.log("FIN DE CREATION DES LIENS !");
       }
     };
     render_viewport = function() {
@@ -797,8 +797,7 @@
                 return sys.addEdge("" + (particle.attr('id')), target.attr("id"), {
                   type: "arrow",
                   directed: true,
-                  weigth: '1',
-                  length: '2'
+                  weigth: '5'
                 });
               } else {
                 parent = particle.parent();
@@ -806,8 +805,7 @@
                   return sys.addEdge(parent.attr("id"), "" + (particle.attr('id')), {
                     type: "arrow",
                     directed: true,
-                    weigth: '5',
-                    length: '1'
+                    weigth: '10'
                   });
                 }
               }
@@ -1078,13 +1076,13 @@
             help("Aucun oeuf", "root");
           }
         }
-        return $.when(def_egg, def_clone).done(function() {
-          if (looping) {
+        if (looping) {
+          return $.when(def_egg, def_clone).done(function() {
             return go_one_step(root);
-          } else {
-            return $(".animation").prop("disabled", false);
-          }
-        });
+          });
+        } else {
+          return $(".animation").prop("disabled", false);
+        }
       });
       action_croco = find_action_pointer(root);
       if (action_croco.length > 0) {
