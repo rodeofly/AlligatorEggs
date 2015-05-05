@@ -140,7 +140,7 @@
   };
 
   $(function() {
-    var color, color_rule_check, create_edges_for_heritier, egg_def, find_action_pointer, get_lambda_from, go_one_step, help, index, inserer, insert_exp_into_div, insert_item, key, letter, looping, make_dropped_droppable, open_def, preparer_exercice, renderArbor, render_viewport, resize, sys, transform_div_to_node, value, _i, _j, _len, _len1;
+    var animation_eating_application, animation_kill, color, color_rule_check, create_edges_for_heritier, egg_def, find_action_pointer, get_lambda_from, go_one_step, help, index, inserer, insert_exp_into_div, insert_item, key, letter, looping, make_dropped_droppable, open_def, preparer_exercice, renderArbor, render_viewport, resize, sys, transform_div_to_node, value, _i, _j, _len, _len1;
     for (index = _i = 0, _len = ALPHABET.length; _i < _len; index = ++_i) {
       letter = ALPHABET[index];
       color_tab.push(CSS_COLOR_NAMES[index]);
@@ -181,7 +181,7 @@
     sys.parameters({
       stiffness: 900,
       repulsion: 2000,
-      gravity: true,
+      gravity: false,
       dt: 0.015
     });
     $.when(open_def, egg_def).done(function() {
@@ -295,6 +295,9 @@
       }
     });
     $("#tags").trigger("click");
+    $("#toggle-settings").on("click", function() {
+      return $("#settings").toggle();
+    });
     $(".panel-button").on("click", function() {
       var e, parentheses, _k, _len2, _ref1, _results;
       switch ($(this).attr("data-type")) {
@@ -306,8 +309,17 @@
           return $("#prompt").val($("#prompt").val() + "(");
         case "close":
           return $("#prompt").val($("#prompt").val() + ")");
+        case "fonction":
+          return $("#prompt").val($("#prompt").val() + " " + $(this).attr("data-lambda"));
+        case "read":
+          return $("#prompt").val(get_lambda_from($("#root")));
         case "draw":
-          e = jQuery.Event("keypress");
+          e = $.Event("keypress");
+          e.which = 13;
+          return $('#prompt').trigger(e);
+        case "exemple":
+          $("#prompt").val(lambda_exemples[$(this).attr("data-numero")]);
+          e = $.Event("keypress");
           e.which = 13;
           return $('#prompt').trigger(e);
         case "clear":
@@ -318,13 +330,6 @@
             return sys.pruneNode(node);
           });
           return make_dropped_droppable();
-        case "exemple":
-          $("#prompt").val(lambda_exemples[$(this).attr("data-numero")]);
-          e = jQuery.Event("keypress");
-          e.which = 13;
-          return $('#prompt').trigger(e);
-        case "fonction":
-          return $("#prompt").val($("#prompt").val() + " " + $(this).attr("data-lambda"));
         case "autoclose":
           parentheses = 0;
           _ref1 = $("#prompt").val();
@@ -348,9 +353,6 @@
             }
             return _results;
           }
-          break;
-        case "read":
-          return $("#prompt").val(get_lambda_from($("#root")));
       }
     });
     $('#prompt').keypress(function(key) {
@@ -362,6 +364,57 @@
         return render_viewport().init($("#root"));
       }
     });
+    looping = false;
+    $("#go").on("click", function(event) {
+      $(".animation").prop("disabled", true);
+      looping = false;
+      return go_one_step("#root");
+    });
+    $("#repeat").on("click", function() {
+      $(".animation").prop("disabled", true);
+      looping = true;
+      return go_one_step("#root");
+    });
+    $("#animation").on("click", function(event) {
+      return go_one_step("#contenu-exercice");
+    });
+    $("#stop").click(function() {
+      return looping = false;
+    });
+    $("#help").dialog({
+      autoOpen: false,
+      dialogClass: "noTitleStuff",
+      width: "auto",
+      minHeight: 0,
+      open: function(event, ui) {
+        return delay(1000, function() {
+          return $("#help").dialog("close");
+        });
+      },
+      autoResize: true
+    });
+    help = function(message, element) {
+      $("#help").dialog("option", {
+        position: {
+          my: "center bottom",
+          at: "center top",
+          of: "#" + element
+        }
+      });
+      $("#help").html(message);
+      return $("#help").dialog("open");
+    };
+    renderArbor = true;
+    $("#toggle-arbor").on("click", function() {
+      renderArbor = !renderArbor;
+      if (renderArbor) {
+        render_viewport().init($("#root"));
+      } else {
+        sys.stop();
+      }
+      return $("#viewport").toggle();
+    });
+    $("#toggle-arbor").trigger("click");
     $("#console").draggable({
       containment: "#game-container"
     }).toggle();
@@ -511,12 +564,9 @@
                   switch (expression[current_index]) {
                     case "(":
                       parentheses += 1;
-                      continue;
+                      break;
                     case ")":
                       parentheses -= 1;
-                      continue;
-                    default:
-                      continue;
                   }
                 }
                 if (local_debug) {
@@ -597,47 +647,62 @@
       });
     };
     make_dropped_droppable();
-    looping = false;
-    $("#go").on("click", function(event) {
-      $(".animation").prop("disabled", true);
-      looping = false;
-      return go_one_step("#root");
-    });
-    $("#animation").on("click", function(event) {
-      return go_one_step("#contenu-exercice");
-    });
-    $("#stop").click(function() {
-      $(".animation").prop("disabled", false);
-      looping = false;
-      return $("#slider-animation").slider("option", "disabled", false);
-    });
-    $("#repeat").on("click", function() {
-      $(".animation").prop("disabled", true);
-      looping = true;
-      return go_one_step("#root");
-    });
-    $("#help").dialog({
-      autoOpen: false,
-      dialogClass: "noTitleStuff",
-      width: "auto",
-      minHeight: 0,
-      open: function(event, ui) {
-        return delay(1000, function() {
-          return $("#help").dialog("close");
-        });
-      },
-      autoResize: true
-    });
-    help = function(message, element) {
-      $("#help").dialog("option", {
-        position: {
-          my: "center bottom",
-          at: "center top",
-          of: "#" + element
+    animation_kill = function($div, $deferred) {
+      var left;
+      if (infobox) {
+        help("Partir", $div.attr("id"));
+      }
+      $div.children(".svg-container").find("svg g#layer1").attr("transform", "rotate(180 125 75)");
+      left = ($div.offset().left) + "px";
+      return $div.children(".svg-container").animate({
+        position: 'fixed',
+        top: "-10px",
+        opacity: 0
+      }, delta, function() {
+        return $deferred.resolve($div);
+      });
+    };
+    animation_eating_application = function(pointer, application, deferred) {
+      var applicationClone, bust_a_move, j;
+      applicationClone = application.clone();
+      j = 0;
+      bust_a_move = interval(50, function() {
+        if (delta > 0) {
+          return pointer.find("> .svg-container > svg").css({
+            "z-index": "9000"
+          }).find("#jaw").attr("transform", "rotate(" + (-10 + Math.floor(6 * Math.cos(j++))) + ") translate(-100,20)");
         }
       });
-      $("#help").html(message);
-      return $("#help").dialog("open");
+      return application.css('visibility', 'hidden').clone().prependTo(pointer).css({
+        border: "dashed black 1px",
+        visibility: "visible",
+        position: "absolute",
+        top: "0px",
+        left: "100%"
+      }).animate({
+        "min-width": "0px",
+        padding: "0px",
+        height: '1vw',
+        width: "1vw",
+        top: "0",
+        left: "60%"
+      }, delta, function() {
+        var kill_croco;
+        $(this).find("svg").remove();
+        $(this).remove();
+        application.find("svg").remove();
+        application.remove();
+        if (delta > 0) {
+          clearInterval(bust_a_move);
+        }
+        kill_croco = $.Deferred();
+        animation_kill(pointer, kill_croco);
+        return $.when(kill_croco).done(function() {
+          $(this).find("svg").remove();
+          $(this).remove();
+          return deferred.resolve();
+        });
+      });
     };
     find_action_pointer = function(root) {
       var local_debug, pointer, voisins, _ref1;
@@ -664,7 +729,7 @@
       return pointer;
     };
     color_rule_check = function(pointer) {
-      var application, application_vars, function_vars, get_vars, intersect, intersection, item, _ref1;
+      var application, application_vars, function_vars, get_vars, intersect, intersection, item, palette, _ref1;
       get_vars = function(tree) {
         var palette;
         palette = [];
@@ -692,23 +757,37 @@
         }
         return _results;
       })();
-      return [function_vars, application_vars, intersection];
+      palette = (function() {
+        var _k, _len2, _ref2, _results;
+        _ref2 = ALPHABET.slice(0, 25);
+        _results = [];
+        for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+          item = _ref2[_k];
+          if (__indexOf.call(function_vars.concat(application_vars), item) < 0) {
+            _results.push(item);
+          }
+        }
+        return _results;
+      })();
+      palette = palette.slice(0, +(intersection.length - 1) + 1 || 9e9);
+      return [intersection, palette];
     };
     transform_div_to_node = function(div) {
-      var label, node, type, variable, _ref1, _ref2, _ref3;
+      var label, node, radius, type, variable, _ref1, _ref2, _ref3;
       node = div;
       if (node.hasClass("priorite")) {
-        _ref1 = ["", "", "Black"], type = _ref1[0], variable = _ref1[1], color = _ref1[2];
+        _ref1 = ["", "", "Black", 1], type = _ref1[0], variable = _ref1[1], color = _ref1[2], radius = _ref1[3];
       } else if (node.hasClass("variable")) {
-        _ref2 = ["", node.attr("data-variable"), node.attr("data-color")], type = _ref2[0], variable = _ref2[1], color = _ref2[2];
+        _ref2 = ["", node.attr("data-variable"), node.attr("data-color"), 2], type = _ref2[0], variable = _ref2[1], color = _ref2[2], radius = _ref2[3];
       } else if (node.hasClass("lambda")) {
-        _ref3 = ["  λ", node.attr("data-variable"), node.attr("data-color")], type = _ref3[0], variable = _ref3[1], color = _ref3[2];
+        _ref3 = ["  λ", node.attr("data-variable"), node.attr("data-color"), 3], type = _ref3[0], variable = _ref3[1], color = _ref3[2], radius = _ref3[3];
       }
       label = "" + type + variable + "#" + (node.attr('id')) + "  ";
       return sys.addNode("" + (node.attr('id')), {
         'color': color,
         'shape': 'dot',
-        'label': label
+        'label': label,
+        radius: radius
       });
     };
     create_edges_for_heritier = function(ancestor, mode) {
@@ -789,26 +868,8 @@
           particles = $("#root").find(".dropped");
           if (particles.length > 0) {
             particles.each(function() {
-              var parent, particle, target;
-              particle = $(this);
-              transform_div_to_node(particle);
-              target = particle.prev(".dropped");
-              if (target.length > 0) {
-                return sys.addEdge("" + (particle.attr('id')), target.attr("id"), {
-                  type: "arrow",
-                  directed: true,
-                  weigth: '5'
-                });
-              } else {
-                parent = particle.parent();
-                if (parent.attr("id") !== "root") {
-                  return sys.addEdge(parent.attr("id"), "" + (particle.attr('id')), {
-                    type: "arrow",
-                    directed: true,
-                    weigth: '10'
-                  });
-                }
-              }
+              transform_div_to_node($(this));
+              return create_edges_for_heritier($(this), "self");
             });
           }
           return sys.renderer = Renderer("#viewport");
@@ -821,19 +882,16 @@
           }
           return create_edges_for_heritier(pointer);
         },
-        step3: function(element) {
-          var element_id, label, local_debug, variable, _ref1;
+        step3: function(element_id, color, variable) {
+          var label, local_debug;
           local_debug = true;
           if (local_debug) {
             console.log("step 3 : LA REGLE DE LA COULEUR !");
           }
-          _ref1 = [element.attr("id"), element.attr("data-color"), element.attr("data-variable")], element_id = _ref1[0], color = _ref1[1], variable = _ref1[2];
           label = variable + "#" + element_id;
-          sys.tweenNode(element_id, {
-            data: {
-              color: color,
-              label: label
-            }
+          sys.tweenNode(element_id, delta / 1000, {
+            color: color,
+            label: label
           });
           if (local_debug) {
             return console.log(element_id + " change to " + label + color);
@@ -873,17 +931,6 @@
         }
       };
     };
-    renderArbor = true;
-    $("#toggle-arbor").on("click", function() {
-      renderArbor = !renderArbor;
-      if (renderArbor) {
-        render_viewport().init($("#root"));
-      } else {
-        sys.stop();
-      }
-      return $("#viewport").toggle();
-    });
-    $("#toggle-arbor").trigger("click");
     return go_one_step = function(root, button) {
       var action_croco, local_debug, step0, step1, step2, step3, step4;
       local_debug = false;
@@ -898,15 +945,15 @@
         return step1.resolve(pointer);
       });
       step1.done(function(pointer) {
-        var svgContainer;
+        var kill_old;
         if ((pointer.hasClass("priorite")) && (pointer.children(".dropped").length < 2)) {
           if (infobox) {
             help("Ce vieil alligator ne sert plus à rien !", pointer.attr("id"));
           }
           render_viewport().step2(pointer);
-          svgContainer = pointer.children(".svg-container");
-          svgContainer.find("svg g#layer1").attr("transform", "rotate(180 125 75)");
-          return svgContainer.fadeTo(delta, 0, function() {
+          kill_old = $.Deferred();
+          animation_kill(pointer, kill_old);
+          return $.when(kill_old).done(function(pointer) {
             pointer.children(".svg-container").find("svg").remove();
             pointer.children(".svg-container").remove();
             pointer.replaceWith(pointer.contents());
@@ -917,26 +964,13 @@
         }
       });
       step2.done(function(pointer) {
-        var application, application_vars, elements, function_vars, intersection, item, letter_index, palette, selection, _k, _len2, _ref1;
-        _ref1 = color_rule_check(pointer), function_vars = _ref1[0], application_vars = _ref1[1], intersection = _ref1[2];
+        var application, elements, intersection, letter_index, palette, selection, _k, _len2, _ref1;
+        _ref1 = color_rule_check(pointer), intersection = _ref1[0], palette = _ref1[1];
         if (intersection.length > 0) {
           if (infobox) {
             help("Règle de la couleur !", pointer.attr("id"));
           }
-          application = pointer.next();
-          palette = (function() {
-            var _k, _len2, _ref2, _results;
-            _ref2 = ALPHABET.slice(0, 25);
-            _results = [];
-            for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
-              item = _ref2[_k];
-              if (__indexOf.call(function_vars.concat(application_vars), item) < 0) {
-                _results.push(item);
-              }
-            }
-            return _results;
-          })();
-          palette = palette.slice(0, +(intersection.length - 1) + 1 || 9e9);
+          application = pointer.next(".dropped");
           elements = $();
           for (letter_index = _k = 0, _len2 = intersection.length; _k < _len2; letter_index = ++_k) {
             letter = intersection[letter_index];
@@ -952,7 +986,7 @@
           return elements.each(function(index_element) {
             var element;
             element = $(this);
-            render_viewport().step3(element);
+            render_viewport().step3(element.attr("id"), var_tab[element.attr("data-variable")], element.attr("data-variable"));
             return element.find("> .svg-container").fadeTo(delta, 0.25, function() {
               $(this).find(".skin").css("fill", var_tab[element.attr("data-variable")]);
               return $(this).fadeTo(delta, 1, function() {
@@ -967,57 +1001,25 @@
         }
       });
       step3.done(function(pointer) {
-        var application, applicationClone, bust_a_move, j, variable;
+        var application, applicationClone, eggs, killed_old, variable;
         if ((pointer.hasClass("lambda")) && (pointer.attr("data-color") !== "white") && (pointer.next().length > 0)) {
-          ahead_vars.pop();
-          variable = pointer.attr("data-variable");
-          application = pointer.next();
-          applicationClone = application.clone();
-          render_viewport().step4(pointer, application);
           if (infobox) {
             help("Manger", pointer.attr("id"));
           }
-          j = 0;
-          bust_a_move = interval(50, function() {
-            if (delta > 0) {
-              return pointer.find("> .svg-container > svg").css({
-                "z-index": "9000"
-              }).find("#jaw").attr("transform", "rotate(" + (-10 + Math.floor(6 * Math.cos(j++))) + ") translate(-100,20)");
-            }
-          });
+          variable = pointer.attr("data-variable").toString();
+          eggs = pointer.find(".variable[data-variable=" + variable + "]");
           application = pointer.next();
-          return application.css('visibility', 'hidden').clone().prependTo(pointer).css({
-            border: "dashed black 1px",
-            visibility: "visible",
-            position: "absolute",
-            top: "0px",
-            left: "100%"
-          }).animate({
-            "min-width": "0px",
-            padding: "0px",
-            height: '1vw',
-            width: "1vw",
-            top: "0",
-            left: "60%"
-          }, delta, function() {
-            $(this).find("svg").remove();
-            $(this).remove();
+          applicationClone = application.clone();
+          render_viewport().step4(pointer, application);
+          killed_old = $.Deferred();
+          animation_eating_application(pointer, application, killed_old);
+          return $.when(killed_old).done(function() {
             application.find("svg").remove();
             application.remove();
-            if (delta > 0) {
-              clearInterval(bust_a_move);
-            }
-            pointer.children(".svg-container").find("svg g#layer1").attr("transform", "rotate(180 125 75)");
-            if (infobox) {
-              help("Partir", pointer.attr("id"));
-            }
-            return pointer.children(".svg-container").animate({
-              "opacity": 0
-            }, delta, function() {
-              $(this).find("svg").remove();
-              $(this).remove();
-              return step4.resolve(pointer, applicationClone);
-            });
+            pointer.children(".svg-container").find("svg").remove();
+            pointer.children(".svg-container").remove();
+            pointer.replaceWith(pointer.contents());
+            return step4.resolve(applicationClone, eggs, variable);
           });
         } else {
           if (looping) {
@@ -1027,16 +1029,11 @@
           }
         }
       });
-      step4.done(function(pointer, app) {
-        var def_clone, def_egg, eggs, n, variable;
+      step4.done(function(app, eggs, variable) {
+        var def_clone, def_egg, n;
         if (infobox) {
-          help("éclosion", pointer.attr("id"));
+          help("éclosion", "root");
         }
-        variable = pointer.attr("data-variable");
-        eggs = pointer.find(".variable[data-variable=" + variable + "]");
-        pointer.children(".svg-container").find("svg").remove();
-        pointer.children(".svg-container").remove();
-        pointer.replaceWith(pointer.contents());
         n = eggs.length;
         if (n > 0) {
           def_clone = $.Deferred();
@@ -1088,7 +1085,8 @@
       if (action_croco.length > 0) {
         return step0.resolve(action_croco);
       } else {
-        return alert("Plus rien à faire !");
+        alert("Plus rien à faire !");
+        return $(".animation").prop("disabled", false);
       }
     };
   });

@@ -159,7 +159,7 @@ nav a:hover {
 }
 .noTitleStuff .ui-dialog-titlebar {
   display:none
-  }
+}
   
 button, input {
   height : 3.5vw;
@@ -172,7 +172,9 @@ button#clear {
   background-image: url(svg/delete.svg);
   background-repeat: no-repeat;
 }
-
+button:disabled {
+    background: rgba(0,0,0,0.5);
+}
 pre.code{
   background:#F8F8FF;
   border:black dashed 1px;

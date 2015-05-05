@@ -150,7 +150,7 @@ $ ->
   sys.parameters
     stiffness: 900
     repulsion: 2000
-    gravity: true
+    gravity: false
     dt: 0.015
   
   ###############################################
@@ -260,20 +260,23 @@ $ ->
     [selection, tags] = [$(".variable.dropped, .lambda.dropped"), $(this).toggle(this.checked).prop( "checked" )]
     if not tags then selection.addClass( "hide_pseudo" ) else selection.removeClass( "hide_pseudo" )
   $( "#tags" ).trigger "click" 
-      
+  $( "#toggle-settings").on "click", ->  $( "#settings").toggle()
   #Gestion du panel
   $( ".panel-button" ).on "click", ->
     switch $( this ).attr("data-type")
-      when "lambda"
-        $( "#prompt").val($( "#prompt").val() + "λ#{$( this ).attr('data-variable')}.")
-      when "variable"
-        $( "#prompt").val($( "#prompt").val() + " #{$( this ).attr('data-variable')} ")
-      when "open"
-        $( "#prompt").val($( "#prompt").val() + "(")
-      when "close"
-        $( "#prompt").val($( "#prompt").val() + ")")
+      when "lambda"   then $( "#prompt").val($( "#prompt").val() + "λ#{$( this ).attr('data-variable')}.")
+      when "variable" then $( "#prompt").val($( "#prompt").val() + " #{$( this ).attr('data-variable')} ")
+      when "open"     then $( "#prompt").val($( "#prompt").val() + "(")
+      when "close"    then $( "#prompt").val($( "#prompt").val() + ")")
+      when "fonction" then $("#prompt").val( $("#prompt").val() + " " + $(this).attr("data-lambda") )
+      when "read"     then $("#prompt").val get_lambda_from $("#root")
       when "draw"
-        e = jQuery.Event("keypress")
+        e = $.Event("keypress")
+        e.which = 13
+        $('#prompt').trigger(e)
+      when "exemple"
+        $("#prompt").val lambda_exemples[$(this).attr("data-numero")]
+        e = $.Event("keypress")
         e.which = 13
         $('#prompt').trigger(e)
       when "clear"
@@ -281,42 +284,67 @@ $ ->
         $("#root" ).empty().append "<div id='root_definition' class='definition_drop'></div>"
         $( "#prompt" ).val("")
         sys.eachNode (node) -> sys.pruneNode node
-        make_dropped_droppable()
-      when "exemple"
-        $("#prompt").val lambda_exemples[$(this).attr("data-numero")]
-        e = jQuery.Event("keypress")
-        e.which = 13
-        $('#prompt').trigger(e)
-      when "fonction"
-        $("#prompt").val( $("#prompt").val() + " " + $(this).attr("data-lambda") )
+        make_dropped_droppable()   
       when "autoclose"
         parentheses = 0
         for letter,index in $("#prompt").val()
           switch letter
-            when "("
-              parentheses += 1
-            when ")"
-              parentheses -= 1
+            when "(" then parentheses += 1
+            when ")" then parentheses -= 1
         if parentheses < 0
           alert "il y a #{parentheses} parenthese(s) fermée en trop !)"
         else
           while parentheses > 0
             $( "#prompt").val($( "#prompt").val() + ")")
             parentheses -= 1
-      when "read"
-        $("#prompt").val get_lambda_from $("#root")
-   
+
   $('#prompt').keypress (key) ->
     if key.which is 13
       insert_exp_into_div($( "#prompt").val(),$("#root"))
       sys.eachNode (node) -> sys.pruneNode node
       render_viewport().init($("#root"))
   
+  looping = false
+  $( "#go" ).on "click", (event) ->
+    $( ".animation" ).prop("disabled",true)
+    looping = false
+    go_one_step("#root")
+  $( "#repeat" ).on "click", ->
+    $( ".animation" ).prop("disabled",true)
+    looping = true
+    go_one_step("#root")
+  $( "#animation" ).on "click", (event) -> go_one_step( "#contenu-exercice" )
+  $("#stop").click () -> looping = false
+        
+  $( "#help" ).dialog
+    autoOpen    : false
+    dialogClass : "noTitleStuff"
+    width       : "auto"
+    minHeight   : 0
+    open        : (event, ui) -> delay 1000, -> $( "#help" ).dialog( "close" )
+    autoResize: true
+  help = (message, element) ->
+    $( "#help" ).dialog "option",
+      position :
+        my: "center bottom"
+        at: "center top"
+        of: "##{element}"
+    $( "#help" ).html message
+    $( "#help" ).dialog( "open")    
+  
+  renderArbor = true
+  $( "#toggle-arbor" ).on "click", ->
+    renderArbor = not renderArbor
+    if renderArbor
+      render_viewport().init($("#root"))
+    else
+      sys.stop()
+    $( "#viewport" ).toggle()  
+  $( "#toggle-arbor" ).trigger "click"
   
   
-
   ###########################################################################################################################################################
-  # Gestion du jeu
+  # Tutorial
   ###########################################################################################################################################################  
   $( "#console" ).draggable({containment: "#game-container"}).toggle()
   $( "#command-panel" ).draggable( {containment: "#game-container"})   
@@ -370,9 +398,8 @@ $ ->
     js = CoffeeScript.compile($( this ).prev( ":first" ).text())
     eval(js)
   
-  
   ###############################################################
-  # LAMBDA CALCULUS START FROM 
+  # LAMBDA CALCULUS START FROM HERE
   ###############################################################
   ###############################################################
   #Insert svg container as first child of an element, very specific to crocodile svg #
@@ -425,10 +452,8 @@ $ ->
           parentheses = 1
           while ((parentheses > 0) and (current_index < expression.length) and (expression[current_index] isnt "<"))
             switch expression[current_index]
-              when "("
-                parentheses +=1
-              when ")"
-                parentheses -=1
+              when "(" then parentheses +=1
+              when ")" then parentheses -=1
             current_index +=1
           alert "I got this : #{expression.substring(λ_index-1,current_index)}" if local_debug
           expression = expression.replace expression.substring(λ_index-1, current_index), "<div id='' class='lambda dropped' data-variable='#{expression[λ_variable]}' data-color=''>#{expression.substring(λ_index+3,current_index-1)}</div>"
@@ -441,14 +466,9 @@ $ ->
               while ((parentheses > 0) and (current_index < expression.length) and (expression[current_index] isnt "<"))
                 current_index += 1
                 switch expression[current_index]
-                  when "("
-                    parentheses +=1
-                    continue
-                  when ")"
-                    parentheses -=1
-                    continue
-                  else
-                    continue
+                  when "(" then parentheses +=1
+                  when ")" then parentheses -=1
+
               alert "I got this : #{expression.substring(λ_index,current_index+1)}" if local_debug
               expression = expression.replace expression.substring(λ_index,current_index+1), "<div id='' class='lambda dropped' data-variable='#{expression[λ_variable]}' data-color=''>#{expression.substring(λ_index+4,current_index)}</div>"
               continue 
@@ -517,44 +537,38 @@ $ ->
         inserer ui.draggable, $(this)
         make_dropped_droppable()
   make_dropped_droppable()
+  
   ###########################################################################################################################################################
   #gestion d'une etape
-  ###########################################################################################################################################################  
-
-  looping = false
-  $( "#go" ).on "click", (event) ->
-    $( ".animation" ).prop("disabled",true)
-    looping = false
-    go_one_step("#root")
-    
-  $( "#animation" ).on "click", (event) -> go_one_step( "#contenu-exercice" )
+  ###########################################################################################################################################################
   
-  $("#stop").click () -> 
-    $( ".animation" ).prop("disabled",false)  
-    looping = false
-    $( "#slider-animation" ).slider( "option", "disabled", false )    
-             
-  $( "#repeat" ).on "click", ->
-    $( ".animation" ).prop("disabled",true)
-    looping = true
-    go_one_step("#root")
-        
-  $( "#help" ).dialog
-    autoOpen    : false
-    dialogClass : "noTitleStuff"
-    width       : "auto"
-    minHeight   : 0
-    open        : (event, ui) -> delay 1000, -> $( "#help" ).dialog( "close" )
-    autoResize: true
-  help = (message, element) ->
-    $( "#help" ).dialog "option",
-      position :
-        my: "center bottom"
-        at: "center top"
-        of: "##{element}"
-    $( "#help" ).html message
-    $( "#help" ).dialog( "open")    
- 
+  animation_kill = ($div, $deferred) ->
+    help("Partir", $div.attr("id")) if infobox
+    $div.children(".svg-container").find("svg g#layer1").attr("transform", "rotate(180 125 75)")
+    left = "#{$div.offset().left}px"
+    $div.children(".svg-container").animate {position:'fixed', top : "-10px", opacity:0}, delta, -> $deferred.resolve($div)     
+  
+  animation_eating_application = (pointer, application, deferred) ->
+    applicationClone = application.clone()
+    j = 0
+    bust_a_move = interval 50, -> pointer.find("> .svg-container > svg").css("z-index":"9000").find("#jaw").attr("transform", "rotate(#{-10+Math.floor 6*Math.cos(j++)}) translate(-100,20)") if delta > 0
+    application.css('visibility','hidden')
+      .clone().prependTo(pointer)
+      .css({border:"dashed black 1px",visibility:"visible",position:"absolute",top:"0px",left:"100%"})
+      .animate {"min-width":"0px",padding:"0px", height: '1vw', width: "1vw", top:"0", left:"60%"} , delta, ->
+        #On fait disparaitre l'application et son clone
+        $(this).find("svg").remove() 
+        $(this).remove() 
+        application.find("svg").remove() 
+        application.remove()
+        clearInterval bust_a_move if delta > 0
+        kill_croco = $.Deferred()
+        animation_kill(pointer, kill_croco)
+        $.when(kill_croco).done ->
+          $(this).find("svg").remove()
+          $(this).remove()
+          deferred.resolve()
+                 
   find_action_pointer = (root) ->
     [ahead_vars, local_debug] = [ [], false]
     pointer = $(root).children(".lambda:first()")
@@ -583,34 +597,28 @@ $ ->
     #Mais on ne doit pas prendre celle qui se trouvaient au dessus dans la fonction
     intersection = (item for item in intersection when item not in ahead_vars)  
     #alert "[#{function_vars}], [#{application_vars}], [#{intersection}]"
-    return [function_vars, application_vars, intersection]
-  
-  
- 
-  
+    #Creation de la palette d'interpolation de variable
+    palette = (item for item in ALPHABET[0..24] when item not in function_vars.concat application_vars)
+    palette = palette[0..intersection.length-1]   
+    return [intersection, palette]
   
   transform_div_to_node = (div) -> 
     node = div
     if node.hasClass("priorite")
-      [type, variable, color] = ["", "", "Black"]
+      [type, variable, color, radius] = ["", "", "Black", 1]
     else if node.hasClass("variable")
-      [type, variable, color] = ["", node.attr("data-variable"), node.attr("data-color")]
+      [type, variable, color, radius] = ["", node.attr("data-variable"), node.attr("data-color"),2]
     else if node.hasClass("lambda")
-      [type, variable, color] = ["  λ", node.attr("data-variable"), node.attr("data-color")]
+      [type, variable, color, radius] = ["  λ", node.attr("data-variable"), node.attr("data-color"),3]
     label = "#{type}#{variable}##{node.attr('id')}  "
-    sys.addNode("#{node.attr('id')}",{'color' : color,'shape' : 'dot','label' : label })
+    sys.addNode("#{node.attr('id')}",{'color' : color,'shape' : 'dot','label' : label, radius:radius })
   
   create_edges_for_heritier = (ancestor, mode = "normal") ->
     local_debug = true
-    console.log("CREATION DES LIENS POUR #{ancestor.attr('id')} (en mode #{mode})") if local_debug
-    
+    console.log("CREATION DES LIENS POUR #{ancestor.attr('id')} (en mode #{mode})") if local_debug    
     switch mode
-      when "self"
-        heritier = ancestor
-      else
-        heritier  = ancestor.children(".dropped").first()
-    
-    
+      when "self" then heritier = ancestor
+      else heritier  = ancestor.children(".dropped").first()   
     if heritier.length
       heritier = heritier.attr("id")
       console.log("heritier du defunt #{ancestor.attr('id')} : #{heritier}") if local_debug
@@ -620,10 +628,8 @@ $ ->
         console.log(previous.attr("id") + " p-> " + heritier) if local_debug
       
       switch mode
-        when "priorite"
-          next = ancestor.next(".dropped").next(".dropped")
-        else
-          next = ancestor.next(".dropped")
+        when "priorite" then next = ancestor.next(".dropped").next(".dropped")
+        else next = ancestor.next(".dropped")
       if next.length > 0
         sys.addEdge(next.attr("id"), heritier, {type:"arrow",directed:true})
         console.log(next.attr("id") + " next-> " + heritier) if local_debug
@@ -636,8 +642,7 @@ $ ->
     #On efface la tete de fonction
     sys.pruneNode( ancestor.attr("id") ) if (ancestor.length > 0) and (mode isnt "self")
     console.log("FIN DE CREATION DES LIENS !") if local_debug
-    
-    
+
   render_viewport = () ->
     init : (pointer) ->
       local_debug = true
@@ -645,14 +650,8 @@ $ ->
       particles = $( "#root" ).find(".dropped")      
       if particles.length > 0
         particles.each ->
-          particle = $(this)
-          transform_div_to_node particle
-          target = particle.prev(".dropped")
-          if target.length > 0
-            sys.addEdge("#{particle.attr('id')}", target.attr("id"), {type:"arrow",directed:true,  weigth: '5'})
-          else
-            parent = particle.parent()
-            sys.addEdge(parent.attr("id"), "#{particle.attr('id')}", {type:"arrow",directed:true,  weigth: '10'}) if parent.attr("id") isnt "root"
+          transform_div_to_node $(this)
+          create_edges_for_heritier($(this), "self")
       sys.renderer = Renderer("#viewport") 
                
     step2 : (pointer) ->
@@ -660,12 +659,11 @@ $ ->
       console.log("step 2 : LE CROCO BLANC !") if local_debug 
       create_edges_for_heritier(pointer)
 
-    step3 : (element) ->
+    step3 : (element_id, color, variable) ->
       local_debug = true
       console.log("step 3 : LA REGLE DE LA COULEUR !") if local_debug 
-      [element_id, color, variable] = [element.attr("id"), element.attr("data-color"), element.attr("data-variable")]
       label = "#{variable}##{element_id}"
-      sys.tweenNode(element_id, {data :{color: color, label : label}} )
+      sys.tweenNode(element_id, delta/1000, {color: color, label : label} )
       console.log(element_id + " change to " + label + color ) if local_debug
       
     step4 : (pointer, application) ->
@@ -688,17 +686,6 @@ $ ->
         application.find(".dropped").addBack(".dropped").each -> create_edges_for_heritier( $(this), "self" )
         sys.addEdge(application.attr("id"), egg.attr("id"))
         create_edges_for_heritier( egg )
-      
-  renderArbor = true
-  $( "#toggle-arbor" ).on "click", ->
-    renderArbor = not renderArbor
-    if renderArbor
-      render_viewport().init($("#root"))
-    else
-      sys.stop()
-    $( "#viewport" ).toggle()
-    
-  $( "#toggle-arbor" ).trigger "click"
   
   go_one_step = (root, button) ->
     local_debug = false
@@ -713,39 +700,31 @@ $ ->
     step3 = $.Deferred()
     step4 = $.Deferred()
     
-    
-
     step0.done (pointer) ->      
       step1.resolve(pointer)
-      
-      
-    
+
     #STEP 2 : regle du vieil alligator inutile
     step1.done (pointer) ->  
       if (pointer.hasClass "priorite") and (pointer.children(".dropped").length < 2)
-        help( "Ce vieil alligator ne sert plus à rien !", pointer.attr("id")) if infobox
-        
+        help( "Ce vieil alligator ne sert plus à rien !", pointer.attr("id")) if infobox   
         render_viewport().step2(pointer)
-        
-        svgContainer = pointer.children(".svg-container")
-        svgContainer.find("svg g#layer1").attr("transform", "rotate(180 125 75)")
-        svgContainer.fadeTo delta, 0, ->
+        kill_old = $.Deferred()
+        animation_kill pointer, kill_old
+        $.when(kill_old).done (pointer) -> 
           pointer.children(".svg-container").find("svg").remove() 
           pointer.children(".svg-container").remove()
-          pointer.replaceWith pointer.contents()    
+          pointer.replaceWith pointer.contents()
           step2.resolve(pointer)
+        
       else
         step2.resolve(pointer)
         
     #STEP 3 : regle de la couleur
     step2.done (pointer) ->
-      [function_vars, application_vars, intersection] = color_rule_check(pointer)
+      [intersection, palette] = color_rule_check(pointer)
       if intersection.length > 0
-
         help( "Règle de la couleur !", pointer.attr("id")) if infobox
-        application = pointer.next()
-        palette = (item for item in ALPHABET[0..24] when item not in function_vars.concat application_vars)
-        palette = palette[0..intersection.length-1]    
+        application = pointer.next(".dropped")
         #Pour chacune des couleurs de la fonction on va echanger dans l'application avec une couleur disponible de la palette
         elements = $()
         for letter, letter_index in intersection
@@ -756,11 +735,8 @@ $ ->
               $(this).attr("data-color", var_tab[$(this).attr("data-variable")])
             elements = elements.add( selection )       
         elements.each (index_element) ->
-          element = $(this)
-
-
-      
-          render_viewport().step3(element)
+          element = $(this)  
+          render_viewport().step3(element.attr("id"), var_tab[element.attr "data-variable"], element.attr "data-variable" )
           
           element.find("> .svg-container").fadeTo delta, 0.25, ->
             $( this ).find(".skin").css("fill", var_tab[element.attr "data-variable"])
@@ -773,38 +749,24 @@ $ ->
     #STEP 4 : regle du mangeage d'application
     step3.done (pointer) ->
       if (pointer.hasClass "lambda") and (pointer.attr("data-color") isnt "white") and (pointer.next().length > 0)
-
-        #on retire la variable courante des variables precedemment rencontrées
-        ahead_vars.pop()
-        variable = pointer.attr("data-variable")
-        application = pointer.next()
-        applicationClone = application.clone()
-        
-        
-
-        render_viewport().step4(pointer, application)
-          
-        
         help("Manger", pointer.attr "id") if infobox
-        j = 0
-        bust_a_move = interval 50, -> pointer.find("> .svg-container > svg").css("z-index":"9000").find("#jaw").attr("transform", "rotate(#{-10+Math.floor 6*Math.cos(j++)}) translate(-100,20)") if delta > 0
-        application = pointer.next()        
-        application.css('visibility','hidden')
-          .clone().prependTo(pointer)
-          .css({border:"dashed black 1px",visibility:"visible",position:"absolute",top:"0px",left:"100%"})
-          .animate {"min-width":"0px",padding:"0px", height: '1vw', width: "1vw", top:"0", left:"60%"} , delta, ->
-            #On fait disparaitre l'application et son clone            
-            $(this).find("svg").remove() 
-            $(this).remove() 
-            application.find("svg").remove() 
-            application.remove()
-            clearInterval bust_a_move if delta > 0
-            pointer.children(".svg-container").find("svg g#layer1").attr("transform", "rotate(180 125 75)")
-            help("Partir", pointer.attr "id") if infobox
-            pointer.children(".svg-container").animate {"opacity" : 0}, delta, ->
-              $(this).find("svg").remove()
-              $(this).remove()
-              step4.resolve(pointer, applicationClone)
+        
+        variable = pointer.attr("data-variable").toString()
+        eggs = pointer.find( ".variable[data-variable=#{variable}]"  )  
+        application = pointer.next() 
+        applicationClone = application.clone()
+       
+        render_viewport().step4(pointer, application)           
+        killed_old = $.Deferred()        
+        animation_eating_application(pointer, application, killed_old)
+        
+        $.when(killed_old).done ->
+          application.find("svg").remove()
+          application.remove()
+          pointer.children(".svg-container").find("svg").remove() 
+          pointer.children(".svg-container").remove()
+          pointer.replaceWith pointer.contents()
+          step4.resolve(applicationClone, eggs, variable)
       else
         if looping
           go_one_step(root)
@@ -812,27 +774,17 @@ $ ->
           $( ".animation" ).prop("disabled",false)
   
     #STEP 5 : regle de l'eclosion des oeufs
-    step4.done (pointer, app) ->      
+    step4.done (app, eggs, variable) ->      
 
       #On va faire reapparaitre l'application à chaque oeuf
-      help("éclosion", pointer.attr "id") if infobox
-      
-      
-      
-      #A ramener a l'etape precedente
-      variable = pointer.attr "data-variable"
-      eggs = pointer.find( ".variable[data-variable=#{variable}]"  )   
-      pointer.children(".svg-container").find("svg").remove() 
-      pointer.children(".svg-container").remove()
-      pointer.replaceWith pointer.contents()
-      
+      help("éclosion", "root") if infobox
+  
       n = eggs.length
       if n>0
         def_clone = $.Deferred()
         def_egg = $.Deferred()
         eggs.each (index, element) ->
-          
-          
+  
           $(this).clone().animate { opacity: 0} , delta, ->
             $(this).children(".svg-container").find("svg").remove() 
             $(this).remove()
@@ -846,8 +798,7 @@ $ ->
           render_viewport().step5($(this), appClone)
           $(this).children(".svg-container").find("svg").remove() 
           $(this).children(".svg-container").remove()
-          $(this).replaceWith $(this).contents()
-      
+          $(this).replaceWith $(this).contents()    
       else
         help( "Aucun oeuf", "root") if infobox
    
@@ -855,11 +806,11 @@ $ ->
         $.when(def_egg,def_clone).done ->  go_one_step(root)
       else 
         $( ".animation" ).prop("disabled",false)
-      
-      
+          
     action_croco = find_action_pointer root 
     if action_croco.length > 0
       step0.resolve(action_croco)
     else
-     alert "Plus rien à faire !"      
+     alert "Plus rien à faire !"
+     $( ".animation" ).prop("disabled",false)  
   

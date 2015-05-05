@@ -33,7 +33,7 @@
                 <div id="top-panel-buttons">
                   <input type="checkbox"  id="toggle-console"/><label for="toggle-console">Console</label>
                   <input type="checkbox"  id="toggle-theory" /><label for="toggle-theory" >Theory</label>
-                  <input type="checkbox"  id="toggle-shape" /><label for="toggle-shape" >Shape</label>
+                  <input type="checkbox"  id="toggle-arbor" /><label for="toggle-arbor" >Arbre</label>
                 </div>
                 <select id="exercices" style="z-index:100;"><option value="Exercices">Exercices</option></select>
               </div>  
@@ -71,23 +71,26 @@
               </div>
               <div id="command-panel">              
                   <button class="panel-button animation" id="go">&#9658;</button>
-                  <button class="panel-button" id="repeat">&#9658;&#9658;</button>
+                  <button class="panel-button animation" id="repeat">&#9658;&#9658;</button>
                   <button class="panel-button" id="stop">&#x25A0;</button>
                   <button class="panel-button" id="clear" data-type="clear" ></button>
                   <div id="checkboxes">
                     <input type="checkbox" id="tags"    /><label for="tags"   >tags</label>
                     <input type="checkbox" id="infobox" /><label for="infobox">info</label>
+                    <input type="checkbox" id="settings" /><label for="settings">+/-</label>
                   </div>
-                  <div style="color:white;"><span id="amount-animation"></span>ms</div>
-                  <div id="slider-animation"></div>
-                  <div style="color:white;">zoom x<span id="amount-zoom"></span></div>
-                  <div id="slider-zoom"></div>
-                  <div id="color" data-variable="" data-color="">
-                    <select name="choose-color" id="choose-color"></select>
-                  </div> 
-                  <div id="vieux-svg" class="item svg-container vieux-croco"></div>
-                  <div id="egg-svg"   class="item svg-container egg"></div>
-                  <div id="open-svg"  class="item svg-container croco"></div>      
+                  <div id="settings">
+                    <div style="color:white;"><span id="amount-animation"></span>ms</div>
+                    <div id="slider-animation"></div>
+                    <div style="color:white;">zoom x<span id="amount-zoom"></span></div>
+                    <div id="slider-zoom"></div>
+                    <div id="color" data-variable="" data-color="">
+                      <select name="choose-color" id="choose-color"></select>
+                    </div> 
+                    <div id="vieux-svg" class="item svg-container vieux-croco"></div>
+                    <div id="egg-svg"   class="item svg-container egg"></div>
+                    <div id="open-svg"  class="item svg-container croco"></div>    
+                  </div>  
               </div> 
               
         </div>
