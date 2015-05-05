@@ -458,7 +458,7 @@ svg {
 }
 
 .variable.dropped::before {
-  content: attr(data-variable)+':'+attr(id);
+  content: attr(data-variable)':'attr(id);
   position: absolute;
   z-index: 100;
 }

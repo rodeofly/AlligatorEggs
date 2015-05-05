@@ -140,7 +140,7 @@
   };
 
   $(function() {
-    var color, color_rule_check, create_edges_for_heritier, egg_def, find_action_pointer, get_lambda_from, go_one_step, help, index, inserer, insert_exp_into_div, insert_item, key, letter, looping, make_dropped_droppable, open_def, preparer_exercice, render_viewport, resize, sys, transform_div_to_node, value, _i, _j, _len, _len1;
+    var color, color_rule_check, create_edges_for_heritier, egg_def, find_action_pointer, get_lambda_from, go_one_step, help, index, inserer, insert_exp_into_div, insert_item, key, letter, looping, make_dropped_droppable, open_def, preparer_exercice, renderArbor, render_viewport, resize, sys, transform_div_to_node, value, _i, _j, _len, _len1;
     for (index = _i = 0, _len = ALPHABET.length; _i < _len; index = ++_i) {
       letter = ALPHABET[index];
       color_tab.push(CSS_COLOR_NAMES[index]);
@@ -194,36 +194,6 @@
       s = ".lambda.priorite.dropped, .lambda.dropped { \n  min-width  : " + double + ";\n  min-height : " + simple + ";\n  padding-top: " + simple + ";\n}\n.variable.dropped { \n  width  : " + double + ";\n  height : " + simple + ";\n}\n.dropped .svg-container {\n  height : " + simple + ";\n}\n.definition_drop, .application_drop {\n  width : " + simple + ";\n  height: " + simple + ";\n}";
       return $("#restyler").text(s);
     };
-
-    /*
-    render_viewport = (root_id) ->
-      id = 0
-      local_debug = false
-      particles = $( "#{root_id}" ).find(".dropped")
-      sys = arbor.ParticleSystem({friction:0.5, stiffness:1000, repulsion:1000})
-      sys.parameters
-          stiffness: 900
-          repulsion: 2000
-          gravity: true
-          dt: 0.015
-     
-      alert particles.length if local_debug     
-      if particles.length > 0
-        particles.each ->
-          particle = $(this)
-          if particle.hasClass("priorite")
-            [id, type, variable, color] = [particle.attr("id"), "priorite", particle.attr("data-variable"), particle.attr("data-color")]
-          else if particle.hasClass("variable")
-            [id, type, variable, color] = [particle.attr("id"), "variable", particle.attr("data-variable"), particle.attr("data-color")]
-          else if particle.hasClass("lambda")
-              [id, type, variable, color] = [particle.attr("id"), "lambda", particle.attr("data-variable"), particle.attr("data-color")]
-          alert "#{id}/#{particle.attr('id')}, #{variable}/#{particle.attr('data-variable')}, #{type}:#{type}, #{color}/#{particle.attr('data-color')}" if local_debug 
-          sys.addNode("#{id}",{'color' : color,'shape' : 'dot','label' : variable })
-          if $( this ).parent().length > 0
-            sys.addEdge(id, $( this ).parent().attr("id"))
-      sys.renderer = Renderer("#viewport") 
-      alert "woot" if local_debug
-     */
     $.widget("ui.selectmenu", $.extend({}, $.ui.selectmenu.prototype, {
       _renderItem: function(ul, item) {
         var li, s;
@@ -385,7 +355,11 @@
     });
     $('#prompt').keypress(function(key) {
       if (key.which === 13) {
-        return insert_exp_into_div($("#prompt").val(), $("#root"));
+        insert_exp_into_div($("#prompt").val(), $("#root"));
+        sys.eachNode(function(node) {
+          return sys.pruneNode(node);
+        });
+        return render_viewport().init($("#root"));
       }
     });
     $("#console").draggable({
@@ -724,13 +698,13 @@
       var label, node, type, variable, _ref1, _ref2, _ref3;
       node = div;
       if (node.hasClass("priorite")) {
-        _ref1 = ["()", node.attr("data-variable"), node.attr("data-color")], type = _ref1[0], variable = _ref1[1], color = _ref1[2];
+        _ref1 = ["", "", "Black"], type = _ref1[0], variable = _ref1[1], color = _ref1[2];
       } else if (node.hasClass("variable")) {
         _ref2 = ["", node.attr("data-variable"), node.attr("data-color")], type = _ref2[0], variable = _ref2[1], color = _ref2[2];
       } else if (node.hasClass("lambda")) {
         _ref3 = ["  λ", node.attr("data-variable"), node.attr("data-color")], type = _ref3[0], variable = _ref3[1], color = _ref3[2];
       }
-      label = "" + type + variable + ":" + (node.attr('id')) + "  ";
+      label = "" + type + variable + "#" + (node.attr('id')) + "  ";
       return sys.addNode("" + (node.attr('id')), {
         'color': color,
         'shape': 'dot',
@@ -760,7 +734,10 @@
         heritier = heritier.attr("id");
         previous = ancestor.prev(".dropped");
         if (previous.length > 0) {
-          sys.addEdge(heritier, previous.attr("id"));
+          sys.addEdge(heritier, previous.attr("id"), {
+            type: "arrow",
+            directed: true
+          });
           if (local_debug) {
             console.log(previous.attr("id") + " p-> " + heritier);
           }
@@ -773,7 +750,10 @@
             next = ancestor.next(".dropped");
         }
         if (next.length > 0) {
-          sys.addEdge(next.attr("id"), heritier);
+          sys.addEdge(next.attr("id"), heritier, {
+            type: "arrow",
+            directed: true
+          });
           if (local_debug) {
             console.log(next.attr("id") + " next-> " + heritier);
           }
@@ -783,7 +763,10 @@
           console.log(parent.attr("id") + " parent-> " + heritier);
         }
         if (parent.attr("id") !== "root") {
-          sys.addEdge(parent.attr("id"), heritier);
+          sys.addEdge(parent.attr("id"), heritier, {
+            type: "arrow",
+            directed: true
+          });
         }
       } else {
         console.log("pas d'heritier pour " + (ancestor.attr('id')) + " !");
@@ -811,11 +794,21 @@
               transform_div_to_node(particle);
               target = particle.prev(".dropped");
               if (target.length > 0) {
-                return sys.addEdge("" + (particle.attr('id')), target.attr("id"));
+                return sys.addEdge("" + (particle.attr('id')), target.attr("id"), {
+                  type: "arrow",
+                  directed: true,
+                  weigth: '1',
+                  length: '2'
+                });
               } else {
                 parent = particle.parent();
                 if (parent.attr("id") !== "root") {
-                  return sys.addEdge("" + (particle.attr('id')), parent.attr("id"));
+                  return sys.addEdge(parent.attr("id"), "" + (particle.attr('id')), {
+                    type: "arrow",
+                    directed: true,
+                    weigth: '5',
+                    length: '1'
+                  });
                 }
               }
             });
@@ -837,7 +830,7 @@
             console.log("step 3 : LA REGLE DE LA COULEUR !");
           }
           _ref1 = [element.attr("id"), element.attr("data-color"), element.attr("data-variable")], element_id = _ref1[0], color = _ref1[1], variable = _ref1[2];
-          label = variable + ":" + element_id;
+          label = variable + "#" + element_id;
           sys.tweenNode(element_id, {
             data: {
               color: color,
@@ -882,9 +875,17 @@
         }
       };
     };
-    $("#toggle-shape").on("click", function() {
-      return render_viewport().init($("#root"));
+    renderArbor = true;
+    $("#toggle-arbor").on("click", function() {
+      renderArbor = !renderArbor;
+      if (renderArbor) {
+        render_viewport().init($("#root"));
+      } else {
+        sys.stop();
+      }
+      return $("#viewport").toggle();
     });
+    $("#toggle-arbor").trigger("click");
     return go_one_step = function(root, button) {
       var action_croco, local_debug, step0, step1, step2, step3, step4;
       local_debug = false;

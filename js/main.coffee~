@@ -152,6 +152,7 @@ $ ->
     repulsion: 2000
     gravity: true
     dt: 0.015
+  
   ###############################################
   #Interface                            #
   ###############################################
@@ -181,41 +182,6 @@ $ ->
     """
     $( "#restyler" ).text s
   
-  ###
-  render_viewport = (root_id) ->
-    id = 0
-    local_debug = false
-    particles = $( "#{root_id}" ).find(".dropped")
-    sys = arbor.ParticleSystem({friction:0.5, stiffness:1000, repulsion:1000})
-    sys.parameters
-        stiffness: 900
-        repulsion: 2000
-        gravity: true
-        dt: 0.015
- 
-    alert particles.length if local_debug     
-    if particles.length > 0
-      particles.each ->
-        particle = $(this)
-        if particle.hasClass("priorite")
-          [id, type, variable, color] = [particle.attr("id"), "priorite", particle.attr("data-variable"), particle.attr("data-color")]
-        else if particle.hasClass("variable")
-          [id, type, variable, color] = [particle.attr("id"), "variable", particle.attr("data-variable"), particle.attr("data-color")]
-        else if particle.hasClass("lambda")
-            [id, type, variable, color] = [particle.attr("id"), "lambda", particle.attr("data-variable"), particle.attr("data-color")]
-        alert "#{id}/#{particle.attr('id')}, #{variable}/#{particle.attr('data-variable')}, #{type}:#{type}, #{color}/#{particle.attr('data-color')}" if local_debug 
-        sys.addNode("#{id}",{'color' : color,'shape' : 'dot','label' : variable })
-        if $( this ).parent().length > 0
-          sys.addEdge(id, $( this ).parent().attr("id"))
-    sys.renderer = Renderer("#viewport") 
-    alert "woot" if local_debug
-  ###
-    
-
-    
-
-    
-
   $.widget "ui.selectmenu", $.extend {}, $.ui.selectmenu.prototype,
     _renderItem : ( ul, item ) ->
         color = var_tab[item.value]
@@ -340,16 +306,21 @@ $ ->
       when "read"
         $("#prompt").val get_lambda_from $("#root")
    
-  $('#prompt').keypress (key) -> insert_exp_into_div($( "#prompt").val(),$("#root")) if key.which is 13
+  $('#prompt').keypress (key) ->
+    if key.which is 13
+      insert_exp_into_div($( "#prompt").val(),$("#root"))
+      sys.eachNode (node) -> sys.pruneNode node
+      render_viewport().init($("#root"))
+  
+  
+  
 
   ###########################################################################################################################################################
   # Gestion du jeu
   ###########################################################################################################################################################  
   $( "#console" ).draggable({containment: "#game-container"}).toggle()
-  $( "#command-panel" ).draggable( {containment: "#game-container"})
-    
+  $( "#command-panel" ).draggable( {containment: "#game-container"})   
   $( "#toggle-console" ).on "click", -> $( "#console" ).toggle()
-  
   
   #Exercice
   preparer_exercice = (id) ->
@@ -398,6 +369,8 @@ $ ->
   $( ".run-previous-code" ).on "click", ->
     js = CoffeeScript.compile($( this ).prev( ":first" ).text())
     eval(js)
+  
+  
   ###############################################################
   # LAMBDA CALCULUS START FROM 
   ###############################################################
@@ -619,12 +592,12 @@ $ ->
   transform_div_to_node = (div) -> 
     node = div
     if node.hasClass("priorite")
-      [type, variable, color] = ["()", node.attr("data-variable"), node.attr("data-color")]
+      [type, variable, color] = ["", "", "Black"]
     else if node.hasClass("variable")
       [type, variable, color] = ["", node.attr("data-variable"), node.attr("data-color")]
     else if node.hasClass("lambda")
       [type, variable, color] = ["  λ", node.attr("data-variable"), node.attr("data-color")]
-    label = "#{type}#{variable}:#{node.attr('id')}  "
+    label = "#{type}#{variable}##{node.attr('id')}  "
     sys.addNode("#{node.attr('id')}",{'color' : color,'shape' : 'dot','label' : label })
   
   create_edges_for_heritier = (ancestor, mode = "normal") ->
@@ -642,7 +615,7 @@ $ ->
       heritier = heritier.attr "id"
       previous = ancestor.prev(".dropped")
       if previous.length > 0
-        sys.addEdge( heritier, previous.attr("id") )
+        sys.addEdge( heritier, previous.attr("id"), {type:"arrow",directed:true} )
         console.log(previous.attr("id") + " p-> " + heritier) if local_debug
       
       switch mode
@@ -651,12 +624,12 @@ $ ->
         else
           next = ancestor.next(".dropped")
       if next.length > 0
-        sys.addEdge(next.attr("id"), heritier)
+        sys.addEdge(next.attr("id"), heritier, {type:"arrow",directed:true})
         console.log(next.attr("id") + " next-> " + heritier) if local_debug
     
       parent = ancestor.parent()
       console.log(parent.attr("id") + " parent-> " + heritier) if local_debug
-      sys.addEdge(parent.attr("id"), heritier) if parent.attr("id") isnt "root"
+      sys.addEdge(parent.attr("id"), heritier, {type:"arrow",directed:true}) if parent.attr("id") isnt "root"
     else
       console.log("pas d'heritier pour #{ancestor.attr('id')} !")
     #On efface la tete de fonction
@@ -675,10 +648,10 @@ $ ->
           transform_div_to_node particle
           target = particle.prev(".dropped")
           if target.length > 0
-            sys.addEdge("#{particle.attr('id')}", target.attr("id"))
+            sys.addEdge("#{particle.attr('id')}", target.attr("id"), {type:"arrow",directed:true,  weigth: '1', length: '3'})
           else
             parent = particle.parent()
-            sys.addEdge("#{particle.attr('id')}", parent.attr("id")) if parent.attr("id") isnt "root"
+            sys.addEdge(parent.attr("id"), "#{particle.attr('id')}", {type:"arrow",directed:true,  weigth: '3', length: '1'}) if parent.attr("id") isnt "root"
       sys.renderer = Renderer("#viewport") 
                
     step2 : (pointer) ->
@@ -690,7 +663,7 @@ $ ->
       local_debug = true
       console.log("step 3 : LA REGLE DE LA COULEUR !") if local_debug 
       [element_id, color, variable] = [element.attr("id"), element.attr("data-color"), element.attr("data-variable")]
-      label = "#{variable}:#{element_id}"
+      label = "#{variable}##{element_id}"
       sys.tweenNode(element_id, {data :{color: color, label : label}} )
       console.log(element_id + " change to " + label + color ) if local_debug
       
@@ -715,8 +688,16 @@ $ ->
         sys.addEdge(application.attr("id"), egg.attr("id"))
         create_edges_for_heritier( egg )
       
-     
-  $( "#toggle-shape" ).on "click", ->  render_viewport().init($("#root"))
+  renderArbor = true
+  $( "#toggle-arbor" ).on "click", ->
+    renderArbor = not renderArbor
+    if renderArbor
+      render_viewport().init($("#root"))
+    else
+      sys.stop()
+    $( "#viewport" ).toggle()
+    
+  $( "#toggle-arbor" ).trigger "click"
   
   go_one_step = (root, button) ->
     local_debug = false
@@ -853,7 +834,6 @@ $ ->
           
           $(this).clone().animate { opacity: 0} , delta, ->
             $(this).children(".svg-container").find("svg").remove() 
-            
             $(this).remove()
             def_egg.resolve() if index is n-1
           
