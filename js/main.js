@@ -299,7 +299,7 @@
       return $("#settings").toggle();
     });
     $(".panel-button").on("click", function() {
-      var e, parentheses, _k, _len2, _ref1, _results;
+      var e, looping, parentheses, _k, _len2, _ref1, _results;
       switch ($(this).attr("data-type")) {
         case "lambda":
           return $("#prompt").val($("#prompt").val() + ("λ" + ($(this).attr('data-variable')) + "."));
@@ -323,6 +323,7 @@
           e.which = 13;
           return $('#prompt').trigger(e);
         case "clear":
+          looping = false;
           parentheses = 0;
           $("#root").empty().append("<div id='root_definition' class='definition_drop'></div>");
           $("#prompt").val("");
@@ -361,7 +362,9 @@
         sys.eachNode(function(node) {
           return sys.pruneNode(node);
         });
-        return render_viewport().init($("#root"));
+        if (renderArbor) {
+          return render_viewport().init($("#root"));
+        }
       }
     });
     looping = false;
@@ -950,7 +953,9 @@
           if (infobox) {
             help("Ce vieil alligator ne sert plus à rien !", pointer.attr("id"));
           }
-          render_viewport().step2(pointer);
+          if (renderArbor) {
+            render_viewport().step2(pointer);
+          }
           kill_old = $.Deferred();
           animation_kill(pointer, kill_old);
           return $.when(kill_old).done(function(pointer) {
@@ -986,7 +991,9 @@
           return elements.each(function(index_element) {
             var element;
             element = $(this);
-            render_viewport().step3(element.attr("id"), var_tab[element.attr("data-variable")], element.attr("data-variable"));
+            if (renderArbor) {
+              render_viewport().step3(element.attr("id"), var_tab[element.attr("data-variable")], element.attr("data-variable"));
+            }
             return element.find("> .svg-container").fadeTo(delta, 0.25, function() {
               $(this).find(".skin").css("fill", var_tab[element.attr("data-variable")]);
               return $(this).fadeTo(delta, 1, function() {
@@ -1010,7 +1017,9 @@
           eggs = pointer.find(".variable[data-variable=" + variable + "]");
           application = pointer.next();
           applicationClone = application.clone();
-          render_viewport().step4(pointer, application);
+          if (renderArbor) {
+            render_viewport().step4(pointer, application);
+          }
           killed_old = $.Deferred();
           animation_eating_application(pointer, application, killed_old);
           return $.when(killed_old).done(function() {
@@ -1063,7 +1072,9 @@
                 return def_clone.resolve();
               }
             });
-            render_viewport().step5($(this), appClone);
+            if (renderArbor) {
+              render_viewport().step5($(this), appClone);
+            }
             $(this).children(".svg-container").find("svg").remove();
             $(this).children(".svg-container").remove();
             return $(this).replaceWith($(this).contents());

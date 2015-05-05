@@ -280,6 +280,7 @@ $ ->
         e.which = 13
         $('#prompt').trigger(e)
       when "clear"
+        looping = false
         parentheses = 0
         $("#root" ).empty().append "<div id='root_definition' class='definition_drop'></div>"
         $( "#prompt" ).val("")
@@ -302,7 +303,7 @@ $ ->
     if key.which is 13
       insert_exp_into_div($( "#prompt").val(),$("#root"))
       sys.eachNode (node) -> sys.pruneNode node
-      render_viewport().init($("#root"))
+      render_viewport().init($("#root")) if renderArbor
   
   looping = false
   $( "#go" ).on "click", (event) ->
@@ -707,7 +708,7 @@ $ ->
     step1.done (pointer) ->  
       if (pointer.hasClass "priorite") and (pointer.children(".dropped").length < 2)
         help( "Ce vieil alligator ne sert plus à rien !", pointer.attr("id")) if infobox   
-        render_viewport().step2(pointer)
+        render_viewport().step2(pointer) if renderArbor
         kill_old = $.Deferred()
         animation_kill pointer, kill_old
         $.when(kill_old).done (pointer) -> 
@@ -736,7 +737,7 @@ $ ->
             elements = elements.add( selection )       
         elements.each (index_element) ->
           element = $(this)  
-          render_viewport().step3(element.attr("id"), var_tab[element.attr "data-variable"], element.attr "data-variable" )
+          render_viewport().step3(element.attr("id"), var_tab[element.attr "data-variable"], element.attr "data-variable" ) if renderArbor
           
           element.find("> .svg-container").fadeTo delta, 0.25, ->
             $( this ).find(".skin").css("fill", var_tab[element.attr "data-variable"])
@@ -756,7 +757,7 @@ $ ->
         application = pointer.next() 
         applicationClone = application.clone()
        
-        render_viewport().step4(pointer, application)           
+        render_viewport().step4(pointer, application) if renderArbor    
         killed_old = $.Deferred()        
         animation_eating_application(pointer, application, killed_old)
         
@@ -795,7 +796,7 @@ $ ->
           $(this).append appClone
           appClone.css(opacity: 0).animate {opacity: 1}, delta, -> def_clone.resolve() if index is n-1  
            
-          render_viewport().step5($(this), appClone)
+          render_viewport().step5($(this), appClone) if renderArbor
           $(this).children(".svg-container").find("svg").remove() 
           $(this).children(".svg-container").remove()
           $(this).replaceWith $(this).contents()    
