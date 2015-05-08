@@ -281,21 +281,20 @@
         return $(this).show();
       }
     });
-    $("#infobox").on("click", function(element) {
-      return infobox = $(this).toggle(this.checked).prop("checked");
+    $("#infobox").on("change", function() {
+      return infobox = $(this).prop("checked");
     });
-    $("#infobox").trigger("click");
-    $("#tags").on("click", function() {
+    $("#tags").on("change", function() {
       var selection, _ref1;
-      _ref1 = [$(".variable.dropped, .lambda.dropped"), $(this).toggle(this.checked).prop("checked")], selection = _ref1[0], tags = _ref1[1];
+      _ref1 = [$(".variable.dropped, .lambda.dropped"), $(this).prop("checked")], selection = _ref1[0], tags = _ref1[1];
       if (!tags) {
-        return selection.addClass("hide_pseudo");
+        return selection.addClass("show_pseudo");
       } else {
-        return selection.removeClass("hide_pseudo");
+        return selection.removeClass("show_pseudo");
       }
     });
     $("#tags").trigger("click");
-    $("#toggle-settings").on("click", function() {
+    $("#toggle-settings").on("change", function() {
       return $("#settings").toggle();
     });
     $(".panel-button").on("click", function() {

@@ -159,7 +159,7 @@ nav a:hover {
 }
 .noTitleStuff .ui-dialog-titlebar {
   display:none
-  }
+}
   
 button, input {
   height : 3.5vw;
@@ -172,7 +172,9 @@ button#clear {
   background-image: url(svg/delete.svg);
   background-repeat: no-repeat;
 }
-
+button:disabled {
+    background: rgba(0,0,0,0.5);
+}
 pre.code{
   background:#F8F8FF;
   border:black dashed 1px;
@@ -302,8 +304,8 @@ ul#choose-color-menu.ui-menu, ul#exercices-menu.ui-menu {
 #command-panel {
   position : absolute;
   top:5vw;
+  width : 100%;
   right : 50%;
-  width : 10vw;
   padding : 1vw;
   border-radius : 1em;
   background-color : rgba(0,0,0,0.5);
@@ -311,7 +313,8 @@ ul#choose-color-menu.ui-menu, ul#exercices-menu.ui-menu {
 }
 
 #command-panel button{
-  width : 90%;
+  width : 10%;
+  display : inline-block;
 }
 
 #exercices {
@@ -458,22 +461,24 @@ svg {
 }
 
 .variable.dropped::before {
-  content: attr(data-variable)'#'attr(id);
+  content : none;
+}
+.variable.dropped.show_pseudo::before {
+  
+  content: attr(data-variable);
   position: absolute;
   z-index: 100;
 }
-.variable.dropped.hide_pseudo::before {
+.lambda.dropped::before {
   content : none;
 }
-.lambda.dropped::before {
-  content: attr(data-variable)':'attr(id);
+.lambda.dropped.show_pseudo::before {
+  
+  content: attr(data-variable);
   position: absolute;
   left : 50%;
   top : 0;
   z-index: 100;
-}
-.lambda.dropped.hide_pseudo::before {
-  content : none;
 }
 .lambda.priorite.dropped:before {
   content: none;

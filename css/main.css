@@ -460,22 +460,24 @@ svg {
 }
 
 .variable.dropped::before {
-  content: attr(data-variable)'#'attr(id);
+  content : none;
+}
+.variable.dropped.show_pseudo::before {
+  
+  content: attr(data-variable);
   position: absolute;
   z-index: 100;
 }
-.variable.dropped.hide_pseudo::before {
+.lambda.dropped::before {
   content : none;
 }
-.lambda.dropped::before {
-  content: attr(data-variable)':'attr(id);
+.lambda.dropped.show_pseudo::before {
+  
+  content: attr(data-variable);
   position: absolute;
   left : 50%;
   top : 0;
   z-index: 100;
-}
-.lambda.dropped.hide_pseudo::before {
-  content : none;
 }
 .lambda.priorite.dropped:before {
   content: none;

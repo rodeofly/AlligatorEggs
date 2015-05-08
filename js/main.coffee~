@@ -253,14 +253,16 @@ $ ->
   #Initialisation des items, dialog, couleurs et panels#
   ######################################################
   #items oeuf, croco, vieux croco draggable
-  $( "#infobox" ).on "click", (element) -> infobox = $(this).toggle(this.checked).prop( "checked" )
-  $( "#infobox" ).trigger "click" 
+  $( "#infobox" ).on "change", -> infobox = $(this).prop( "checked" )
+
   
-  $( "#tags" ).on "click", -> 
-    [selection, tags] = [$(".variable.dropped, .lambda.dropped"), $(this).toggle(this.checked).prop( "checked" )]
-    if not tags then selection.addClass( "hide_pseudo" ) else selection.removeClass( "hide_pseudo" )
+  $( "#tags" ).on "change", -> 
+    [selection, tags] = [$(".variable.dropped, .lambda.dropped"), $(this).prop( "checked" )]
+    if not tags then selection.addClass( "show_pseudo" ) else selection.removeClass( "show_pseudo" )
   $( "#tags" ).trigger "click" 
-  $( "#toggle-settings").on "click", ->  $( "#settings").toggle()
+  $( "#toggle-settings").on "change", -> 
+    alert "ok"
+    $( "#settings" ).toggle()
   #Gestion du panel
   $( ".panel-button" ).on "click", ->
     switch $( this ).attr("data-type")
@@ -303,7 +305,7 @@ $ ->
     if key.which is 13
       insert_exp_into_div($( "#prompt").val(),$("#root"))
       sys.eachNode (node) -> sys.pruneNode node
-      render_viewport().init($("#root")) if render
+      render_viewport().init($("#root")) if renderArbor
   
   looping = false
   $( "#go" ).on "click", (event) ->
