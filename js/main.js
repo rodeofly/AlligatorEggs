@@ -52,8 +52,8 @@
     "IF": "(λp.λa.λb.p a b)",
     "ISZERO": "(λn.n (λx.(λa.λb.b)) (λa.λb.a))",
     "LEQ": "(λc.λp. (λq.q (λx.(λd.λe.e)) (λd.λe.d)) ((λm.λa. (a  (λn.λf.λx. n (λg.λh.h (g f)) (λu.x) (λu.u))) m) c p))",
-    "Y"          : "(λf.( λx.( f (x x ) ) λx.( f (x x ) ) ) ) "
-    "FACT"  : "(λn.λf. (n (λc.λi. (i (c (λf.λx (i f (f x))))))(λx. f) (λx. x)))"
+    "Y"          : "(λf.( λx.( f (x x ) ) λx.( f (x x ) ) ) ) ",
+    "FACT"  : "(λn.λf. (n (λc.λi. (i (c (λf.λx (i f (f x))))))(λx. f) (λx. x)))",
     "PAIR": "(λx.λy.λz.z x y)",
     "FIRST": "(λp.p (λx.λy.x))",
     "SECOND": "(λp.p (λx.λy.y))",
