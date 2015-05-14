@@ -22,6 +22,10 @@ FUNCTION =
   "POW"   : "(λb.λe.e b)"
   "PRED"  : "(λa.λf.λx.a (λg.λh.h (g f)) (λu.x) (λu.u))"
   "SUB"   : "(λm.λa. (a  (λn.λf.λx. n (λg.λh.h (g f)) (λu.x) (λu.u))) m)"
+  "SUB-rec": "(λf.( λx.( f (x x ) ) λx.( f (x x ) ) ) ) 
+  (λr.λm.λn.    ((λn.n (λx.(λa.λb.b)) (λa.λb.a)) n)
+                      m
+                      (r ( (λa.λf.λx.a (λg.λh.h (g f)) (λu.x) (λu.u)) m) ( (λa.λf.λx.a (λg.λh.h (g f)) (λu.x) (λu.u)) n)))"
   "TRUE"  : "(λa.λb.a)"
   "FALSE" : "(λa.λb.b)"
   "AND"   : "(λp.λq.p q p)"
@@ -261,7 +265,8 @@ $ ->
     [selection, tags] = [$(".variable.dropped, .lambda.dropped"), $(this).prop( "checked" )]
     if not tags then selection.addClass( "show_pseudo" ) else selection.removeClass( "show_pseudo" )
   $( "#tags" ).trigger "click" 
-  $( "#toggle-settings").on "change", -> $( "#settings" ).toggle()
+  $( "#toggle-settings").on "click", -> $( "#settings" ).toggle()
+  $( "#settings" ).toggle()
   #Gestion du panel
   $( ".panel-button" ).on "click", ->
     switch $( this ).attr("data-type")
@@ -271,18 +276,9 @@ $ ->
       when "close"    then $( "#prompt").val($( "#prompt").val() + ")")
       when "fonction" then $("#prompt").val( $("#prompt").val() + " " + $(this).attr("data-lambda") )
       when "read"     then $("#prompt").val get_lambda_from $("#root")
-      when "draw"
-        e = $.Event("keypress")
-        e.which = 13
-        $('#prompt').trigger(e)
-      when "exemple"
-        $("#prompt").val lambda_exemples[$(this).attr("data-numero")]
-        e = $.Event("keypress")
-        e.which = 13
-        $('#prompt').trigger(e)
+      when "draw"     then draw_lambda_expression($( "#prompt").val())
       when "clear"
         looping = false
-        parentheses = 0
         $("#root" ).empty().append "<div id='root_definition' class='definition_drop'></div>"
         $( "#prompt" ).val("")
         sys.eachNode (node) -> sys.pruneNode node
@@ -300,12 +296,11 @@ $ ->
             $( "#prompt").val($( "#prompt").val() + ")")
             parentheses -= 1
 
-  $('#prompt').keypress (key) ->
-    if key.which is 13
-      insert_exp_into_div($( "#prompt").val(),$("#root"))
-      sys.eachNode (node) -> sys.pruneNode node
-      render_viewport().init($("#root")) if renderArbor
-  
+  draw_lambda_expression = (expression) ->
+    insert_exp_into_div(expression,$("#root"))
+    sys.eachNode (node) -> sys.pruneNode node
+    render_viewport().init($("#root")) if renderArbor
+
   looping = false
   $( "#go" ).on "click", (event) ->
     $( ".animation" ).prop("disabled",true)
@@ -351,7 +346,7 @@ $ ->
   $( "#console" ).draggable({containment: "#game-container"}).toggle()
   $( "#command-panel" ).draggable( {containment: "#game-container"})   
   $( "#toggle-console" ).on "click", -> $( "#console" ).toggle()
-  
+  $( "#close-console"  ).on "click", -> $( "#console" ).toggle()
   #Exercice
   preparer_exercice = (id) ->
     $( ".animation" ).prop("disabled",false)

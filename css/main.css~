@@ -162,7 +162,7 @@ nav a:hover {
 }
   
 button, input {
-  height : 3.5vw;
+  height : 5vh;
   display : inline-block;
   line-height: auto;
   font-size : 1vw !important;
@@ -193,12 +193,12 @@ pre.code{
 }
 #top-panel {
   position : relative;
-  display : block;
-  width : 50%;  
-  display : inline-flex;
-  flex-flow: row no-wrap;
+  display : flex;
+  height : 5vh;
+  flex-flow: column wrap;
   justify-content: center;
 }
+
 #prompt {
   position : relative;
   width : 100%;
@@ -224,10 +224,57 @@ pre.code{
 #viewport {
  background : rgba(0,0,0,0.5);
  position : absolute;
- height : 40vw;
+ height : 69.5%;
  width : 50vw;
- top : 0;
- right : 0vw;
+ top : 15%;
+ right : 5.5vw;
+}
+
+
+#console {
+  position :absolute;
+  bottom : 0;
+  left: 12.5%;
+  display: inline-flex;
+  flex-flow : row wrap;
+  justify-content: stretch;
+  width : 75%;
+  background-color : rgba(0,0,0,0.5);
+  padding : 1em;
+  border-radius : 1em;
+}
+#console button {
+  min-width : 5em;
+  padding : 0;
+  margin : 0;
+  flex : 2;
+}
+#command-panel {
+  position : absolute;
+  top:1vw;
+  left:35vW;
+  width : 30vw;
+  padding : 1vw;
+  border-radius : 1em;
+  background-color : rgba(0,0,0,0.5);
+  text-align : center;
+}
+
+#checkboxes button {
+  min-width: 5vw;
+  position: relative;
+  display : inline-block;
+  margin:auto;
+}
+#top-panel-buttons {
+  display : flex;
+  justify-content:center;
+}
+
+#exercices {
+  position : relative;
+  display : block;
+  margin : auto;
 }
 
 /* select menu */
@@ -258,7 +305,7 @@ ul#choose-color-menu.ui-menu, ul#exercices-menu.ui-menu {
 }
 #exercices{
  position :relative;
- width:10vw;
+ width : 100%;
 }
 
 #choose-color-menu.ui-menu .ui-menu-item {
@@ -283,54 +330,14 @@ ul#choose-color-menu.ui-menu, ul#exercices-menu.ui-menu {
   
 }
 
-#console {
-  position :absolute;
-  bottom : 0;
-  left: 12.5%;
-  display: inline-flex;
-  flex-flow : row wrap;
-  justify-content: stretch;
-  width : 75%;
-  background-color : rgba(0,0,0,0.5);
-  padding : 1em;
-  border-radius : 1em;
-}
-#console button {
-  min-width : 5em;
-  padding : 0;
-  margin : 0;
-  flex : 2;
-}
-#command-panel {
-  position : absolute;
-  top:5vw;
-  width : 100%;
-  right : 50%;
-  padding : 1vw;
-  border-radius : 1em;
-  background-color : rgba(0,0,0,0.5);
-  text-align : center;
-}
-
-#command-panel button{
-  width : 10%;
-  display : inline-block;
-}
-
-#exercices {
-  position : relative;
-  display : block;
-  width: 90%;
-
-  margin : auto;
-}
 
 #panels {
   position : relative;
   display : block;
   margin : auto;
+  margin-top : 7.5%;
   width : 90%;
-  height : 90%;
+  height : 70%;
   display : flex;
   align-items: stretch;
   border : 0.2vw solid black;
@@ -339,7 +346,7 @@ ul#choose-color-menu.ui-menu, ul#exercices-menu.ui-menu {
 #root {
   position:relative;
   width : auto;
-  height : 100%
+  height : auto;
   display : flex;
   flex-grow: 2; 
   overflow-x:scroll;
@@ -494,7 +501,15 @@ div#preloaded-images, div.exemple {
 }
 
 
-
+@import url(http://fonts.googleapis.com/css?family=Reenie+Beanie);
+#credits {
+  position : absolute;
+  bottom   : 1vw;
+  right    : 1vw;
+  font-family: 'Reenie Beanie', cursive;
+  font-size  : 2em;
+  color : white;
+}
 /* ==========================================================================
    Media Queries
    ========================================================================== */
