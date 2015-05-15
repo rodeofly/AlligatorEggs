@@ -189,7 +189,24 @@ button:disabled {
   color : black !important;
 }
 */
+#titre  {
+  position : absolute;
+  top   : 2.5vw;
+  left    : 2.5vw;
+font-family: 'Lobster', cursive;
+  font-weight : bolder;
+  font-size  : 12.5vh;
+  color : orange;
 
+}
+#credits {
+  position : absolute;
+  bottom   : 1vw;
+  right    : 1vw;
+font-family: 'Lobster', cursive;
+  font-size  : 1em;
+  color : white;
+}
 
 pre.code{
   background:#F8F8FF;
@@ -261,7 +278,6 @@ pre.code{
 }
 
 /* select menu */
-
 #choose-color{
  position :relative;
  width:4vw;
@@ -297,7 +313,6 @@ ul#choose-color-menu.ui-menu, ul#exercices-menu.ui-menu {
   border  : solid black 3px;
   border-radius : 1em;
   margin : 1% !important;
-  
 }
 
 
@@ -313,6 +328,7 @@ ul#choose-color-menu.ui-menu, ul#exercices-menu.ui-menu {
   border : 0.2vw solid black;
   background-color : rgba(255,255,255,0.8);
 }
+
 #root {
   position:relative;
   width : auto;
@@ -368,7 +384,9 @@ ul#choose-color-menu.ui-menu, ul#exercices-menu.ui-menu {
   width:100%;
   height:100%;
 }
-
+.item.svg-container {
+  position:relative;
+}
 #root_definition.definition_drop, #solution_definition.definition_drop {
   position : absolute;
   top : 0;left:0;
@@ -380,9 +398,17 @@ svg {
   height : 100%;
   width : 100%;
 }
-.item.svg-container {
-  position:relative;
+.svg-container {
+  width:100%;
+  height : 60px;
+  position : absolute;
+  margin-left: auto;
+  margin-right: auto;
+  top: 0;
+  left: 0;
+  right: 0;
 }
+
 .lambda.priorite.dropped, .lambda.dropped {
   position:relative;
   text-align:center;
@@ -407,19 +433,10 @@ svg {
   height : 60px;
 }
 
-.svg-container {
-  width:100%;
-  height : 60px;
-  position : absolute;
-  margin-left: auto;
-  margin-right: auto;
-  top: 0;
-  left: 0;
-  right: 0;
-}
+
 
 .definition_drop, .application_drop {
-  position : absolute;
+  position : inherit;
   border:black dashed 1px;
   width : 60px;
   height: 60px;
@@ -470,25 +487,6 @@ div#preloaded-images, div.exemple {
    width: 1px;
 }
 
-
-#titre  {
-  position : absolute;
-  top   : 2.5vw;
-  left    : 2.5vw;
-font-family: 'Lobster', cursive;
-  font-weight : bolder;
-  font-size  : 15vh;
-  color : orange;
-
-}
-#credits {
-  position : absolute;
-  bottom   : 1vw;
-  right    : 1vw;
-font-family: 'Lobster', cursive;
-  font-size  : 1em;
-  color : white;
-}
 /* ==========================================================================
    Media Queries
    ========================================================================== */
