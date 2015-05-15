@@ -9,6 +9,7 @@
         <title></title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href='http://fonts.googleapis.com/css?family=Lobster&effect=shadow-multiple' rel='stylesheet' type='text/css'>
         <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
         <link rel="stylesheet" href="css/normalize.min.css">
@@ -28,8 +29,9 @@
         <!--[if lt IE 8]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-        <div id="game-container">       
-
+        <div id="game-container"> 
+              <div id="titre" class="font-effect-shadow-multiple" >λ-Zef !</div>   
+              <div id="credits">Alain Busser & Florian Tobé<br>d'après une idée originale de Brett Victor</div>
                 
               <div id ="panels">        
                   <div id="root">
@@ -55,7 +57,6 @@
               <div id="console">            
                   <button class="panel-button" id="close-console" >Fermer</button>
                   <textarea  id="prompt" rows="4" cols="50"></textarea>
-                  <button class="panel-button" id="clear" data-type="clear" ></button>
                   <button class="panel-button" id="draw"  data-type="draw" >&UpTeeArrow; </button>
                   <button class="panel-button" data-type="read"  >&DownTeeArrow; </button>
                   <button class="panel-button" data-type="open"      >(</button>
@@ -64,23 +65,29 @@
                   <button id="panel-lambda"   class="panel-button" data-type="lambda"   data-variable="a">λa</button>
                   <button id="panel-variable" class="panel-button" data-type="variable" data-variable="a">a</button>            
               </div>
+              
+              
+              
+              
+              
+              
               <div id="command-panel">  
-                  <div id="checkboxes">            
-                      <button class="panel-button animation" id="go">&#9658;</button>
-                      <button class="panel-button animation" id="repeat">&#9658;&#9658;</button>
-                      <button class="panel-button" id="stop">&#x25A0;</button>
-                      <button class="panel-button" id="clear" data-type="clear" ></button>
-                      <button class="panel-button" id="toggle-settings">+/-</button>
+                  <div id="toolbar">            
+                      <button class="panel-button animation" id="play"    data-type="play"   >Jouer un tour</button>
+                      <button class="panel-button animation" id="forward" data-type="forward">Jouer en continue</button>
+                      <button class="panel-button"           id="stop"    data-type="stop"   >Arreter l'animation en continue</button>
+                      <button class="panel-button"           id="clear"   data-type="clear"  >Effacer la console</button>
+                      <button id="toggle-console"                                            >Console</button>
+                      <button class="panel-button"           id="toggle-settings"            >Paramètres</button>
                   </div>
                   <div id="settings">
-                      <div id="top-panel-buttons">
-                          <input type="checkbox" id="tags"     /><label for="tags"    >tags</label>
-                          <input type="checkbox" id="infobox"  /><label for="infobox" >info</label>
-                          <input type="checkbox"  id="toggle-console"/><label for="toggle-console">Console</label>
-                          <input type="checkbox"  id="toggle-theory" /><label for="toggle-theory" >Theorie</label>
-                          <input type="checkbox"  id="toggle-arbor" /><label for="toggle-arbor" >Graphe</label>
-                     </div>
-                     <select id="exercices" style="z-index:100;"><option value="Exercices">Exercices</option></select>
+                    <div id="chekboxes">
+                        <button id="tags"          >Noms des variables</button>
+                        <button id="infobox"       >Information sur les étapes</button>
+                        <button id="toggle-graph"  >Graphe</button>
+                        <button id="toggle-theory" >Théorie sur le lambda calcul en coffeescript</button>
+                    </div>
+                    <select id="exercices" style="z-index:100;"><option value="Exercices">Exercices</option></select>
              
                     <div style="color:white;"><span id="amount-animation"></span>ms</div>
                     <div id="slider-animation"></div>
@@ -94,7 +101,7 @@
                     <div id="open-svg"  class="item svg-container croco"></div>    
                   </div>  
               </div> 
-              <div id="credits">Alain Busser & Florian Tobé</div>
+           
               
         </div>
         <div id="theory">
@@ -119,7 +126,7 @@
                     <article>
                         <header>
                             <h1>Théorie</h1>
-                          Ce jeu représente le lambda calcul (non typé).<button id="play">Jouer</button>
+                          Ce jeu représente le lambda calcul (non typé).
                           <ul>
                             <li>Un alligator de couleur est une lambda abstraction</li>
                             <li>Un (vieil) alligator blanc représente des parenthèses</li>

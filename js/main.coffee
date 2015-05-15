@@ -5,7 +5,7 @@ Array::unique = ->
 delay = (ms, func) -> setTimeout func, ms
 interval = (ms, func) -> setInterval func, ms
 #globals
-[color_tab, ahead_vars, var_tab, debug, infobox, tags, id, delta] = [ [], [], {}, false, false, true, 0, 550 ]
+[color_tab, ahead_vars, var_tab, renderArbor, looping, debug, infobox, tags, id, delta] = [ [], [], {}, true, false, false, false, true, 0, 550 ]
 
 ALPHABET = "abcdefghijklmnopqrstuvwxyz?"
 CSS_COLOR_NAMES = ["Blue","Brown","BurlyWood","CadetBlue","Chartreuse","Chocolate","Coral","Yellow","Crimson","Cyan","DarkBlue","DarkCyan","DarkGoldenRod","DarkGray","DarkGreen","DarkKhaki","DarkMagenta","DarkOliveGreen","Darkorange","DarkOrchid","DarkRed","DarkSalmon","DarkSeaGreen","DarkSlateBlue","DarkSlateGrey","DeepPink","White","DimGray","DimGrey","DodgerBlue","FireBrick","FloralWhite","ForestGreen","Fuchsia","Gainsboro","GhostWhite","Gold","GoldenRod","Gray","Grey","Green","GreenYellow","HoneyDew","HotPink","IndianRed","Indigo","Ivory","Khaki","Lavender","LavenderBlush","LawnGreen","LemonChiffon","LightBlue","LightCoral","LightCyan","LightGoldenRodYellow","LightGray","LightGrey","LightGreen","LightPink","LightSalmon","LightSeaGreen","LightSkyBlue","LightSlateGray","LightSlateGrey","LightSteelBlue","LightYellow","Lime","LimeGreen","Linen","Magenta","Maroon","MediumAquaMarine","MediumBlue","MediumOrchid","MediumPurple","MediumSeaGreen","MediumSlateBlue","MediumSpringGreen","MediumTurquoise","MediumVioletRed","MidnightBlue","MintCream","MistyRose","Moccasin","NavajoWhite","Navy","OldLace","Olive","OliveDrab","Orange","OrangeRed","Orchid","PaleGoldenRod","PaleGreen","PaleTurquoise","PaleVioletRed","PapayaWhip","PeachPuff","Peru","Pink","Plum","PowderBlue","Purple","Red","RosyBrown","RoyalBlue","SaddleBrown","Salmon","SandyBrown","SeaGreen","SeaShell","Sienna","Silver","SkyBlue","SlateBlue","SlateGray","SlateGrey","Snow","SpringGreen","SteelBlue","Tan","Teal","Thistle","Tomato","Turquoise","Violet","Wheat","White","WhiteSmoke","YellowGreen"]
@@ -22,7 +22,7 @@ FUNCTION =
   "POW"   : "(λb.λe.e b)"
   "PRED"  : "(λa.λf.λx.a (λg.λh.h (g f)) (λu.x) (λu.u))"
   "SUB"   : "(λm.λa. (a  (λn.λf.λx. n (λg.λh.h (g f)) (λu.x) (λu.u))) m)"
-  "SUB-rec": "(λf.( λx.( f (x x ) ) λx.( f (x x ) ) ) ) 
+  "SUBR"  : "(λf.( λx.( f (x x ) ) λx.( f (x x ) ) ) ) 
   (λr.λm.λn.    ((λn.n (λx.(λa.λb.b)) (λa.λb.a)) n)
                       m
                       (r ( (λa.λf.λx.a (λg.λh.h (g f)) (λu.x) (λu.u)) m) ( (λa.λf.λx.a (λg.λh.h (g f)) (λu.x) (λu.u)) n)))"
@@ -246,27 +246,74 @@ $ ->
       $( "#amount-animation" ).html( ui.value )
       delta = ui.value    
   $( "#amount-animation" ).html( $( "#slider-animation" ).slider( "value" ) )
+   
+  $( "#console button" ).button()
+  $('#close-console').button
+    text: false
+    icons: primary: 'ui-icon-close'
+    
+  $('#play').button
+    text: false
+    icons: primary: 'ui-icon-play' 
+  $('#stop').button
+    text: false
+    icons: primary: 'ui-icon-stop' 
+  $('#forward').button
+    text: false
+    icons: primary: 'ui-icon-seek-next'
+  $('#clear').button
+    text: false
+    icons: primary: 'ui-icon-trash'
+  $('#toggle-settings').button
+    text: false
+    icons: primary: 'ui-icon-wrench'
   
-  $( "button" ).button()
-  $( "#checkboxes, #top-panel-buttons" ).buttonset()
+  $('#tags').button
+    text: false
+    icons: primary: 'ui-icon-tag'
+  $('#infobox').button
+    text: false
+    icons: primary: 'ui-icon-comment'
+  $('#toggle-console').button
+    text: false
+    icons: primary: 'ui-icon-calculator'
+  $('#toggle-theory').button
+    text: false
+    icons: primary: 'ui-icon-script'
+  $('#toggle-graph').button
+    text: false
+    icons: primary: 'ui-icon-image'
+  
+  $( "#toggle-settings").on "click", -> $( "#settings" ).toggle()
+  $( "#toggle-console" ).on "click", -> $( "#console" ).toggle()
+  $( "#close-console"  ).on "click", -> $( "#console" ).toggle()
+  $( "#infobox" ).on "click", -> infobox = not infobox
+  $( "#tags" ).on "click", -> 
+    [selection, tags] = [$(".variable.dropped, .lambda.dropped"), not tags]
+    if tags then selection.addClass( "show_pseudo" ) else selection.removeClass( "show_pseudo" )
+
+  $( "#toggle-graph" ).on "click", ->
+    renderArbor = not renderArbor
+    if renderArbor
+      render_viewport().init($("#root"))
+    else
+      sys.stop()
+    $( "#viewport" ).toggle()  
+  $( "#toggle-graph" ).trigger "click"
+  
+  $( "#settings" ).toggle()
+ 
   $( ".item" ).draggable
     helper : "clone"
     start:  (event, ui) -> $(ui.helper).addClass("ui-draggable-helper")
     stop : (event, ui) ->  $(this).show()
     #cursorAt : {top :  50, left : 150}
+    
   ######################################################
   #Initialisation des items, dialog, couleurs et panels#
   ######################################################
   #items oeuf, croco, vieux croco draggable
-  $( "#infobox" ).on "change", -> infobox = $(this).prop( "checked" )
-
-  
-  $( "#tags" ).on "change", -> 
-    [selection, tags] = [$(".variable.dropped, .lambda.dropped"), $(this).prop( "checked" )]
-    if not tags then selection.addClass( "show_pseudo" ) else selection.removeClass( "show_pseudo" )
-  $( "#tags" ).trigger "click" 
-  $( "#toggle-settings").on "click", -> $( "#settings" ).toggle()
-  $( "#settings" ).toggle()
+ 
   #Gestion du panel
   $( ".panel-button" ).on "click", ->
     switch $( this ).attr("data-type")
@@ -277,6 +324,15 @@ $ ->
       when "fonction" then $("#prompt").val( $("#prompt").val() + " " + $(this).attr("data-lambda") )
       when "read"     then $("#prompt").val get_lambda_from $("#root")
       when "draw"     then draw_lambda_expression($( "#prompt").val())
+      when "stop"     then looping = false
+      when "play"
+        $( ".animation" ).prop("disabled",true)
+        looping = false
+        go_one_step("#root")
+      when "forward"
+        $( ".animation" ).prop("disabled",true)
+        looping = true
+        go_one_step("#root")
       when "clear"
         looping = false
         $("#root" ).empty().append "<div id='root_definition' class='definition_drop'></div>"
@@ -301,18 +357,10 @@ $ ->
     sys.eachNode (node) -> sys.pruneNode node
     render_viewport().init($("#root")) if renderArbor
 
-  looping = false
-  $( "#go" ).on "click", (event) ->
-    $( ".animation" ).prop("disabled",true)
-    looping = false
-    go_one_step("#root")
-  $( "#repeat" ).on "click", ->
-    $( ".animation" ).prop("disabled",true)
-    looping = true
-    go_one_step("#root")
-  $( "#animation" ).on "click", (event) -> go_one_step( "#contenu-exercice" )
-  $("#stop").click () -> looping = false
-        
+  
+  
+
+  
   $( "#help" ).dialog
     autoOpen    : false
     dialogClass : "noTitleStuff"
@@ -329,15 +377,6 @@ $ ->
     $( "#help" ).html message
     $( "#help" ).dialog( "open")    
   
-  renderArbor = true
-  $( "#toggle-arbor" ).on "click", ->
-    renderArbor = not renderArbor
-    if renderArbor
-      render_viewport().init($("#root"))
-    else
-      sys.stop()
-    $( "#viewport" ).toggle()  
-  $( "#toggle-arbor" ).trigger "click"
   
   
   ###########################################################################################################################################################
@@ -345,8 +384,7 @@ $ ->
   ###########################################################################################################################################################  
   $( "#console" ).draggable({containment: "#game-container"}).toggle()
   $( "#command-panel" ).draggable( {containment: "#game-container"})   
-  $( "#toggle-console" ).on "click", -> $( "#console" ).toggle()
-  $( "#close-console"  ).on "click", -> $( "#console" ).toggle()
+  
   #Exercice
   preparer_exercice = (id) ->
     $( ".animation" ).prop("disabled",false)
@@ -373,8 +411,9 @@ $ ->
     $( "#exercice").show()
       
   $( "#exercice").hide()
-  $("#close-exercice").on "click", ->  $("#exercice").hide()  
-  $( "#replay").on "click", () -> preparer_exercice $( this ).attr( "data-id" ) 
+  $( "#close-exercice").on "click", ->  $("#exercice").hide()  
+  $( "#replay").on "click", () -> preparer_exercice $( this ).attr( "data-id" )
+  $( "#animation" ).on "click", (event) -> go_one_step( "#contenu-exercice" )
   
   $( "#exercice .check" ).on "click", ->
     local_debug = true
@@ -389,7 +428,6 @@ $ ->
   #Pour l'article
   $( "#theory" ).toggle()
   $( "#toggle-theory" ).on("click", -> $( "#theory" ).toggle())
-  $("#play").on "click", -> $("#game-container").dialog("open")
 
   $( ".run-previous-code" ).on "click", ->
     js = CoffeeScript.compile($( this ).prev( ":first" ).text())

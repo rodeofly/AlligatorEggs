@@ -160,7 +160,7 @@ nav a:hover {
 .noTitleStuff .ui-dialog-titlebar {
   display:none
 }
-  
+/*  
 button, input {
   height : 5vh;
   display : inline-block;
@@ -168,13 +168,29 @@ button, input {
   font-size : 1vw !important;
   border-radius : 1em;
 }
-button#clear {
-  background-image: url(svg/delete.svg);
-  background-repeat: no-repeat;
-}
+
 button:disabled {
     background: rgba(0,0,0,0.5);
 }
+
+
+#checkboxes button {
+  min-width: 5vw;
+  position: relative;
+  display : inline-block;
+  margin:auto;
+}
+#top-panel-buttons {
+  display : flex;
+  justify-content:center;
+}
+.ui-selectmenu-button {
+  background : rgba(255,255,255,0.5) !important;
+  color : black !important;
+}
+*/
+
+
 pre.code{
   background:#F8F8FF;
   border:black dashed 1px;
@@ -191,32 +207,17 @@ pre.code{
   background-size : 100% 100%;
   overflow-x: hidden;
 }
-#top-panel {
-  position : relative;
-  display : flex;
-  height : 5vh;
-  flex-flow: column wrap;
-  justify-content: center;
-}
 
 #prompt {
   position : relative;
   width : 100%;
- 
 }
 
 .ui-draggable-helper { 
     /*z-index: 5000;*/
 }
-#color{
-  position:relative;
-  width : 90%;
-  border : solid black 1px;
-  padding : 5%;
-}
-.item.svg-container {
-  position:relative;
-}
+
+
 /* sliders */
 #slider-animation span.ui-slider-handle.ui-state-default {background: white url(svg/chrono.svg) no-repeat scroll 50% 50%;}
 #slider-zoom  span.ui-slider-handle.ui-state-default {background: white url(svg/zoom.svg) no-repeat scroll 50% 50%;}
@@ -245,48 +246,27 @@ pre.code{
 }
 #console button {
   min-width : 5em;
-  padding : 0;
-  margin : 0;
   flex : 2;
 }
+
 #command-panel {
   position : absolute;
+  display: inline-block;
   top:1vw;
   left:35vW;
-  width : 30vw;
   padding : 1vw;
   border-radius : 1em;
   background-color : rgba(0,0,0,0.5);
   text-align : center;
 }
 
-#checkboxes button {
-  min-width: 5vw;
-  position: relative;
-  display : inline-block;
-  margin:auto;
-}
-#top-panel-buttons {
-  display : flex;
-  justify-content:center;
-}
-
-#exercices {
-  position : relative;
-  display : block;
-  margin : auto;
-}
-
 /* select menu */
 
+#choose-color{
+ position :relative;
+ width:4vw;
+}
 
-div.ui-selectmenu-menu.ui-front.ui-selectmenu-open {
-  position : relative;
-}
-.ui-selectmenu-button {
-  background : rgba(255,255,255,0.5) !important;
-  color : black !important;
-}
 ul#choose-color-menu.ui-menu, ul#exercices-menu.ui-menu {
   position: fixed !important;
   display : inline-block;
@@ -294,18 +274,8 @@ ul#choose-color-menu.ui-menu, ul#exercices-menu.ui-menu {
   left : 0;
   height : 100%;
   width :  100%;
-
   background : transparent !important;
-  border : 0;
-  
-}
-#choose-color{
- position :relative;
- width:4vw;
-}
-#exercices{
- position :relative;
- width : 100%;
+  border : 0;  
 }
 
 #choose-color-menu.ui-menu .ui-menu-item {
@@ -359,8 +329,6 @@ ul#choose-color-menu.ui-menu, ul#exercices-menu.ui-menu {
   height: 100%;
   text-align: center;
   background : rgba(255,255,255,0.5);
-
-
 }
 #contenu-exercice {
   padding: 2vw;
@@ -412,7 +380,9 @@ svg {
   height : 100%;
   width : 100%;
 }
-
+.item.svg-container {
+  position:relative;
+}
 .lambda.priorite.dropped, .lambda.dropped {
   position:relative;
   text-align:center;
@@ -501,13 +471,22 @@ div#preloaded-images, div.exemple {
 }
 
 
-@import url(http://fonts.googleapis.com/css?family=Reenie+Beanie);
+#titre  {
+  position : absolute;
+  top   : 2.5vw;
+  left    : 2.5vw;
+font-family: 'Lobster', cursive;
+  font-weight : bolder;
+  font-size  : 15vh;
+  color : orange;
+
+}
 #credits {
   position : absolute;
   bottom   : 1vw;
   right    : 1vw;
-  font-family: 'Reenie Beanie', cursive;
-  font-size  : 2em;
+font-family: 'Lobster', cursive;
+  font-size  : 1em;
   color : white;
 }
 /* ==========================================================================
